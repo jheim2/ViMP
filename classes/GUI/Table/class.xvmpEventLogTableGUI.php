@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -10,7 +13,7 @@ class xvmpEventLogTableGUI extends xvmpTableGUI {
 
 	const ROW_TEMPLATE = 'tpl.event_log_row.html';
 
-	protected $available_columns = array(
+	protected array $available_columns = array(
 		'datetime' => array(),
 		'action' => array(),
 		'user' => array(),
@@ -20,13 +23,14 @@ class xvmpEventLogTableGUI extends xvmpTableGUI {
 		'data' => array()
 	);
 
-	protected $is_global_log;
+	protected bool $is_global_log;
 
 	public function __construct($parent_gui, $parent_cmd) {
 		if ($parent_gui instanceof ilViMPConfigGUI) {
 			$this->is_global_log = true;
 			$this->setId('global_log');
 		} else {
+            $this->is_global_log = false;
 			unset($this->available_columns['object_title']);
 			$this->setId('log_' . $parent_gui->getObjId());
 		}
@@ -35,7 +39,10 @@ class xvmpEventLogTableGUI extends xvmpTableGUI {
 	}
 
 
-	public function parseData() {
+    /**
+     * @throws arException
+     */
+    public function parseData() {
 		if ($this->is_global_log) {
 			$where = array();
 			$operators = array('action' => 'IN', 'title' => 'LIKE');
@@ -46,7 +53,7 @@ class xvmpEventLogTableGUI extends xvmpTableGUI {
 
 		foreach ($this->filters as $filter_item) {
 			$value = $filter_item->getValue();
-			if (!$value || empty($value)) {
+			if (empty($value)) {
 				continue;
 			}
 			$where[$filter_item->getPostVar()] = $filter_item->getPostVar() == 'title' ? '%'.$value.'%' : $value;
@@ -60,12 +67,17 @@ class xvmpEventLogTableGUI extends xvmpTableGUI {
 	}
 
 
-	protected function fillRow($a_set) {
+    /**
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
+    protected function fillRow($a_set): void
+    {
 		foreach ($a_set as $key => $value)
 		{
 			switch ($key) {
 				case 'timestamp':
-					$this->tpl->setVariable("VAL_DATETIME", date('d.m.Y, H:i', $value));
+					$this->tpl->setVariable("VAL_DATETIME", date('d.m.Y, H:i', (int) $value));
 					break;
 				case 'action':
 					$this->tpl->setVariable("VAL_ACTION", $this->pl->txt('log_action_' . $value));
@@ -80,9 +92,9 @@ class xvmpEventLogTableGUI extends xvmpTableGUI {
 				case 'obj_id':
 					if ($this->is_global_log) {
 						$this->tpl->setCurrentBlock('block_object_title');
-						$this->tpl->setVariable('VAL_OBJECT_TITLE', ilObject2::_lookupTitle($value));
+						$this->tpl->setVariable('VAL_OBJECT_TITLE', ilObject2::_lookupTitle((int)$value));
 
-						$this->ctrl->setParameterByClass(ilObjViMPGUI::class, 'ref_id',array_shift(ilObject2::_getAllReferences($value)));
+						$this->ctrl->setParameterByClass(ilObjViMPGUI::class, 'ref_id',array_shift(ilObject2::_getAllReferences((int)$value)));
 						$link = $this->ctrl->getLinkTargetByClass(array(ilObjPluginDispatchGUI::class, ilObjViMPGUI::class), ilObjViMPGUI::CMD_SHOW_CONTENT);
 						$this->tpl->setVariable('VAL_OBJECT_LINK', $link);
 
@@ -96,7 +108,8 @@ class xvmpEventLogTableGUI extends xvmpTableGUI {
 		}
 	}
 
-	protected function formatData($action, $data) {
+	protected function formatData($action, $data): string
+    {
 		$string = '';
 		switch ($action) {
 			case xvmpEventLog::ACTION_ADD:
@@ -122,12 +135,13 @@ class xvmpEventLogTableGUI extends xvmpTableGUI {
 		return $string;
 	}
 
-	/**
-	 * Init filter items
-	 *
-	 */
-	public function initFilter()
-	{
+    /**
+     * Init filter items
+     *
+     * @throws Exception
+     */
+	public function initFilter(): void
+    {
 		$item = new ilMultiSelectInputGUI($this->pl->txt('action'), 'action');
 		$options = array();
 		foreach (array(xvmpEventLog::ACTION_UPLOAD, xvmpEventLog::ACTION_EDIT, xvmpEventLog::ACTION_DELETE, xvmpEventLog::ACTION_ADD, xvmpEventLog::ACTION_REMOVE, xvmpEventLog::ACTION_CHANGE_OWNER)

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -13,7 +16,8 @@ class xvmpSelectedMedia extends ActiveRecord {
 	const F_VISIBLE = 'visible';
 
 
-	public static function returnDbTableName() {
+	public static function returnDbTableName(): string
+    {
 		return self::DB_TABLE_NAME;
 	}
 
@@ -28,7 +32,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	 * @db_length           8
 	 * @con_sequence        true
 	 */
-	protected $id = 0;
+	protected ?int $id = 0;
 	/**
 	 * @var int
 	 *
@@ -36,7 +40,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $obj_id;
+	protected ?int $obj_id;
 	/**
 	 * @var int
 	 *
@@ -44,7 +48,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $mid;
+	protected int $mid;
 	/**
 	 * @var int
 	 *
@@ -52,7 +56,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           1
 	 */
-	protected $visible = 1;
+	protected int $visible = 1;
 
 	/**
 	 * @var int
@@ -61,7 +65,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           1
 	 */
-	protected $lp_is_required = 0;
+	protected int $lp_is_required = 0;
 
 	/**
 	 * @var int
@@ -70,7 +74,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $lp_req_percentage = 80;
+	protected int $lp_req_percentage = 80;
 	/**
 	 * @var int
 	 *
@@ -78,7 +82,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $sort;
+	protected int $sort;
 
 
 	/**
@@ -87,18 +91,21 @@ class xvmpSelectedMedia extends ActiveRecord {
 	 *
 	 * @return bool
 	 */
-	public static function isSelected($mid, $obj_id) {
+	public static function isSelected($mid, $obj_id): bool
+    {
 		return self::where(array('mid' => $mid, 'obj_id' => $obj_id))->hasSets();
 	}
 
 
-	/**
-	 * @param $mid
-	 * @param $obj_id
-	 *
-	 * @return bool
-	 */
-	public static function addVideo($mid, $obj_id, $visible = true) {
+    /**
+     * @param int $mid
+     * @param int $obj_id
+     * @param bool $visible
+     * @return bool
+     * @throws xvmpException
+     */
+	public static function addVideo(int $mid, int $obj_id, bool $visible = true): bool
+    {
 		$set = self::where(array('mid' => $mid, 'obj_id' => $obj_id))->first();
 		if ($set) {
 			return false; // already added
@@ -107,7 +114,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 		$set = new self();
 		$set->setMid($mid);
 		$set->setObjId($obj_id);
-		$set->setVisible($visible);
+		$set->setVisible((int)$visible);
 		$sort = self::where(array('obj_id' => $obj_id))->count() + 1;
 		$set->setSort($sort * 10);
 		$set->create();
@@ -121,13 +128,15 @@ class xvmpSelectedMedia extends ActiveRecord {
 		return true;
 	}
 
-	/**
-	 * @param $mid
-	 * @param $obj_id
-	 *
-	 * @return bool
-	 */
-	public static function removeVideo($mid, $obj_id) {
+    /**
+     * @param $mid
+     * @param $obj_id
+     *
+     * @return bool
+     * @throws xvmpException
+     */
+	public static function removeVideo($mid, $obj_id): bool
+    {
 		$set = self::where(array('mid' => $mid, 'obj_id' => $obj_id))->first();
 		if (!$set) {
 			return false; // already added
@@ -154,12 +163,14 @@ class xvmpSelectedMedia extends ActiveRecord {
 	}
 
 
-	/**
-	 * @param $obj_id
-	 *
-	 * @return self[]
-	 */
-	public static function getSelected($obj_id, $visible_only = false) {
+    /**
+     * @param $obj_id
+     * @param bool $visible_only
+     * @return self[]
+     * @throws arException
+     */
+	public static function getSelected($obj_id, bool $visible_only = false): array
+    {
 		$where = array('obj_id' => $obj_id);
 		if ($visible_only) {
 			$where['visible'] = true;
@@ -168,9 +179,10 @@ class xvmpSelectedMedia extends ActiveRecord {
 	}
 
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws arException
+     */
 	public static function reSort($obj_id) {
 		$i = 1;
 		foreach (self::getSelected($obj_id) as $item) {
@@ -205,7 +217,8 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getId() {
+	public function getId(): int
+    {
 		return $this->id;
 	}
 
@@ -213,7 +226,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @param int $id
 	 */
-	public function setId($id) {
+	public function setId(int $id) {
 		$this->id = $id;
 	}
 
@@ -221,7 +234,8 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getObjId() {
+	public function getObjId(): int
+    {
 		return $this->obj_id;
 	}
 
@@ -229,7 +243,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @param int $obj_id
 	 */
-	public function setObjId($obj_id) {
+	public function setObjId(int $obj_id) {
 		$this->obj_id = $obj_id;
 	}
 
@@ -237,7 +251,8 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getMid() {
+	public function getMid(): int
+    {
 		return $this->mid;
 	}
 
@@ -245,7 +260,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @param int $mid
 	 */
-	public function setMid($mid) {
+	public function setMid(int $mid) {
 		$this->mid = $mid;
 	}
 
@@ -253,7 +268,8 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getVisible() {
+	public function getVisible(): int
+    {
 		return $this->visible;
 	}
 
@@ -261,7 +277,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @param int $visible
 	 */
-	public function setVisible($visible) {
+	public function setVisible(int $visible) {
 		$this->visible = $visible;
 	}
 
@@ -269,7 +285,8 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getSort() {
+	public function getSort(): int
+    {
 		return $this->sort;
 	}
 
@@ -277,7 +294,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @param int $sort
 	 */
-	public function setSort($sort) {
+	public function setSort(int $sort) {
 		$this->sort = $sort;
 	}
 
@@ -285,7 +302,8 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getLpIsRequired() {
+	public function getLpIsRequired(): int
+    {
 		return $this->lp_is_required;
 	}
 
@@ -293,7 +311,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @param int $lp_is_required
 	 */
-	public function setLpIsRequired($lp_is_required) {
+	public function setLpIsRequired(int $lp_is_required) {
 		$this->lp_is_required = $lp_is_required;
 	}
 
@@ -301,7 +319,8 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getLpReqPercentage() {
+	public function getLpReqPercentage(): int
+    {
 		return $this->lp_req_percentage;
 	}
 
@@ -309,7 +328,7 @@ class xvmpSelectedMedia extends ActiveRecord {
 	/**
 	 * @param int $lp_req_percentage
 	 */
-	public function setLpReqPercentage($lp_req_percentage) {
+	public function setLpReqPercentage(int $lp_req_percentage) {
 		$this->lp_req_percentage = $lp_req_percentage;
 	}
 

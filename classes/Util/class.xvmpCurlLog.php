@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 require_once('./Services/Logging/classes/class.ilLog.php');
 
@@ -18,18 +21,19 @@ class xvmpCurlLog extends ilLog {
 	const DEBUG_LEVEL_4 = 4;
 
 	/**
-	 * @var xoctLog
+	 * @var xvmpCurlLog
 	 */
-	protected static $instance;
+	protected static xvmpCurlLog $instance;
 	/**
 	 * @var int
 	 */
-	protected static $log_level = self::DEBUG_LEVEL_2;
+	protected static int $log_level = self::DEBUG_LEVEL_2;
 
 	/**
 	 * @return xvmpCurlLog
 	 */
-	public static function getInstance() {
+	public static function getInstance(): xvmpCurlLog
+    {
 		if (! isset(self::$instance)) {
             if (ILIAS_LOG_DIR === "php:/" && ILIAS_LOG_FILE === "stdout") {
                 // Fix Docker-ILIAS log
@@ -55,7 +59,8 @@ class xvmpCurlLog extends ilLog {
 	 *
 	 * @return bool
 	 */
-	public static function relevant($log_level) {
+	public static function relevant($log_level): bool
+    {
 		return $log_level <= self::$log_level;
 	}
 
@@ -63,7 +68,8 @@ class xvmpCurlLog extends ilLog {
 	 * @param      $a_msg
 	 * @param null $log_level
 	 */
-	function write($a_msg, $log_level = null) {
+	function write($a_msg, $log_level = null): void
+    {
 		if (self::relevant($log_level)) {
 			parent::write($a_msg);
 		}
@@ -80,16 +86,18 @@ class xvmpCurlLog extends ilLog {
 
 
 	/**
-	 * @return mixed
-	 */
-	public function getLogDir() {
+	 * @return string
+     */
+	public function getLogDir(): string
+    {
 		return ILIAS_LOG_DIR;
 	}
 
 	/**
 	 * @return string
 	 */
-	public static function getFullPath() {
+	public static function getFullPath(): string
+    {
 		$log = self::getInstance();
 
 		return $log->getLogDir() . '/' . $log->getLogFile();
@@ -98,7 +106,8 @@ class xvmpCurlLog extends ilLog {
 	/**
 	 * @return string
 	 */
-	public function getLogFile() {
+	public function getLogFile(): string
+    {
         if (ILIAS_LOG_DIR === "php:/" && ILIAS_LOG_FILE === "stdout") {
             // Fix Docker-ILIAS log
             return ILIAS_LOG_FILE;
@@ -111,7 +120,8 @@ class xvmpCurlLog extends ilLog {
 	/**
 	 * @return int
 	 */
-	public static function getLogLevel() {
+	public static function getLogLevel(): int
+    {
 		return self::$log_level;
 	}
 }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use srag\Plugins\ViMP\UIComponents\Renderer\PlayerInSiteRenderer;
@@ -57,7 +60,7 @@ class xvmpContentPlayerGUI
                                                          'visible' => 1
         ))->orderBy('sort');
         if (!$selected_media->hasSets()) {
-            ilUtil::sendInfo($this->pl->txt('msg_no_videos'));
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('info', $this->pl->txt('msg_no_videos'));
             return;
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use ILIAS\DI\Container;
 
 /**
@@ -8,31 +10,32 @@ use ILIAS\DI\Container;
  */
 class xvmpProgressBarUI
 {
-    private static $version = 1;
+    private static int $version = 1;
     /**
      * @var ilPlugin
      */
-    private $plugin;
+    private ilPlugin $plugin;
     /**
      * @var int
      */
-    protected $mid;
+    protected int $mid;
     /**
      * @var ilTemplate
      */
-    protected $tpl;
+    protected ilTemplate $tpl;
     /**
      * @var Container
      */
-    protected $dic;
+    protected Container $dic;
 
-    protected static $js_loaded = false;
+    protected static bool $js_loaded = false;
 
     /**
      * xvmpProgressBarUI constructor.
-     * @param int      $mid
+     * @param int $mid
      * @param ilPlugin $plugin
-     * @param          $dic
+     * @param Container $dic
+     * @throws ilCtrlException
      */
     public function __construct(int $mid, ilPlugin $plugin, Container $dic)
     {
@@ -43,6 +46,9 @@ class xvmpProgressBarUI
         $this->addJS();
     }
 
+    /**
+     * @throws ilCtrlException
+     */
     protected function addJS()
     {
         if (!self::$js_loaded) {

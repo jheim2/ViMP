@@ -1,8 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\DI\Container;
-use srag\DIC\ViMP\DICTrait;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -15,8 +17,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
  * @ilCtrl_Calls      ilObjViMPGUI: ilPermissionGUI, ilInfoScreenGUI, ilObjectCopyGUI, ilCommonActionDispatcherGUI
  */
 class ilObjViMPGUI extends ilObjectPluginGUI {
-    use DICTrait;
-	const CMD_SHOW_CONTENT = 'showContent';
+    const CMD_SHOW_CONTENT = 'showContent';
 	const CMD_PLAY_VIDEO = 'playVideo';
 	const CMD_SEARCH_VIDEOS = 'searchVideos';
 	const CMD_SEARCH_USER_AJAX = 'searchUserAjax';
@@ -35,25 +36,26 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
     /**
 	 * @var ilViMPPlugin
 	 */
-	protected $pl;
+	protected ilViMPPlugin $pl;
 	/**
 	 * @var ilObjViMP
 	 */
-	protected $obj;
+	protected ilObjViMP $obj;
     /**
      * @var Container
      */
 	protected $dic;
 
 
-	/**
-	 * ilObjViMPGUI constructor.
-	 *
-	 * @param int $a_ref_id
-	 * @param int $a_id_type
-	 * @param int $a_parent_node_id
-	 */
-	public function __construct($a_ref_id = 0, $a_id_type = self::REPOSITORY_NODE_ID, $a_parent_node_id = 0) {
+    /**
+     * ilObjViMPGUI constructor.
+     *
+     * @param int $a_ref_id
+     * @param int $a_id_type
+     * @param int $a_parent_node_id
+     * @throws ilCtrlException
+     */
+	public function __construct($a_ref_id = 0, int $a_id_type = self::REPOSITORY_NODE_ID, $a_parent_node_id = 0) {
 	    global $DIC;
 	    $this->dic = $DIC;
 		parent::__construct($a_ref_id, $a_id_type, $a_parent_node_id);
@@ -61,14 +63,16 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 	}
 
 
-	/**
-	 *
-	 */
-	public function executeCommand() {
+    /**
+     *
+     * @throws ilCtrlException
+     */
+	public function executeCommand(): void
+    {
 		$next_class = $this->ctrl->getNextClass();
 		$cmd = $this->ctrl->getCmd();
 		if (!ilObjViMPAccess::hasReadAccess() && $next_class != "ilinfoscreengui" && $cmd != "infoScreen" && $cmd != xvmpGUI::CMD_FILL_MODAL) {
-			ilUtil::sendFailure($this->pl->txt('access_denied'), true);
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('access_denied'));
 			$this->ctrl->returnToParent($this);
 		}
 
@@ -83,11 +87,7 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 					}
 					$xvmpGUI = new xvmpContentGUI($this);
 					$this->ctrl->forwardCommand($xvmpGUI);
-                    if (self::version()->is6()) {
-                        $this->tpl->printToStdout();
-                    } else {
-					    $this->tpl->show();
-					}
+                    $this->tpl->printToStdout();
 					break;
 				case 'xvmpsearchvideosgui':
 					if (!$this->ctrl->isAsynch()) {
@@ -96,11 +96,7 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 					}
 					$xvmpGUI = new xvmpSearchVideosGUI($this);
 					$this->ctrl->forwardCommand($xvmpGUI);
-                    if (self::version()->is6()) {
-                        $this->tpl->printToStdout();
-                    } else {
-					$this->tpl->show();
-					}
+                    $this->tpl->printToStdout();
 					break;
 				case 'xvmpeventloggui':
 					if (!$this->ctrl->isAsynch()) {
@@ -109,11 +105,7 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 					}
 					$xvmpGUI = new xvmpEventLogGUI($this);
 					$this->ctrl->forwardCommand($xvmpGUI);
-                    if (self::version()->is6()) {
-                        $this->tpl->printToStdout();
-                    } else {
-					$this->tpl->show();
-					}
+                    $this->tpl->printToStdout();
 					break;
 				case 'xvmpsettingsgui':
 					if (!$this->ctrl->isAsynch()) {
@@ -122,11 +114,7 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 					}
 					$xvmpGUI = new xvmpSettingsGUI($this);
 					$this->ctrl->forwardCommand($xvmpGUI);
-                    if (self::version()->is6()) {
-                        $this->tpl->printToStdout();
-                    } else {
-					$this->tpl->show();
-					}
+                    $this->tpl->printToStdout();
 					break;
 				case 'xvmpselectedvideosgui':
 					if (!$this->ctrl->isAsynch()) {
@@ -135,11 +123,7 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 					}
 					$xvmpGUI = new xvmpSelectedVideosGUI($this);
 					$this->ctrl->forwardCommand($xvmpGUI);
-                    if (self::version()->is6()) {
-                        $this->tpl->printToStdout();
-                    } else {
-					$this->tpl->show();
-					}
+                    $this->tpl->printToStdout();
 					break;
 				case 'xvmpownvideosgui':
 					if (!$this->ctrl->isAsynch()) {
@@ -148,11 +132,7 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 					}
 					$xvmpGUI = new xvmpOwnVideosGUI($this);
 					$this->ctrl->forwardCommand($xvmpGUI);
-                    if (self::version()->is6()) {
-                        $this->tpl->printToStdout();
-                    } else {
-					$this->tpl->show();
-					}
+                    $this->tpl->printToStdout();
 					break;
 				case 'xvmplearningprogressgui':
 					if (!$this->ctrl->isAsynch()) {
@@ -161,11 +141,7 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 					}
 					$xvmpGUI = new xvmpLearningProgressGUI($this);
 					$this->ctrl->forwardCommand($xvmpGUI);
-                    if (self::version()->is6()) {
-                        $this->tpl->printToStdout();
-                    } else {
-					$this->tpl->show();
-					}
+                    $this->tpl->printToStdout();
 					break;
 				case "ilinfoscreengui":
 					if (!$this->ctrl->isAsynch()) {
@@ -174,11 +150,7 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 					}
 					$this->checkPermission("visible");
 					$this->infoScreen();	// forwards command
-                    if (self::version()->is6()) {
-                        $this->tpl->printToStdout();
-                    } else {
-					$this->tpl->show();
-					}
+                    $this->tpl->printToStdout();
 					break;
 				case 'ilpermissiongui':
 					$this->initHeader(false);
@@ -195,12 +167,8 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 			}
 		} catch (Exception $e) {
 		    self::dic()->logger()->root()->logStack(ilLogLevel::ERROR, $e->getMessage());
-			ilUtil::sendFailure($e->getMessage());
-            if (self::version()->is6()) {
-                $this->tpl->printToStdout();
-            } else {
-			$this->tpl->show();
-			}
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $e->getMessage());
+            $this->tpl->printToStdout();
 		}
 
 	}
@@ -209,7 +177,8 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 	/**
 	 * @param $cmd
 	 */
-	public function performCommand($cmd) {
+	public function performCommand($cmd): void
+    {
 		switch ($cmd) {
 			default:
 				$this->$cmd();
@@ -221,7 +190,8 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 	/**
 	 * @return bool
 	 */
-	protected function supportsCloning() {
+	protected function supportsCloning(): bool
+    {
 		return false;
 	}
 
@@ -231,7 +201,8 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 	 *
 	 * @return ilPropertyFormGUI
 	 */
-	public function initCreateForm($a_new_type) {
+	public function initCreateForm($a_new_type): ilPropertyFormGUI
+    {
 		$this->tpl->addCss($this->pl->getAssetURL('default/xvmp_settings.css'));
 
 		$form = parent::initCreateForm($a_new_type);
@@ -242,19 +213,20 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 
 		// LAYOUT
 		$input = new ilRadioGroupInputGUI($this->pl->txt(xvmpSettingsFormGUI::F_LAYOUT), xvmpSettingsFormGUI::F_LAYOUT);
-		$option = new ilRadioOption(ilUtil::img($this->pl->getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_LIST . '.png')),xvmpSettings::LAYOUT_TYPE_LIST);
+		$option = new ilRadioOption(ilUtil::img(ilUtil::getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_LIST . '.png')),(string) xvmpSettings::LAYOUT_TYPE_LIST);
 		$input->addOption($option);
-		$option = new ilRadioOption(ilUtil::img($this->pl->getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_TILES . '.png')),xvmpSettings::LAYOUT_TYPE_TILES);
+		$option = new ilRadioOption(ilUtil::img(ilUtil::getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_TILES . '.png')),(string) xvmpSettings::LAYOUT_TYPE_TILES);
 		$input->addOption($option);
-		$option = new ilRadioOption(ilUtil::img($this->pl->getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_PLAYER . '.png')),xvmpSettings::LAYOUT_TYPE_PLAYER);
+		$option = new ilRadioOption(ilUtil::img(ilUtil::getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_PLAYER . '.png')),(string) xvmpSettings::LAYOUT_TYPE_PLAYER);
 		$input->addOption($option);
-		$input->setValue(xvmpSettings::LAYOUT_TYPE_LIST);
+		$input->setValue((string) xvmpSettings::LAYOUT_TYPE_LIST);
 		$form->addItem($input);
 
 		return $form;
 	}
 
-	function afterSave(ilObject $newObj) {
+	function afterSave(ilObject $newObj): void
+    {
 		if ($_POST[xvmpSettingsFormGUI::F_ONLINE] || $_POST[xvmpSettingsFormGUI::F_LAYOUT]) {
 			/** @var xvmpSettings $settings */
 			$settings = xvmpSettings::find($newObj->getId());
@@ -289,13 +261,14 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 		}
 
 //		$this->tpl->setTitleIcon(ilObjViMP::_getIcon($this->object_id));
-		$this->tpl->setPermanentLink('xvmp', $_GET['ref_id']);
+		$this->tpl->setPermanentLink('xvmp', (int) $_GET['ref_id']);
 	}
 
 	/**
 	 * @return bool
 	 */
-	protected function setTabs() {
+	protected function setTabs(): void
+    {
 		$this->tabs_gui->addTab(self::TAB_CONTENT, $this->pl->txt(self::TAB_CONTENT), $this->ctrl->getLinkTargetByClass(xvmpContentGUI::class, xvmpContentGUI::CMD_STANDARD));
 		$this->tabs_gui->addTab(self::TAB_INFO, $this->pl->txt(self::TAB_INFO), $this->ctrl->getLinkTargetByClass(ilInfoScreenGUI::class));
 
@@ -325,15 +298,13 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 				"ilpermissiongui",
 			), "perm"));
 		}
-
-		return true;
 	}
 
 
     /**
      * @param $a_target
      */
-    public static function _goto($a_target)
+    public static function _goto($a_target): void
     {
         global $DIC;
         $DIC->ctrl()->setTargetScript('ilias.php');
@@ -343,11 +314,11 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
         $DIC->ctrl()->setParameterByClass(xvmpContentGUI::class, self::GET_REF_ID, $id[0]);
 
         if (isset($id[1])) {
-            if ($id[2]) {
+            if (isset($id[2])) {
                 // time
                 $DIC->ctrl()->setParameterByClass(xvmpContentGUI::class, self::GET_TIME, (int) $id[2]);
             }
-            $DIC->ctrl()->setParameterByClass(xvmpContentGUI::class, self::GET_VIDEO_ID, $id[1]);
+            $DIC->ctrl()->setParameterByClass(xvmpContentGUI::class, self::GET_VIDEO_ID, (int) $id[1]);
             $DIC->ctrl()->redirectByClass([ilObjPluginDispatchGUI::class, self::class, xvmpContentGUI::class], xvmpContentGUI::CMD_PLAY_VIDEO);
         }
         parent::_goto($a_target);
@@ -358,8 +329,8 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 	 * called by the button to test connection inside the plugin config
 	 */
 	public function testConnectionAjax() {
-		$apikey = $_GET['apikey'];
-		$apiurl = $_GET['apiurl'];
+		$apikey = $_POST['apikey'];
+		$apiurl = $_POST['apiurl'];
 
 		$xvmpCurl = new xvmpCurl(rtrim($apiurl, '/') . '/' . ltrim(xvmpRequest::VERSION, '/'));
 		$xvmpCurl->addPostField('apikey', $apikey);
@@ -389,7 +360,8 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 	/**
 	 * @return string
 	 */
-	public function getType() {
+	public function getType(): string
+    {
 		return ilViMPPlugin::XVMP;
 	}
 
@@ -397,7 +369,8 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 	/**
 	 * @return string
 	 */
-	public function getAfterCreationCmd() {
+	public function getAfterCreationCmd(): string
+    {
 		return self::CMD_SHOW_CONTENT;
 	}
 
@@ -405,7 +378,8 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 	/**
 	 * @return string
 	 */
-	public function getStandardCmd() {
+	public function getStandardCmd(): string
+    {
 		return self::CMD_SHOW_CONTENT;
 	}
 
@@ -441,7 +415,6 @@ class ilObjViMPGUI extends ilObjectPluginGUI {
 
     /**
      * AJAX call
-     * @throws xvmpException
      */
 	protected function getTranscodingProgress() {
 	    try {

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -10,12 +13,13 @@ class xvmpEventLog extends ActiveRecord {
 
 	const DB_TABLE_NAME = 'xvmp_event_log';
 
-	protected static $logged_media_fields = array(
+	protected static array $logged_media_fields = array(
 		'title', 'description', 'published', 'mediapermissions', 'categories', 'tags'
 	);
 
 
-	public static function returnDbTableName() {
+	public static function returnDbTableName(): string
+    {
 		return self::DB_TABLE_NAME;
 	}
 
@@ -27,7 +31,7 @@ class xvmpEventLog extends ActiveRecord {
 	const ACTION_CHANGE_OWNER = 6;
 
 	/**
-	 * @var int
+	 * @var ?int
 	 *
 	 * @db_has_field        true
 	 * @db_is_unique        true
@@ -36,7 +40,7 @@ class xvmpEventLog extends ActiveRecord {
 	 * @db_length           8
 	 * @con_sequence        true
 	 */
-	protected $id = 0;
+	protected ?int $id = 0;
 	/**
 	 * @var String
 	 *
@@ -44,7 +48,7 @@ class xvmpEventLog extends ActiveRecord {
 	 * @db_fieldtype        text
 	 * @db_length           256
 	 */
-	protected $login;
+	protected string $login;
 	/**
 	 * @var int
 	 *
@@ -52,7 +56,7 @@ class xvmpEventLog extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $action;
+	protected int $action;
 	/**
 	 * @var int
 	 *
@@ -60,7 +64,7 @@ class xvmpEventLog extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $obj_id;
+	protected int $obj_id;
 	/**
 	 * @var int
 	 *
@@ -68,7 +72,7 @@ class xvmpEventLog extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $mid;
+	protected int $mid;
 	/**
 	 * @var String
 	 *
@@ -76,15 +80,15 @@ class xvmpEventLog extends ActiveRecord {
 	 * @db_fieldtype        text
 	 * @db_length           256
 	 */
-	protected $title;
+	protected string $title;
 	/**
-	 * @var String
+	 * @var Array
 	 *
 	 * @db_has_field        true
 	 * @db_fieldtype        text
 	 * @db_length           4000
 	 */
-	protected $data;
+	protected array $data;
 	/**
 	 * @var int
 	 *
@@ -92,13 +96,14 @@ class xvmpEventLog extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $timestamp;
+	protected int $timestamp;
 
 
 	/**
 	 * @return int
 	 */
-	public function getId() {
+	public function getId(): int
+    {
 		return $this->id;
 	}
 
@@ -106,7 +111,7 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @param int $id
 	 */
-	public function setId($id) {
+	public function setId(int $id) {
 		$this->id = $id;
 	}
 
@@ -114,7 +119,8 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @return String
 	 */
-	public function getLogin() {
+	public function getLogin(): string
+    {
 		return $this->login;
 	}
 
@@ -122,7 +128,7 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @param String $login
 	 */
-	public function setLogin($login) {
+	public function setLogin(string $login) {
 		$this->login = $login;
 	}
 
@@ -130,7 +136,8 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getAction() {
+	public function getAction(): int
+    {
 		return $this->action;
 	}
 
@@ -138,7 +145,7 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @param int $action
 	 */
-	public function setAction($action) {
+	public function setAction(int $action) {
 		$this->action = $action;
 	}
 
@@ -146,7 +153,8 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getObjId() {
+	public function getObjId(): int
+    {
 		return $this->obj_id;
 	}
 
@@ -154,7 +162,7 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @param int $obj_id
 	 */
-	public function setObjId($obj_id) {
+	public function setObjId(int $obj_id) {
 		$this->obj_id = $obj_id;
 	}
 
@@ -162,7 +170,8 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getMid() {
+	public function getMid(): int
+    {
 		return $this->mid;
 	}
 
@@ -170,7 +179,7 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @param int $mid
 	 */
-	public function setMid($mid) {
+	public function setMid(int $mid) {
 		$this->mid = $mid;
 	}
 
@@ -178,7 +187,8 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @return String
 	 */
-	public function getTitle() {
+	public function getTitle(): string
+    {
 		return $this->title;
 	}
 
@@ -186,7 +196,7 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @param String $title
 	 */
-	public function setTitle($title) {
+	public function setTitle(string $title) {
 		$this->title = $title;
 	}
 
@@ -194,7 +204,8 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @return array
 	 */
-	public function getData() {
+	public function getData(): array
+    {
 		return $this->data;
 	}
 
@@ -202,7 +213,7 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @param array $data
 	 */
-	public function setData($data) {
+	public function setData(array $data) {
 		$this->data = $data;
 	}
 
@@ -210,7 +221,8 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getTimestamp() {
+	public function getTimestamp(): int
+    {
 		return $this->timestamp;
 	}
 
@@ -218,11 +230,12 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @param int $timestamp
 	 */
-	public function setTimestamp($timestamp) {
+	public function setTimestamp(int $timestamp) {
 		$this->timestamp = $timestamp;
 	}
 
-	public static function logEvent($action, $obj_id, $data, $old_data = null) {
+	public static function logEvent($action, $obj_id, $data, $old_data = null): bool
+    {
 		$eventlog_data = array();
 
 		switch ($action) {
@@ -254,9 +267,11 @@ class xvmpEventLog extends ActiveRecord {
 		$eventLog->setTitle($data['title']);
 		$eventLog->setData($eventlog_data);
 		$eventLog->create();
+        return true;
 	}
 
-	public function create() {
+	public function create(): void
+    {
 		global $DIC;
 		$ilUser = $DIC['ilUser'];
 		$this->setTimestamp(time());

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -46,7 +49,7 @@ class xvmpObject {
 	 */
 	public static function getAll() {
 		$class_name = get_called_class();
-		if (!self::$cache_initialized[$class_name]) {
+		if (!isset(self::$cache_initialized[$class_name])) {
 			self::buildAllFromArray($class_name::getAllAsArray());
 		}
 		return self::$cache[$class_name] ?? [];

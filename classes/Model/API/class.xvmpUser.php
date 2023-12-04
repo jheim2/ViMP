@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -64,13 +67,11 @@ class xvmpUser extends xvmpObject {
 			case 0:
 				return false;
 			case 1:
-				$xvmpUser = self::getVimpUserById($response['users']['user']['uid']);
-				return $xvmpUser;
+				return self::getVimpUserById($response['users']['user']['uid']);
 			default:
 				foreach ($response['users']['user'] as $user) {
 					if ($user['username'] == $mapping) {
-						$xvmpUser = self::getVimpUserById($user['uid']);
-						return $xvmpUser;
+                        return self::getVimpUserById($user['uid']);
 					}
 				}
 				return false;
@@ -96,21 +97,20 @@ class xvmpUser extends xvmpObject {
 
 		if ($uid = $users['user']['uid']) {
 
-			$xvmpUser = self::getVimpUserById($uid);
-			return $xvmpUser;
+            return self::getVimpUserById($uid);
 		}
 
 		foreach ($users['user'] as $user) {
 			if ($user['email'] == $ilObjUser->getEmail()) {
-				$xvmpUser = self::getVimpUserById($user['uid']);
-				return $xvmpUser;
+                return self::getVimpUserById($user['uid']);
 			}
 		}
 
 		return false;
 	}
 
-	public static function getVimpUserById($uid) {
+	public static function getVimpUserById($uid): xvmpUser
+    {
 		$response = xvmpRequest::getUser($uid, array(
 			'roles' => 'true'
 		))->getResponseArray();
@@ -139,7 +139,7 @@ class xvmpUser extends xvmpObject {
 		if (isset($array['roles']['role']['id'])) {
 			$array['roles'] = array($array['roles']['role']['id'] => $array['roles']['role']['name']);
 		} else {
-			foreach ($array['roles']['role'] as $key => $value) {
+			foreach ($array['roles']['role'] as $value) {
 				$array['roles'][$value['id']] = $value['name'];
 			}
 			unset($array['roles']['role']);
@@ -155,11 +155,15 @@ class xvmpUser extends xvmpObject {
 	 *
 	 * @return integer $user_id
 	 */
-	public static function createShadowUser(ilObjUser $ilObjUser) {
+	public static function createShadowUser(ilObjUser $ilObjUser): int
+    {
+        $random = new \ilRandom();
+        $password = md5($random->int(1, 9999999) + str_replace(" ", "", microtime()));
+
 		$params = array(
 			'username' => self::getMappedUsername($ilObjUser),
 			'email' => $ilObjUser->getEmail(),
-			'password' => substr(ilUtil::randomhash(),0, 10),
+			'password' => substr($password,0, 10),
 		);
 		if ($firstname = $ilObjUser->getFirstname()) {
 			$params['firstname'] = $firstname;
@@ -187,7 +191,7 @@ class xvmpUser extends xvmpObject {
 
 		$mapping = is_array($mapping) ? $mapping : [];
 
-		if ($ilObjUser->getAuthMode(true) != AUTH_LOCAL) {
+		if ($ilObjUser->getAuthMode(true) != ilAuthUtils::AUTH_LOCAL) {
 			$mapping[$ilObjUser->getId()] = xvmpConf::getConfig(xvmpConf::F_USER_MAPPING_EXTERNAL);
 		} else {
 			$mapping[$ilObjUser->getId()] = xvmpConf::getConfig(xvmpConf::F_USER_MAPPING_LOCAL);
@@ -207,53 +211,54 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @var int
 	 */
-	protected $uid;
+	protected int $uid;
 	/**
 	 * @var String
 	 */
-	protected $status;
+	protected string $status;
 	/**
 	 * @var String
 	 */
-	protected $username;
+	protected string $username;
 	/**
 	 * @var String
 	 */
-	protected $email;
+	protected string $email;
 	/**
 	 * @var String
 	 */
-	protected $avatar;
+	protected string $avatar;
 	/**
 	 * @var String
 	 */
-	protected $cover;
+	protected string $cover;
 	/**
 	 * @var String
 	 */
-	protected $last_login_at;
+	protected string $last_login_at;
 	/**
 	 * @var String
 	 */
-	protected $last_access_at;
+	protected string $last_access_at;
 	/**
 	 * @var String
 	 */
-	protected $created_at;
+	protected string $created_at;
 	/**
 	 * @var String
 	 */
-	protected $updated_at;
+	protected string $updated_at;
 	/**
 	 * @var array
 	 */
-	protected $roles;
+	protected array $roles;
 
 
 	/**
 	 * @return int
 	 */
-	public function getUid() {
+	public function getUid(): int
+    {
 		return $this->uid;
 	}
 
@@ -261,7 +266,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param int $uid
 	 */
-	public function setUid($uid) {
+	public function setUid(int $uid) {
 		$this->uid = $uid;
 	}
 
@@ -269,7 +274,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getStatus() {
+	public function getStatus(): string
+    {
 		return $this->status;
 	}
 
@@ -277,7 +283,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param String $status
 	 */
-	public function setStatus($status) {
+	public function setStatus(string $status) {
 		$this->status = $status;
 	}
 
@@ -285,7 +291,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getUsername() {
+	public function getUsername(): string
+    {
 		return $this->username;
 	}
 
@@ -293,7 +300,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param String $username
 	 */
-	public function setUsername($username) {
+	public function setUsername(string $username) {
 		$this->username = $username;
 	}
 
@@ -301,7 +308,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getEmail() {
+	public function getEmail(): string
+    {
 		return $this->email;
 	}
 
@@ -309,7 +317,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param String $email
 	 */
-	public function setEmail($email) {
+	public function setEmail(string $email) {
 		$this->email = $email;
 	}
 
@@ -317,7 +325,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getAvatar() {
+	public function getAvatar(): string
+    {
 		return $this->avatar;
 	}
 
@@ -325,7 +334,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param String $avatar
 	 */
-	public function setAvatar($avatar) {
+	public function setAvatar(string $avatar) {
 		$this->avatar = $avatar;
 	}
 
@@ -333,7 +342,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getCover() {
+	public function getCover(): string
+    {
 		return $this->cover;
 	}
 
@@ -341,7 +351,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param String $cover
 	 */
-	public function setCover($cover) {
+	public function setCover(string $cover) {
 		$this->cover = $cover;
 	}
 
@@ -349,7 +359,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getLastLoginAt() {
+	public function getLastLoginAt(): string
+    {
 		return $this->last_login_at;
 	}
 
@@ -357,7 +368,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param String $last_login_at
 	 */
-	public function setLastLoginAt($last_login_at) {
+	public function setLastLoginAt(string $last_login_at) {
 		$this->last_login_at = $last_login_at;
 	}
 
@@ -365,7 +376,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getLastAccessAt() {
+	public function getLastAccessAt(): string
+    {
 		return $this->last_access_at;
 	}
 
@@ -373,7 +385,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param String $last_access_at
 	 */
-	public function setLastAccessAt($last_access_at) {
+	public function setLastAccessAt(string $last_access_at) {
 		$this->last_access_at = $last_access_at;
 	}
 
@@ -381,7 +393,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getCreatedAt() {
+	public function getCreatedAt(): string
+    {
 		return $this->created_at;
 	}
 
@@ -389,7 +402,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param String $created_at
 	 */
-	public function setCreatedAt($created_at) {
+	public function setCreatedAt(string $created_at) {
 		$this->created_at = $created_at;
 	}
 
@@ -397,7 +410,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getUpdatedAt() {
+	public function getUpdatedAt(): string
+    {
 		return $this->updated_at;
 	}
 
@@ -405,7 +419,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param String $updated_at
 	 */
-	public function setUpdatedAt($updated_at) {
+	public function setUpdatedAt(string $updated_at) {
 		$this->updated_at = $updated_at;
 	}
 
@@ -413,7 +427,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return int
 	 */
-	public function getId() {
+	public function getId(): int
+    {
 		return $this->getUid();
 	}
 
@@ -429,7 +444,8 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @return array
 	 */
-	public function getRoles() {
+	public function getRoles(): array
+    {
 		return $this->roles;
 	}
 
@@ -437,7 +453,7 @@ class xvmpUser extends xvmpObject {
 	/**
 	 * @param array $roles
 	 */
-	public function setRoles($roles) {
+	public function setRoles(array $roles) {
 		$this->roles = $roles;
 	}
 }

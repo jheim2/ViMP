@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 require_once('./Services/Logging/classes/class.ilLog.php');
 
@@ -13,7 +16,7 @@ class xvmpLog extends ilLog {
 	const LOG_TITLE = 'vimp.log';
 
 	/**
-	 * @var xoctLog
+	 * @var xvmpLog
 	 */
 	protected static $instance;
 

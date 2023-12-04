@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -20,7 +23,7 @@ class xvmpException extends Exception {
 	/**
 	 * @var array
 	 */
-	protected static $messages = array(
+	protected static array $messages = array(
 		self::API_CALL_UNSUPPORTED => 'This Api-Call is not supported',
 		self::API_CALL_STATUS_500 => 'An error occurred while communicating with the ViMP-Server',
 		self::API_CALL_STATUS_403 => 'Access denied',

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -43,10 +46,11 @@ class xvmpSettingsGUI extends xvmpGUI {
 		$xvmpSettingsFormGUI = new xvmpSettingsFormGUI($this);
 		$xvmpSettingsFormGUI->setValuesByPost();
 		if (!$xvmpSettingsFormGUI->saveForm()) {
-			ilUtil::sendFailure($this->pl->txt('msg_incomplete'));
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('msg_incomplete'));
 			$this->dic->ui()->mainTemplate()->setContent($xvmpSettingsFormGUI->getHTML());
 		}
-		ilUtil::sendSuccess($this->pl->txt('form_saved'), true);
+
+        $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('form_saved'));
 		$this->dic->ctrl()->redirect($this, self::CMD_STANDARD);
 	}
 

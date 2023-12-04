@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use ILIAS\DI\Container;
 use ILIAS\Filesystem\Exception\IOException;
 use ILIAS\FileUpload\Exception\IllegalStateException;
@@ -22,22 +24,24 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
     /**
      * @var array
      */
-    protected $data = [];
+    protected array $data = [];
     /**
      * @var xvmpUploadService
      */
-    protected $upload_service;
+    protected xvmpUploadService $upload_service;
 
     /**
      * xvmpVideoFormGUI constructor.
      * @param ilVimpPageComponentPluginGUI|xvmpOwnVideosGUI $parent_gui
+     * @throws Throwable
      */
     public function __construct($parent_gui)
     {
         global $DIC;
         $this->dic = $DIC;
         $this->upload_service = new xvmpUploadService($DIC->filesystem(), $DIC->upload());
-        $tmp_id = ilUtil::randomhash();
+        $random = new ilRandom();
+        $tmp_id = md5($random->int(1, 9999999) . str_replace(" ", "", microtime()));
         $this->dic->ctrl()->setParameter($parent_gui, 'tmp_id', $tmp_id);
         parent::__construct($parent_gui);
         $this->dic->ui()->mainTemplate()->addCss($this->pl->getAssetURL('default/form/video_form.css'));
@@ -67,7 +71,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
         foreach ($this->getSubtitleLanguages() as $lang_key) {
             $input = $this->getInput(xvmpMedium::F_SUBTITLES . '_' . $lang_key);
             if (is_array($input) && $input['error'] === 0) {
-                if (isset($this->medium) && isset($this->medium[xvmpMedium::F_SUBTITLES][$lang_key])) {
+                if (isset($this->medium[xvmpMedium::F_SUBTITLES][$lang_key])) {
                     // always remove subtitle first, because vimp doesn't correctly replace it
                     $this->removeSubtitle($lang_key);
                 }
@@ -112,7 +116,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
      * @throws ilWACException
      * @throws xvmpException
      */
-    protected function formatInput(string $post_var)
+    protected function formatInput(string $post_var): ?string
     {
         $value = $this->getInput($post_var);
         $tmp_id = filter_input(INPUT_GET, 'tmp_id', FILTER_SANITIZE_STRING);
@@ -154,7 +158,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
      * @param string $post_var
      * @return string|null
      */
-    protected function mapPostVarToMediumField(string $post_var)
+    protected function mapPostVarToMediumField(string $post_var): ?string
     {
         switch ($post_var) {
             case xvmpMedium::F_PUBLISHED:
@@ -195,7 +199,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
             $this->upload_service->cleanUp();
         } catch (Exception $e) {
             $this->dic->logger()->root()->logStack(ilLogLevel::ERROR, $e->getMessage());
-            ilUtil::sendFailure($e->getMessage(), true);
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $e->getMessage());
             $this->upload_service->cleanUp();
             return false;
         }
@@ -264,6 +268,9 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
         $this->addItem($input);
     }
 
+    /**
+     * @throws ilCtrlException
+     */
     protected function addFileInput(bool $required = true)
     {
         $input = new xvmpFileUploadInputGUI($this, xvmpOwnVideosGUI::CMD_CREATE, $this->lng->txt('file'),
@@ -354,7 +361,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
             } else {
                 $input = new ilTextInputGUI($title, $field[xvmpConf::F_FORM_FIELD_ID]);
             }
-            $input->setRequired($field[xvmpConf::F_FORM_FIELD_REQUIRED]);
+            $input->setRequired((bool)$field[xvmpConf::F_FORM_FIELD_REQUIRED]);
             $this->addItem($input);
         }
     }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -14,19 +17,19 @@ class xvmpUploadVideoFormGUI extends xvmpVideoFormGUI {
 	/**
 	 * @var ilLanguage
 	 */
-	protected $lng;
+	protected ilLanguage $lng;
 	/**
 	 * @var ilViMPPlugin
 	 */
-	protected $pl;
+	protected ilViMPPlugin $pl;
 	/**
 	 * @var xvmpOwnVideosGUI
 	 */
 	protected $parent_gui;
 	/**
-	 * @var ilObjUser
+	 * @var ?ilObjUser
 	 */
-	protected $user;
+	protected ?ilObjUser $user;
 
 
 	/**
@@ -48,9 +51,10 @@ class xvmpUploadVideoFormGUI extends xvmpVideoFormGUI {
 	}
 
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	protected function initForm() {
 		$this->setFormAction($this->ctrl->getFormAction($this->parent_gui));
 
@@ -106,8 +110,8 @@ class xvmpUploadVideoFormGUI extends xvmpVideoFormGUI {
             } else {
                 $input = new ilTextInputGUI($title, $field[xvmpConf::F_FORM_FIELD_ID]);
             }
-            $input->setRequired($field[xvmpConf::F_FORM_FIELD_REQUIRED]);
-            if ($field[xvmpConf::F_FORM_FIELD_FILL_USER_DATA]) {
+            $input->setRequired((bool)$field[xvmpConf::F_FORM_FIELD_REQUIRED]);
+            if (isset($field[xvmpConf::F_FORM_FIELD_FILL_USER_DATA])) {
                 $input->setValue($this->user->getFirstname() . ' ' . $this->user->getLastname());
             }
             $this->addItem($input);
@@ -173,6 +177,6 @@ class xvmpUploadVideoFormGUI extends xvmpVideoFormGUI {
      */
     protected function addCommandButtons() {
         $this->addCommandButton(xvmpOwnVideosGUI::CMD_CREATE, $this->lng->txt('save'));
-        $this->addCommandButton(xvmpOwnVideosGUI::CMD_CANCEL, $this->lng->txt(xvmpOwnVideosGUI::CMD_CANCEL));
+        $this->addCommandButton(xvmpGUI::CMD_CANCEL, $this->lng->txt(xvmpGUI::CMD_CANCEL));
     }
 }

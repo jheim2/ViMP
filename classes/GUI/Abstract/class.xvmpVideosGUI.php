@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use srag\Plugins\ViMP\UIComponents\Player\VideoPlayer;
@@ -29,9 +32,10 @@ abstract class xvmpVideosGUI extends xvmpGUI {
 	const TABLE_CLASS = '';
 
 
-	/**
-	 * @param $cmd
-	 */
+    /**
+     * @param $cmd
+     * @throws xvmpException|ilCtrlException
+     */
 	protected function performCommand($cmd) {
 		VideoPlayer::loadVideoJSAndCSS(false);
 
@@ -59,14 +63,15 @@ abstract class xvmpVideosGUI extends xvmpGUI {
 		parent::performCommand($cmd);
 	}
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	protected function setSubTabs() {
 		if (ilObjViMPAccess::hasWriteAccess()) {
-			$this->dic->tabs()->addSubTab(self::SUBTAB_SEARCH, $this->pl->txt(self::SUBTAB_SEARCH), $this->dic->ctrl()->getLinkTargetByClass(xvmpSearchVideosGUI::class, xvmpSearchVideosGUI::CMD_STANDARD));
-			$this->dic->tabs()->addSubTab(self::SUBTAB_SELECTED, $this->pl->txt(self::SUBTAB_SELECTED), $this->dic->ctrl()->getLinkTargetByClass(xvmpSelectedVideosGUI::class, xvmpSelectedVideosGUI::CMD_STANDARD));
-			$this->dic->tabs()->addSubTab(self::SUBTAB_OWN, $this->pl->txt(self::SUBTAB_OWN), $this->dic->ctrl()->getLinkTargetByClass(xvmpOwnVideosGUI::class, xvmpOwnVideosGUI::CMD_STANDARD));
+			$this->dic->tabs()->addSubTab(self::SUBTAB_SEARCH, $this->pl->txt(self::SUBTAB_SEARCH), $this->dic->ctrl()->getLinkTargetByClass(xvmpSearchVideosGUI::class, xvmpGUI::CMD_STANDARD));
+			$this->dic->tabs()->addSubTab(self::SUBTAB_SELECTED, $this->pl->txt(self::SUBTAB_SELECTED), $this->dic->ctrl()->getLinkTargetByClass(xvmpSelectedVideosGUI::class, xvmpGUI::CMD_STANDARD));
+			$this->dic->tabs()->addSubTab(self::SUBTAB_OWN, $this->pl->txt(self::SUBTAB_OWN), $this->dic->ctrl()->getLinkTargetByClass(xvmpOwnVideosGUI::class, xvmpGUI::CMD_STANDARD));
 		}
 	}
 
@@ -107,9 +112,10 @@ abstract class xvmpVideosGUI extends xvmpGUI {
 	}
 
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	public function applyFilter() {
 		$class_name = static::TABLE_CLASS;
 		/** @var xvmpTableGUI $table_gui */
@@ -120,9 +126,10 @@ abstract class xvmpVideosGUI extends xvmpGUI {
 	}
 
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	public function resetFilter() {
 		$class_name = static::TABLE_CLASS;
 		/** @var xvmpTableGUI $table_gui */
@@ -167,11 +174,10 @@ abstract class xvmpVideosGUI extends xvmpGUI {
 	}
 
 
-
-
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	protected function initUploadButton() {
 		$upload_button = ilLinkButton::getInstance();
 		$upload_button->setCaption($this->pl->txt('upload_video'), false);

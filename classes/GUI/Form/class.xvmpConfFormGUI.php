@@ -1,5 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
+
+use ILIAS\HTTP\Services;
 
 /**
  * Class xvmpConfFormGUI
@@ -17,14 +22,20 @@ class xvmpConfFormGUI extends xvmpFormGUI {
 	 */
 	protected $db;
 
-	/**
-	 * xvmpConfFormGUI constructor.
-	 *
-	 * @param $parent_gui
-	 */
+    protected Services $http;
+
+    /**
+     * xvmpConfFormGUI constructor.
+     *
+     * @param $parent_gui
+     * @throws ilCtrlException
+     */
 	public function __construct($parent_gui) {
 		global $DIC;
 		$tpl = $DIC['tpl'];
+        if (isset($DIC["http"])) {
+            $this->http = $DIC->http();
+        }
 		parent::__construct($parent_gui);
 
 		$this->db = $DIC['ilDB'];
@@ -33,8 +44,10 @@ class xvmpConfFormGUI extends xvmpFormGUI {
 
     /**
      *
+     * @throws ilCtrlException
      */
-    protected function initForm(){
+    protected function initForm()
+    {
 		$this->setFormAction($this->ctrl->getFormAction($this->parent_gui));
 
 		// *** API SETTINGS ***
@@ -94,9 +107,9 @@ class xvmpConfFormGUI extends xvmpFormGUI {
 		// Mapping Priority
 		$input = new ilRadioGroupInputGUI($this->pl->confTxt(xvmpConf::F_MAPPING_PRIORITY), xvmpConf::F_MAPPING_PRIORITY);
 		$input->setInfo($this->pl->confTxt(xvmpConf::F_MAPPING_PRIORITY . '_info'));
-		$opt = new ilRadioOption($this->pl->confTxt(xvmpConf::F_MAPPING_PRIORITY . '_' . xvmpConf::PRIORITIZE_EMAIL), xvmpConf::PRIORITIZE_EMAIL);
+		$opt = new ilRadioOption($this->pl->confTxt(xvmpConf::F_MAPPING_PRIORITY . '_' . xvmpConf::PRIORITIZE_EMAIL), (string) xvmpConf::PRIORITIZE_EMAIL);
 		$input->addOption($opt);
-		$opt = new ilRadioOption($this->pl->confTxt(xvmpConf::F_MAPPING_PRIORITY . '_' . xvmpConf::PRIORITIZE_MAPPING), xvmpConf::PRIORITIZE_MAPPING);
+		$opt = new ilRadioOption($this->pl->confTxt(xvmpConf::F_MAPPING_PRIORITY . '_' . xvmpConf::PRIORITIZE_MAPPING), (string) xvmpConf::PRIORITIZE_MAPPING);
 		$input->addOption($opt);
 		$this->addItem($input);
 
@@ -177,14 +190,14 @@ class xvmpConfFormGUI extends xvmpFormGUI {
 		$input = new ilRadioGroupInputGUI($this->pl->confTxt(xvmpConf::F_MEDIA_PERMISSIONS), xvmpConf::F_MEDIA_PERMISSIONS);
 		$input->setInfo($this->pl->confTxt(xvmpConf::F_MEDIA_PERMISSIONS . '_info'));
 
-		$radio_option = new ilRadioOption($this->lng->txt('no'), xvmpConf::MEDIA_PERMISSION_OFF);
+		$radio_option = new ilRadioOption($this->lng->txt('no'), (string) xvmpConf::MEDIA_PERMISSION_OFF);
         $radio_option->setInfo($this->pl->confTxt(xvmpConf::F_MEDIA_PERMISSIONS . '_' . xvmpConf::MEDIA_PERMISSION_OFF . '_info'));
 		$input->addOption($radio_option);
 
-		$radio_option = new ilRadioOption($this->pl->txt('all'), xvmpConf::MEDIA_PERMISSION_ON);
+		$radio_option = new ilRadioOption($this->pl->txt('all'), (string) xvmpConf::MEDIA_PERMISSION_ON);
 		$input->addOption($radio_option);
 
-		$radio_option = new ilRadioOption($this->pl->txt('selection'), xvmpConf::MEDIA_PERMISSION_SELECTION);
+		$radio_option = new ilRadioOption($this->pl->txt('selection'), (string) xvmpConf::MEDIA_PERMISSION_SELECTION);
 		$sub_selection = new ilMultiSelectSearchInputGUI('', xvmpConf::F_MEDIA_PERMISSIONS_SELECTION);
 		$options = $this->getMediaPermissionOptions();
 		$sub_selection->setOptions($options);
@@ -276,7 +289,8 @@ class xvmpConfFormGUI extends xvmpFormGUI {
     /**
      * @return array
      */
-    protected function getMediaPermissionOptions() {
+    protected function getMediaPermissionOptions(): array
+    {
 		$options = array();
 		if ($this->pl->hasConnection()) {
 			$roles = xvmpUserRoles::getAll();
@@ -399,9 +413,9 @@ class xvmpConfFormGUI extends xvmpFormGUI {
 			// remove empty value for multi input gui
 			if ($key == xvmpConf::F_FORM_FIELDS || $key == xvmpConf::F_FILTER_FIELDS) {
 				foreach ($value as $k => $v) {
-					if (!$v[xvmpConf::F_FORM_FIELD_ID] && !$v[xvmpConf::F_FILTER_FIELD_ID]) {
-						unset($value[$k]);
-					}
+                    if (!($v[xvmpConf::F_FORM_FIELD_ID] ?? null) && !($v[xvmpConf::F_FILTER_FIELD_ID] ?? null)) {
+                        unset($value[$k]);
+                    }
 				}
 			}
 
@@ -424,7 +438,8 @@ class xvmpConfFormGUI extends xvmpFormGUI {
 	/**
 	 * @return bool
 	 */
-	public function saveObject() {
+	public function saveObject(): bool
+    {
 		if (!$this->checkInput()) {
 			return false;
 		}
@@ -442,7 +457,8 @@ class xvmpConfFormGUI extends xvmpFormGUI {
 	 *
 	 * @return bool
 	 */
-	public static function checkForSubItem($item) {
+	public static function checkForSubItem($item): bool
+    {
 		return !$item instanceof ilFormSectionHeaderGUI AND !$item instanceof ilMultiSelectInputGUI;
 	}
 
@@ -452,7 +468,12 @@ class xvmpConfFormGUI extends xvmpFormGUI {
 	 *
 	 * @return bool
 	 */
-	public static function checkItem($item) {
-		return !$item instanceof ilFormSectionHeaderGUI;
+	public static function checkItem($item): bool
+    {
+		$return = !$item instanceof ilFormSectionHeaderGUI;
+        if (empty($item->getPostVar())) {
+            return false;
+        }
+        return $return;
 	}
 }

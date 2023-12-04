@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -11,12 +14,12 @@ class xvmpSelectedVideosTableGUI extends xvmpTableGUI {
 	const ROW_TEMPLATE = 'tpl.selected_videos_row.html';
 
 
-	protected $js_files = array('xvmp_selected_videos.js', 'sortable.js');
-	protected $css_files = array('xvmp_video_table.css');
+	protected array $js_files = array('xvmp_selected_videos.js', 'sortable.js');
+	protected array $css_files = array('xvmp_video_table.css');
 
 	const THUMBSIZE = '170x108';
 
-	protected $available_columns = array(
+	protected array $available_columns = array(
 		'thumbnail' => array(
 			'no_header' => true
 		),
@@ -40,7 +43,7 @@ class xvmpSelectedVideosTableGUI extends xvmpTableGUI {
 	/**
 	 * @var xvmpSelectedVideosGUI
 	 */
-	protected $parent_obj;
+	protected ?object $parent_obj;
 
 	/**
 	 * xvmpSelectedVideosTableGUI constructor.
@@ -74,12 +77,12 @@ class xvmpSelectedVideosTableGUI extends xvmpTableGUI {
     }
 
 	protected function initColumns() {
-		$this->addColumn('', '', 75, true);
-		$this->addColumn('', '', 210, true);
+		$this->addColumn('', '',  "75", true);
+		$this->addColumn('', '', "210", true);
 
 		parent::initColumns();
 
-		$this->addColumn('', '', 75, true);
+		$this->addColumn('', '', "75", true);
 	}
 
 
@@ -90,7 +93,8 @@ class xvmpSelectedVideosTableGUI extends xvmpTableGUI {
 	/**
 	 * @param xvmpObject $a_set
 	 */
-	protected function fillRow($a_set) {
+	protected function fillRow($a_set): void
+    {
 		$transcoded = ($a_set['status'] == 'legal');
         $transcoding = ($a_set['status'] === 'converting');
 
@@ -110,7 +114,7 @@ class xvmpSelectedVideosTableGUI extends xvmpTableGUI {
 		}
 
 		$this->ctrl->setParameter($this->parent_obj, 'mid', $a_set['mid']);
-		$this->tpl->setVariable('VAL_LINK_REMOVE', $this->ctrl->getLinkTarget($this->parent_obj, xvmpSelectedVideosGUI::CMD_REMOVE_VIDEO, '', true));
+		$this->tpl->setVariable('VAL_LINK_REMOVE', $this->ctrl->getLinkTarget($this->parent_obj, xvmpVideosGUI::CMD_REMOVE_VIDEO, '', true));
 
 		foreach ($this->available_columns as $title => $props)
 		{

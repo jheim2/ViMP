@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 class xvmpFileInputGUI extends ilFileInputGUI
 {
 
-    protected $download_url;
+    protected string $download_url;
 
     public function setDownloadUrl(string $download_url)
     {
@@ -12,21 +14,11 @@ class xvmpFileInputGUI extends ilFileInputGUI
 
     /**
      * Render html
+     * @throws ilTemplateException
      */
-    public function render($a_mode = "")
+    public function render($a_mode = ""): string
     {
         $lng = $this->lng;
-
-        $quota_exceeded = $quota_legend = false;
-        if (self::$check_wsp_quota) {
-            include_once "Services/DiskQuota/classes/class.ilDiskQuotaHandler.php";
-            if (!ilDiskQuotaHandler::isUploadPossible()) {
-                $lng->loadLanguageModule("file");
-                $quota_exceeded = $lng->txt("personal_workspace_quota_exceeded_warning");
-            } else {
-                $quota_legend = ilDiskQuotaHandler::getStatusLegend();
-            }
-        }
 
         $f_tpl = new ilTemplate("tpl.prop_file.html", true, true, "Services/Form");
 
@@ -40,7 +32,7 @@ class xvmpFileInputGUI extends ilFileInputGUI
             $f_tpl->setVAriable('TXT_FILENAME_HINT', $lng->txt('if_no_title_then_filename'));
             $f_tpl->parseCurrentBlock();
         } else {
-            if (trim($this->getValue() != "")) {
+            if (trim((string)$this->getValue())) {
                 if (!$this->getDisabled() && $this->getALlowDeletion()) {
                     $f_tpl->setCurrentBlock("delete_bl");
                     $f_tpl->setVariable("POST_VAR_D", $this->getPostVar());
@@ -71,27 +63,6 @@ class xvmpFileInputGUI extends ilFileInputGUI
             }
         }
 
-        if ($a_mode != "toolbar") {
-            if (!$quota_exceeded) {
-                $this->outputSuffixes($f_tpl);
-
-                $f_tpl->setCurrentBlock("max_size");
-                $f_tpl->setVariable("TXT_MAX_SIZE", $lng->txt("file_notice") . " " .
-                    $this->getMaxFileSizeString());
-                $f_tpl->parseCurrentBlock();
-
-                if ($quota_legend) {
-                    $f_tpl->setVariable("TXT_MAX_SIZE", $quota_legend);
-                    $f_tpl->parseCurrentBlock();
-                }
-            } else {
-                $f_tpl->setCurrentBlock("max_size");
-                $f_tpl->setVariable("TXT_MAX_SIZE", $quota_exceeded);
-                $f_tpl->parseCurrentBlock();
-            }
-        } elseif ($quota_exceeded) {
-            return $quota_exceeded;
-        }
 
         $pending = $this->getPending();
         if ($pending) {
@@ -101,7 +72,7 @@ class xvmpFileInputGUI extends ilFileInputGUI
             $f_tpl->parseCurrentBlock();
         }
 
-        if ($this->getDisabled() || $quota_exceeded) {
+        if ($this->getDisabled()) {
             $f_tpl->setVariable(
                 "DISABLED",
                 " disabled=\"disabled\""

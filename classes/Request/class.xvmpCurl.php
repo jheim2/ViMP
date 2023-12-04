@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -10,13 +13,12 @@ class xvmpCurl {
 
 	const FORMAT_JSON = 'json';
 
-	/**
-	 * xvmpCurl constructor.
-	 *
-	 * @param string $url
-	 * @param string $request_type
-	 */
-	public function __construct($url = '') {
+    /**
+     * xvmpCurl constructor.
+     *
+     * @param string $url
+     */
+	public function __construct(string $url = '') {
 		global $DIC;
 		$lng = $DIC['lng'];
 		self::$api_key = xvmpConf::getConfig(xvmpConf::F_API_KEY);
@@ -122,10 +124,10 @@ class xvmpCurl {
 		if ($resp_orig === false) {
 			$this->setResponseError(new xvmpCurlError($ch));
 		}
-		$this->setResponseBody($resp_orig);
-		$this->setResponseMimeType(curl_getinfo($ch, CURLINFO_CONTENT_TYPE));
-		$this->setResponseContentSize(curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD));
-		$this->setResponseStatus(curl_getinfo($ch, CURLINFO_HTTP_CODE));
+		$this->setResponseBody((string)$resp_orig);
+		$this->setResponseMimeType((string)curl_getinfo($ch, CURLINFO_CONTENT_TYPE));
+		$this->setResponseContentSize((string)curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD));
+		$this->setResponseStatus((int)curl_getinfo($ch, CURLINFO_HTTP_CODE));
 
 		$i = 1000;
 
@@ -136,7 +138,7 @@ class xvmpCurl {
 		xvmpCurlLog::getInstance()->write('CURLINFO_PRETRANSFER_TIME: ' . round(curl_getinfo($ch, CURLINFO_PRETRANSFER_TIME) * $i, 2) . ' ms', xvmpCurlLog::DEBUG_LEVEL_1);
 		xvmpCurlLog::getInstance()->write('CURLINFO_TOTAL_TIME: ' . round(curl_getinfo($ch, CURLINFO_TOTAL_TIME) * $i, 2) . ' ms', xvmpCurlLog::DEBUG_LEVEL_1);
 
-		if ($this->getResponseStatus() > 299 || is_array($this->getResponseArray()['errors'])) {
+		if ($this->getResponseStatus() > 299 || isset($this->getResponseArray()['errors']) && is_array($this->getResponseArray()['errors'])) {
 			xvmpCurlLog::getInstance()->write('ERROR ' . $this->getResponseStatus(), xvmpCurlLog::DEBUG_LEVEL_1);
 			xvmpCurlLog::getInstance()->write('Response:' . $resp_orig, xvmpCurlLog::DEBUG_LEVEL_3);
 
@@ -150,17 +152,13 @@ class xvmpCurl {
 			switch ($this->getResponseStatus()) {
 				case 403:
 					throw new xvmpException(xvmpException::API_CALL_STATUS_403, $error_msg);
-					break;
-				case 401:
+                case 401:
 					throw new xvmpException(xvmpException::API_CALL_BAD_CREDENTIALS);
-					break;
-				case 404:
+                case 404:
 					throw new xvmpException(xvmpException::API_CALL_STATUS_404, $error_msg);
-					break;
-				default:
+                default:
 					throw new xvmpException(xvmpException::API_CALL_STATUS_500, $error_msg);
-					break;
-			}
+            }
 		}
 
 		if (($this->getResponseStatus() == 0) && $this->getResponseError()->getErrorNr()) {
@@ -173,8 +171,7 @@ class xvmpCurl {
 	/**
 	 * @param $ch
 	 *
-	 * @throws xvmpException
-	 */
+     */
 	protected function preparePut($ch) {
 		if ($this->getPostFields()) {
 			$this->preparePost($ch);
@@ -224,9 +221,10 @@ class xvmpCurl {
 	}
 
 
-	/**
-	 * @param $ch
-	 */
+    /**
+     * @param $ch
+     * @throws xvmpException
+     */
 	protected function prepare($ch) {
 		switch ($this->getRequestType()) {
 			case self::REQ_TYPE_PUT:
@@ -246,55 +244,55 @@ class xvmpCurl {
 	/**
 	 * @var array
 	 */
-	protected $post_fields = array();
+	protected array $post_fields = array();
 	/**
 	 * @var int
 	 */
-	protected static $ssl_version = CURL_SSLVERSION_DEFAULT;
+	protected static int $ssl_version = CURL_SSLVERSION_DEFAULT;
 	/**
 	 * @var bool
 	 */
-	protected static $ip_v4 = false;
+	protected static bool $ip_v4 = false;
 	/**
 	 * @var string
 	 */
-	protected $url = '';
+	protected string $url = '';
 	/**
 	 * @var string
 	 */
-	protected $request_type = self::REQ_TYPE_GET;
+	protected string $request_type = self::REQ_TYPE_GET;
 	/**
 	 * @var array
 	 */
-	protected $headers = array();
+	protected array $headers = array();
 	/**
 	 * @var string
 	 */
-	protected $response_body = '';
+	protected string $response_body = '';
 	/**
 	 * @var string
 	 */
-	protected $response_mime_type = '';
+	protected string $response_mime_type = '';
 	/**
 	 * @var string
 	 */
-	protected $response_content_size = '';
+	protected string $response_content_size = '';
 	/**
 	 * @var int
 	 */
-	protected $response_status = 200;
+	protected int $response_status = 200;
 	/**
-	 * @var xvmpCurlError
+	 * @var ?xvmpCurlError
 	 */
-	protected $response_error = NULL;
-	/**
-	 * @var string
-	 */
-	protected $put_file_path = '';
+	protected ?xvmpCurlError $response_error = NULL;
 	/**
 	 * @var string
 	 */
-	protected $post_body = '';
+	protected string $put_file_path = '';
+	/**
+	 * @var string
+	 */
+	protected string $post_body = '';
 	/**
 	 * @var string
 	 */
@@ -302,11 +300,11 @@ class xvmpCurl {
 	/**
 	 * @var string
 	 */
-	protected static $username = '';
+	protected static string $username = '';
 	/**
 	 * @var string
 	 */
-	protected static $password = '';
+	protected static string $password = '';
 	/**
 	 * @var bool
 	 */
@@ -314,25 +312,26 @@ class xvmpCurl {
 	/**
 	 * @var bool
 	 */
-	protected static $verify_host = true;
+	protected static bool $verify_host = true;
 	/**
 	 * @var string
 	 */
-	protected $request_content_type = '';
+	protected string $request_content_type = '';
 	/**
 	 * @var
 	 */
-	protected $files = array();
+	protected array $files = array();
 	/**
 	 * @var integer
 	 */
-	protected $timeout_MS;
+	protected int $timeout_MS = 0;
 
 
 	/**
 	 * @return int
 	 */
-	public function getTimeoutMS() {
+	public function getTimeoutMS(): int
+    {
 		return $this->timeout_MS;
 	}
 
@@ -340,7 +339,7 @@ class xvmpCurl {
 	/**
 	 * @param int $timeout_MS
 	 */
-	public function setTimeoutMS($timeout_MS) {
+	public function setTimeoutMS(int $timeout_MS) {
 		$this->timeout_MS = $timeout_MS;
 	}
 
@@ -348,7 +347,8 @@ class xvmpCurl {
 	/**
 	 * @return array
 	 */
-	public function getPostFields() {
+	public function getPostFields(): array
+    {
 		return $this->post_fields;
 	}
 
@@ -356,7 +356,7 @@ class xvmpCurl {
 	/**
 	 * @param array $post_fields
 	 */
-	public function setPostFields($post_fields) {
+	public function setPostFields(array $post_fields) {
 		$this->post_fields = $post_fields;
 	}
 
@@ -372,7 +372,8 @@ class xvmpCurl {
 	/**
 	 * @return int
 	 */
-	public static function getSslVersion() {
+	public static function getSslVersion(): int
+    {
 		return self::$ssl_version;
 	}
 
@@ -380,7 +381,7 @@ class xvmpCurl {
 	/**
 	 * @param int $ssl_version
 	 */
-	public static function setSslVersion($ssl_version) {
+	public static function setSslVersion(int $ssl_version) {
 		self::$ssl_version = $ssl_version;
 	}
 
@@ -388,7 +389,8 @@ class xvmpCurl {
 	/**
 	 * @return bool
 	 */
-	public static function isIpV4() {
+	public static function isIpV4(): bool
+    {
 		return self::$ip_v4;
 	}
 
@@ -396,7 +398,7 @@ class xvmpCurl {
 	/**
 	 * @param bool $ip_v4
 	 */
-	public static function setIpV4($ip_v4) {
+	public static function setIpV4(bool $ip_v4) {
 		self::$ip_v4 = $ip_v4;
 	}
 
@@ -404,7 +406,8 @@ class xvmpCurl {
 	/**
 	 * @return string
 	 */
-	public function getUrl() {
+	public function getUrl(): string
+    {
 		return $this->url;
 	}
 
@@ -412,7 +415,7 @@ class xvmpCurl {
 	/**
 	 * @param string $url
 	 */
-	public function setUrl($url) {
+	public function setUrl(string $url) {
 		$this->url = $url;
 	}
 
@@ -420,7 +423,8 @@ class xvmpCurl {
 	/**
 	 * @return string
 	 */
-	public function getRequestType() {
+	public function getRequestType(): string
+    {
 		return $this->request_type;
 	}
 
@@ -428,7 +432,7 @@ class xvmpCurl {
 	/**
 	 * @param string $request_type
 	 */
-	public function setRequestType($request_type) {
+	public function setRequestType(string $request_type) {
 		$this->request_type = $request_type;
 	}
 
@@ -436,7 +440,8 @@ class xvmpCurl {
 	/**
 	 * @return array
 	 */
-	public function getHeaders() {
+	public function getHeaders(): array
+    {
 		return $this->headers;
 	}
 
@@ -444,7 +449,7 @@ class xvmpCurl {
 	/**
 	 * @param array $headers
 	 */
-	public function setHeaders($headers) {
+	public function setHeaders(array $headers) {
 		$this->headers = $headers;
 	}
 
@@ -458,7 +463,8 @@ class xvmpCurl {
 	/**
 	 * @return string
 	 */
-	public function getResponseBody() {
+	public function getResponseBody(): string
+    {
 		return $this->response_body;
 	}
 
@@ -466,7 +472,7 @@ class xvmpCurl {
 	/**
 	 * @param string $response_body
 	 */
-	public function setResponseBody($response_body) {
+	public function setResponseBody(string $response_body) {
 		$this->response_body = $response_body;
 	}
 
@@ -477,7 +483,8 @@ class xvmpCurl {
 	/**
 	 * @return string
 	 */
-	public function getResponseMimeType() {
+	public function getResponseMimeType(): string
+    {
 		return $this->response_mime_type;
 	}
 
@@ -485,7 +492,7 @@ class xvmpCurl {
 	/**
 	 * @param string $response_mime_type
 	 */
-	public function setResponseMimeType($response_mime_type) {
+	public function setResponseMimeType(string $response_mime_type) {
 		$this->response_mime_type = $response_mime_type;
 	}
 
@@ -493,7 +500,8 @@ class xvmpCurl {
 	/**
 	 * @return string
 	 */
-	public function getResponseContentSize() {
+	public function getResponseContentSize(): string
+    {
 		return $this->response_content_size;
 	}
 
@@ -501,7 +509,7 @@ class xvmpCurl {
 	/**
 	 * @param string $response_content_size
 	 */
-	public function setResponseContentSize($response_content_size) {
+	public function setResponseContentSize(string $response_content_size) {
 		$this->response_content_size = $response_content_size;
 	}
 
@@ -509,7 +517,8 @@ class xvmpCurl {
 	/**
 	 * @return int
 	 */
-	public function getResponseStatus() {
+	public function getResponseStatus(): int
+    {
 		return $this->response_status;
 	}
 
@@ -517,7 +526,7 @@ class xvmpCurl {
 	/**
 	 * @param int $response_status
 	 */
-	public function setResponseStatus($response_status) {
+	public function setResponseStatus(int $response_status) {
 		$this->response_status = $response_status;
 	}
 
@@ -525,7 +534,8 @@ class xvmpCurl {
 	/**
 	 * @return xvmpCurlError
 	 */
-	public function getResponseError() {
+	public function getResponseError(): ?xvmpCurlError
+    {
 		return $this->response_error;
 	}
 
@@ -533,7 +543,7 @@ class xvmpCurl {
 	/**
 	 * @param xvmpCurlError $response_error
 	 */
-	public function setResponseError($response_error) {
+	public function setResponseError(xvmpCurlError $response_error) {
 		$this->response_error = $response_error;
 	}
 
@@ -541,7 +551,8 @@ class xvmpCurl {
 	/**
 	 * @return string
 	 */
-	public function getPutFilePath() {
+	public function getPutFilePath(): string
+    {
 		return $this->put_file_path;
 	}
 
@@ -549,7 +560,7 @@ class xvmpCurl {
 	/**
 	 * @param string $put_file_path
 	 */
-	public function setPutFilePath($put_file_path) {
+	public function setPutFilePath(string $put_file_path) {
 		$this->put_file_path = $put_file_path;
 	}
 
@@ -557,7 +568,8 @@ class xvmpCurl {
 	/**
 	 * @return string
 	 */
-	public function getPostBody() {
+	public function getPostBody(): string
+    {
 		return $this->post_body;
 	}
 
@@ -565,7 +577,7 @@ class xvmpCurl {
 	/**
 	 * @param string $post_body
 	 */
-	public function setPostBody($post_body) {
+	public function setPostBody(string $post_body) {
 		$this->post_body = $post_body;
 	}
 
@@ -573,7 +585,8 @@ class xvmpCurl {
 	/**
 	 * @return string
 	 */
-	public static function getUsername() {
+	public static function getUsername(): string
+    {
 		return self::$username;
 	}
 
@@ -581,7 +594,7 @@ class xvmpCurl {
 	/**
 	 * @param string $username
 	 */
-	public static function setUsername($username) {
+	public static function setUsername(string $username) {
 		self::$username = $username;
 	}
 
@@ -589,7 +602,8 @@ class xvmpCurl {
 	/**
 	 * @return string
 	 */
-	public static function getPassword() {
+	public static function getPassword(): string
+    {
 		return self::$password;
 	}
 
@@ -597,7 +611,7 @@ class xvmpCurl {
 	/**
 	 * @param string $password
 	 */
-	public static function setPassword($password) {
+	public static function setPassword(string $password) {
 		self::$password = $password;
 	}
 
@@ -605,7 +619,8 @@ class xvmpCurl {
 	/**
 	 * @return bool
 	 */
-	public static function isVerifyPeer() {
+	public static function isVerifyPeer(): bool
+    {
 		return !xvmpConf::getConfig(xvmpConf::F_DISABLE_VERIFY_PEER);
 	}
 
@@ -613,7 +628,8 @@ class xvmpCurl {
 	/**
 	 * @return bool
 	 */
-	public static function isVerifyHost() {
+	public static function isVerifyHost(): bool
+    {
 		return self::$verify_host;
 	}
 
@@ -621,7 +637,7 @@ class xvmpCurl {
 	/**
 	 * @param bool $verify_host
 	 */
-	public static function setVerifyHost($verify_host) {
+	public static function setVerifyHost(bool $verify_host) {
 		self::$verify_host = $verify_host;
 	}
 
@@ -629,7 +645,8 @@ class xvmpCurl {
 	/**
 	 * @return string
 	 */
-	public function getRequestContentType() {
+	public function getRequestContentType(): string
+    {
 		return $this->request_content_type;
 	}
 
@@ -637,7 +654,7 @@ class xvmpCurl {
 	/**
 	 * @param string $request_content_type
 	 */
-	public function setRequestContentType($request_content_type) {
+	public function setRequestContentType(string $request_content_type) {
 		$this->request_content_type = $request_content_type;
 	}
 
@@ -645,7 +662,8 @@ class xvmpCurl {
 	/**
 	 * @return xvmpUploadFile[]
 	 */
-	public function getFiles() {
+	public function getFiles(): array
+    {
 		return $this->files;
 	}
 
@@ -653,7 +671,7 @@ class xvmpCurl {
 	/**
 	 * @param xvmpUploadFile[] $files
 	 */
-	public function setFiles($files) {
+	public function setFiles(array $files) {
 		$this->files = $files;
 	}
 

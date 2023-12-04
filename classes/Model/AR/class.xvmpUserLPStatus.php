@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -13,7 +16,8 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @return string
 	 */
-	static function returnDbTableName() {
+	static function returnDbTableName(): string
+    {
 		return self::TABLE_NAME;
 	}
 
@@ -26,7 +30,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	 * @db_is_primary   true
 	 * @db_sequence     true
 	 */
-	protected $id = 0;
+	protected ?int $id = 0;
 
 	/**
 	 * @var int
@@ -35,7 +39,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	 * @db_fieldtype    integer
 	 * @db_length       8
 	 */
-	protected $obj_id = 0;
+	protected int $obj_id = 0;
 
 	/**
 	 * @var int
@@ -44,7 +48,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	 * @db_fieldtype    integer
 	 * @db_length       8
 	 */
-	protected $user_id = 0;
+	protected int $user_id = 0;
 
 	/**
 	 * @var string
@@ -52,7 +56,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	 * @db_has_field    true
 	 * @db_fieldtype    timestamp
 	 */
-	protected $created_at;
+	protected string $created_at;
 
 	/**
 	 * @var string
@@ -60,7 +64,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	 * @db_has_field    true
 	 * @db_fieldtype    timestamp
 	 */
-	protected $updated_at;
+	protected string $updated_at;
 
 	/**
 	 * @var int
@@ -69,25 +73,26 @@ class xvmpUserLPStatus extends ActiveRecord {
 	 * @db_fieldtype    integer
 	 * @db_length       8
 	 */
-	protected $status = ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM;
+	protected int $status = ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM;
 
 
 
 	/**
 	 * @var bool
 	 */
-	protected $status_changed = false;
+	protected bool $status_changed = false;
 
 	/**
 	 * @var int
 	 */
-	protected $old_status;
+	protected int $old_status;
 
 
 	/**
 	 * @return int
 	 */
-	public function getId() {
+	public function getId(): int
+    {
 		return $this->id;
 	}
 
@@ -95,7 +100,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @param int $id
 	 */
-	public function setId($id) {
+	public function setId(int $id) {
 		$this->id = $id;
 	}
 
@@ -103,7 +108,8 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getObjId() {
+	public function getObjId(): int
+    {
 		return $this->obj_id;
 	}
 
@@ -111,7 +117,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @param int $obj_id
 	 */
-	public function setObjId($obj_id) {
+	public function setObjId(int $obj_id) {
 		$this->obj_id = $obj_id;
 	}
 
@@ -119,7 +125,8 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getUserId() {
+	public function getUserId(): int
+    {
 		return $this->user_id;
 	}
 
@@ -127,7 +134,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @param int $user_id
 	 */
-	public function setUserId($user_id) {
+	public function setUserId(int $user_id) {
 		$this->user_id = $user_id;
 	}
 
@@ -135,7 +142,8 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @return string
 	 */
-	public function getCreatedAt() {
+	public function getCreatedAt(): string
+    {
 		return $this->created_at;
 	}
 
@@ -143,7 +151,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @param string $created_at
 	 */
-	public function setCreatedAt($created_at) {
+	public function setCreatedAt(string $created_at) {
 		$this->created_at = $created_at;
 	}
 
@@ -151,7 +159,8 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @return string
 	 */
-	public function getUpdatedAt() {
+	public function getUpdatedAt(): string
+    {
 		return $this->updated_at;
 	}
 
@@ -159,7 +168,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @param string $updated_at
 	 */
-	public function setUpdatedAt($updated_at) {
+	public function setUpdatedAt(string $updated_at) {
 		$this->updated_at = $updated_at;
 	}
 
@@ -167,7 +176,8 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getStatus() {
+	public function getStatus(): int
+    {
 		return $this->status;
 	}
 
@@ -175,7 +185,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @param int $status
 	 */
-	public function setStatus($status) {
+	public function setStatus(int $status) {
 		if ($status != $this->status) {
 			$this->old_status = $this->status;
 			$this->status_changed = true;
@@ -187,7 +197,8 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @return bool
 	 */
-	public function hasStatusChanged() {
+	public function hasStatusChanged(): bool
+    {
 		return $this->status_changed;
 	}
 
@@ -195,7 +206,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @param bool $status_changed
 	 */
-	public function setStatusChanged($status_changed) {
+	public function setStatusChanged(bool $status_changed) {
 		$this->status_changed = $status_changed;
 	}
 
@@ -203,7 +214,8 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getOldStatus() {
+	public function getOldStatus(): int
+    {
 		return $this->old_status;
 	}
 
@@ -211,7 +223,7 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 * @param int $old_status
 	 */
-	public function setOldStatus($old_status) {
+	public function setOldStatus(int $old_status) {
 		$this->old_status = $old_status;
 	}
 
@@ -219,8 +231,8 @@ class xvmpUserLPStatus extends ActiveRecord {
 	/**
 	 *
 	 */
-	public function create()
-	{
+	public function create(): void
+    {
 		$this->created_at = date('Y-m-d H:i:s');
 		$this->updated_at = date('Y-m-d H:i:s');
 		parent::create();
@@ -240,12 +252,12 @@ class xvmpUserLPStatus extends ActiveRecord {
 	}
 
 	/**
-	 * @param $user_id
-	 * @param $obj_id
+	 * @param int $user_id
+	 * @param int $obj_id
 	 *
 	 * @return ActiveRecord|xvmpUserLPStatus
 	 */
-	public static function getInstance($user_id, $obj_id) {
+	public static function getInstance(int $user_id, int $obj_id) {
 		$xvmpUserLPStatus = xvmpUserLPStatus::where(array('user_id' => $user_id, 'obj_id' => $obj_id))->first();
 		if (!$xvmpUserLPStatus) {
 			$xvmpUserLPStatus = new self();
@@ -286,13 +298,13 @@ class xvmpUserLPStatus extends ActiveRecord {
 
 
     /**
-     * @param int  $id
+     * @param int $id
      * @param bool $is_ref_id
-     * @param int  $user_id
+     * @param int $user_id
      */
-	public static function updateLPStatuses($id = 0, $is_ref_id = true, $user_id = 0) {
+	public static function updateLPStatuses(int $id = 0, bool $is_ref_id = true, int $user_id = 0) {
 		if (!$id) {
-			$id = $_GET['ref_id'];
+			$id = (int) $_GET['ref_id'];
 		}
         $users = ($user_id > 0) ? [$user_id] : xvmp::getCourseMembers($id, $is_ref_id);
         foreach ($users as $usr_id) {

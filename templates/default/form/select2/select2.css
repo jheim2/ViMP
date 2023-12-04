@@ -638,6 +638,7 @@ disabled look for disabled choices in the results dropdown
 
 .select2-choices  {
     font-size: 90% !important;
+    min-width: 300px;
 }
 
 

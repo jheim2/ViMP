@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -39,7 +42,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function version()
+    public static function version(): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::VERSION);
         $xvmpCurl->setTimeoutMS(10000);
@@ -51,7 +54,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function getUserRoles()
+    public static function getUserRoles(): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::GET_USER_ROLES);
         $xvmpCurl->post();
@@ -63,7 +66,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function getCategories($params = array())
+    public static function getCategories(array $params = array()): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::GET_CATEGORIES);
         $xvmpCurl->post();
@@ -71,12 +74,12 @@ class xvmpRequest
     }
 
     /**
-     * @param int   $categoryid
+     * @param int $categoryid
      * @param array $params
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function getCategory($categoryid, $params = array())
+    public static function getCategory(int $categoryid, array $params = array()): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::GET_CATEGORY);
         $xvmpCurl->addPostField('categoryid', $categoryid);
@@ -101,7 +104,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function getMedia($params = array())
+    public static function getMedia(array $params = array()): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::GET_MEDIA);
         $params['filterbytype'] = self::TYPE_VIDEO;
@@ -118,12 +121,12 @@ class xvmpRequest
      * $chapters
      * $responsive
      * $language
-     * @param int   $mediumid
+     * @param int $mediumid
      * @param array $params
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function getMedium($mediumid, $params = array())
+    public static function getMedium(int $mediumid, array $params = array()): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::GET_MEDIUM);
         $params['mediumid'] = $mediumid;
@@ -157,12 +160,12 @@ class xvmpRequest
      * $tags
      * $categories
      * $mediapermissions
-     * @param int   $mediumid
+     * @param int $mediumid
      * @param array $params
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function editMedium($mediumid, $params)
+    public static function editMedium(int $mediumid, array $params): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::EDIT_MEDIUM);
         $params['mediumid'] = $mediumid;
@@ -186,7 +189,7 @@ class xvmpRequest
      * @throws xvmpException
      * @internal param $mediumid
      */
-    public static function uploadMedium($params)
+    public static function uploadMedium(array $params): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::UPLOAD_MEDIUM);
         $params['token'] = xvmp::getToken();
@@ -204,7 +207,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function deleteMedium($mediumid)
+    public static function deleteMedium(int $mediumid): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::DELETE_MEDIUM);
         $xvmpCurl->addPostField('token', xvmp::getToken());
@@ -219,7 +222,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function loginUser($username, $password)
+    public static function loginUser(string $username, string $password): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::LOGIN_USER);
         $xvmpCurl->addPostField('username', $username);
@@ -241,7 +244,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function getUsers($params = array())
+    public static function getUsers(array $params = array()): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::GET_USERS);
         foreach ($params as $name => $value) {
@@ -253,12 +256,12 @@ class xvmpRequest
     }
 
     /**
-     * @param int   $userid
+     * @param int $userid
      * @param array $params
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function getUser($userid, $params = array())
+    public static function getUser(int $userid, array $params = array()): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::GET_USER);
 
@@ -276,7 +279,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function registerUser($params)
+    public static function registerUser(array $params): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::REGISTER_USER);
         foreach ($params as $name => $value) {
@@ -288,11 +291,12 @@ class xvmpRequest
     }
 
     /**
-     * @param int   $user_id
+     * @param int $user_id
      * @param array $params
      * @return xvmpCurl
+     * @throws xvmpException
      */
-    public static function getUserMedia($user_id, $params = array())
+    public static function getUserMedia(int $user_id, array $params = array()): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::GET_USER_MEDIA);
         $xvmpCurl->addPostField('userid', $user_id);
@@ -310,7 +314,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function extendedSearch($params)
+    public static function extendedSearch(array $params): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::EXTENDED_SEARCH);
 
@@ -335,7 +339,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function getPicture($key)
+    public static function getPicture($key): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::GET_PICTURE);
 
@@ -355,7 +359,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function getVideoSources($key, $url)
+    public static function getVideoSources($key, string $url): xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::GET_VIDEOSOURCES);
 
@@ -380,7 +384,8 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-     public static function getChapters($key) {
+     public static function getChapters($key): xvmpCurl
+     {
         $xvmpCurl = new xvmpCurl(self::GET_CHAPTERS . $key . '?token=' . xvmp::getToken());
         $xvmpCurl->get();
         return $xvmpCurl;
@@ -393,7 +398,8 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-     public static function get($url) {
+     public static function get($url): xvmpCurl
+     {
         $xvmpCurl = new xvmpCurl($url);
         $xvmpCurl->get();
         return $xvmpCurl;
@@ -404,7 +410,7 @@ class xvmpRequest
      * @return xvmpCurl
      * @throws xvmpException
      */
-    public static function config($name) : xvmpCurl
+    public static function config(string $name) : xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::CONFIG);
 
@@ -418,6 +424,9 @@ class xvmpRequest
         return $xvmpCurl;
     }
 
+    /**
+     * @throws xvmpException
+     */
     public static function addSubtitle(int $mediumid, array $params) : xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::ADD_SUBTITLE);
@@ -432,6 +441,9 @@ class xvmpRequest
         return $xvmpCurl;
     }
 
+    /**
+     * @throws xvmpException
+     */
     public static function removeSubtitles(int $mediumid) : xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::REMOVE_SUBTITLES);
@@ -443,6 +455,9 @@ class xvmpRequest
         return $xvmpCurl;
     }
 
+    /**
+     * @throws xvmpException
+     */
     public static function removeSubtitle(int $mediumid, string $lang_code, string $lang_file) : xvmpCurl
     {
         $xvmpCurl = new xvmpCurl(self::REMOVE_SUBTITLE);
@@ -462,7 +477,7 @@ class xvmpRequest
     /**
      * @param int $mid
      * @param int $decimals
-     * @return string
+     * @return float
      * @throws xvmpException
      */
     public static function getTranscodingProgress(int $mid, int $decimals = 0) : float

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -23,7 +26,7 @@ class xvmpSettings extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected $obj_id;
+	protected ?int $obj_id;
 	/**
 	 * @var int
 	 *
@@ -31,7 +34,7 @@ class xvmpSettings extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           1
 	 */
-	protected $is_online = 0;
+	protected int $is_online = 0;
 	/**
 	 * @var int
 	 *
@@ -39,7 +42,7 @@ class xvmpSettings extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           2
 	 */
-	protected $layout_type = self::LAYOUT_TYPE_LIST;
+	protected int $layout_type = self::LAYOUT_TYPE_LIST;
 	/**
 	 * @var int
 	 *
@@ -47,7 +50,7 @@ class xvmpSettings extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           2
 	 */
-	protected $repository_preview = 0;
+	protected int $repository_preview = 0;
 	/**
 	 * @var int
 	 *
@@ -55,13 +58,14 @@ class xvmpSettings extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           1
 	 */
-	protected $lp_active = 0;
+	protected int $lp_active = 0;
 
 
 	/**
 	 * @return int
 	 */
-	public function getObjId() {
+	public function getObjId(): int
+    {
 		return $this->obj_id;
 	}
 
@@ -69,7 +73,7 @@ class xvmpSettings extends ActiveRecord {
 	/**
 	 * @param int $obj_id
 	 */
-	public function setObjId($obj_id) {
+	public function setObjId(int $obj_id) {
 		$this->obj_id = $obj_id;
 	}
 
@@ -77,7 +81,8 @@ class xvmpSettings extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getIsOnline() {
+	public function getIsOnline(): int
+    {
 		return $this->is_online;
 	}
 
@@ -85,7 +90,7 @@ class xvmpSettings extends ActiveRecord {
 	/**
 	 * @param int $is_online
 	 */
-	public function setIsOnline($is_online) {
+	public function setIsOnline(int $is_online) {
 		$this->is_online = $is_online;
 	}
 
@@ -94,7 +99,8 @@ class xvmpSettings extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getLayoutType() {
+	public function getLayoutType(): int
+    {
 		return $this->layout_type;
 	}
 
@@ -102,7 +108,7 @@ class xvmpSettings extends ActiveRecord {
 	/**
 	 * @param int $layout_type
 	 */
-	public function setLayoutType($layout_type) {
+	public function setLayoutType(int $layout_type) {
 		$this->layout_type = $layout_type;
 	}
 
@@ -110,7 +116,8 @@ class xvmpSettings extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getRepositoryPreview() {
+	public function getRepositoryPreview(): int
+    {
 		return $this->repository_preview;
 	}
 
@@ -118,15 +125,16 @@ class xvmpSettings extends ActiveRecord {
 	/**
 	 * @param int $repository_preview
 	 */
-	public function setRepositoryPreview($repository_preview) {
+	public function setRepositoryPreview(int $repository_preview) {
 		$this->repository_preview = $repository_preview;
 	}
 
 
 	/**
-	 * @return int
-	 */
-	public function getLpActive() {
+	 * @return bool
+     */
+	public function getLpActive(): bool
+    {
 		return $this->lp_active && xvmp::isLearningProgressPossible($this->getObjId());
 	}
 
@@ -134,12 +142,13 @@ class xvmpSettings extends ActiveRecord {
 	/**
 	 * @param int $lp_active
 	 */
-	public function setLpActive($lp_active) {
+	public function setLpActive(int $lp_active) {
 		$this->lp_active = $lp_active;
 	}
 
 
-	public static function returnDbTableName() {
+	public static function returnDbTableName(): string
+    {
 		return self::DB_TABLE_NAME;
 	}
 

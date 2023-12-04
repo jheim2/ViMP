@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -25,12 +28,13 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 	 * @param string $a_cmd
 	 * @param string $a_permission
 	 * @param int $a_ref_id
-	 * @param int $a_obj_id
-	 * @param string $a_user_id
+	 * @param int|null $a_obj_id
+	 * @param int $a_user_id
 	 *
 	 * @return bool
 	 */
-	public function _checkAccess($a_cmd, $a_permission, $a_ref_id, $a_obj_id = NULL, $a_user_id = '') {
+	public function _checkAccess(string $a_cmd, string $a_permission, int $a_ref_id, int $a_obj_id = NULL, $a_user_id = ''): bool
+    {
 		global $DIC;
 		$ilUser = $DIC['ilUser'];
 		$ilAccess = $DIC['ilAccess'];
@@ -46,7 +50,7 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 
 		switch ($a_permission) {
 			case 'read':
-				if (!self::checkOnline($a_obj_id) AND !$ilAccess->checkAccessOfUser($a_user_id, 'write', '', $a_ref_id)) {
+				if (!self::checkOnline($a_obj_id) AND !$ilAccess->checkAccessOfUser((int) $a_user_id, 'write', '', $a_ref_id)) {
 					return false;
 				}
 				break;
@@ -65,7 +69,8 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 	 *
 	 * @return bool
 	 */
-	public static function hasWriteAccess($ref_id = NULL) {
+	public static function hasWriteAccess($ref_id = NULL): bool
+    {
 		if ($ref_id === NULL) {
 			$ref_id = $_GET['ref_id'];
 		}
@@ -76,7 +81,7 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 		 * @var $ilAccess ilAccesshandler
 		 */
 
-		return $ilAccess->checkAccess('write', '', $ref_id);
+		return $ilAccess->checkAccess('write', '', (int) $ref_id);
 	}
 
 	/**
@@ -84,7 +89,8 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 	 *
 	 * @return bool
 	 */
-	public static function hasReadAccess($ref_id = NULL) {
+	public static function hasReadAccess($ref_id = NULL): bool
+    {
 		if ($ref_id === NULL) {
 			$ref_id = $_GET['ref_id'];
 		}
@@ -95,7 +101,7 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 		 * @var $ilAccess ilAccesshandler
 		 */
 
-		return $ilAccess->checkAccess('read', '', $ref_id);
+		return $ilAccess->checkAccess('read', '', (int) $ref_id);
 	}
 
 	/**
@@ -103,7 +109,8 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 	 *
 	 * @return bool
 	 */
-	public static function hasUploadPermission($ref_id = NULL) {
+	public static function hasUploadPermission($ref_id = NULL): bool
+    {
 		if ($ref_id === NULL) {
 			$ref_id = $_GET['ref_id'];
 		}
@@ -114,7 +121,7 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 		 * @var $ilAccess ilAccesshandler
 		 */
 
-		return $ilAccess->checkAccess('rep_robj_xvmp_perm_upload', '', $ref_id);
+		return $ilAccess->checkAccess('rep_robj_xvmp_perm_upload', '', (int) $ref_id);
 	}
 
 	/**
@@ -122,7 +129,8 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 	 *
 	 * @return bool
 	 */
-	public static function hasAccessToLink($ref_id = NULL) {
+	public static function hasAccessToLink($ref_id = NULL): bool
+    {
 		if ($ref_id === NULL) {
 			$ref_id = $_GET['ref_id'];
 		}
@@ -133,16 +141,16 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 		 * @var $ilAccess ilAccesshandler
 		 */
 
-		return $ilAccess->checkAccess('rep_robj_xvmp_perm_readlink', '', $ref_id);
+		return $ilAccess->checkAccess('rep_robj_xvmp_perm_readlink', '', (int) $ref_id);
 	}
 
 	/**
 	 * @param                 $action
-	 * @param xvmpGUI         $GUI
+	 * @param xvmpGUI $GUI
 	 * @param xvmpMedium|NULL $medium
 	 */
-	public static function checkAction($action, $GUI, xvmpMedium $medium = null) {
-		if (ilObject2::_lookupType($_GET['ref_id'], true) == 'xvmp') {
+	public static function checkAction($action, xvmpGUI $GUI, xvmpMedium $medium = null) {
+		if (ilObject2::_lookupType((int) $_GET['ref_id'], true) == 'xvmp') {
 			$context = self::CONTEXT_OBJECT;
 		} else {
 			$context = self::CONTEXT_PAGE_EDITOR;
@@ -163,7 +171,8 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 	 *
 	 * @return bool
 	 */
-	public static function isActionAllowed($action, $GUI, $context, xvmpMedium $medium = null) {
+	public static function isActionAllowed($action, $GUI, $context, xvmpMedium $medium = null): bool
+    {
 		switch ($action) {
 			case self::ACTION_PLAY_VIDEO:
 				if ($medium->isPublic() || $medium->isCurrentUserOwner()) {

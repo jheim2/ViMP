@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\DI\Container;
@@ -11,29 +14,30 @@ use ILIAS\DI\Container;
 abstract class xvmpFormGUI extends ilPropertyFormGUI {
 
 	/**
-	 * @var xvmpGUI
+	 * @var ilViMPConfigGUI
 	 */
 	protected $parent_gui;
 	/**
 	 * @var ilViMPPlugin
 	 */
-	protected $pl;
+	protected ilViMPPlugin $pl;
 	/**
 	 * @var ilCtrl
 	 */
-	protected $ctrl;
+	protected ilCtrl $ctrl;
 	/**
 	 * @var ilLanguage
 	 */
-	protected $lng;
+	protected ilLanguage $lng;
     /**
      * @var Container
      */
     protected $dic;
 
-	/**
-	 * xvmpFormGUI constructor.
-	 */
+    /**
+     * xvmpFormGUI constructor.
+     * @throws ilCtrlException
+     */
 	public function __construct($parent_gui) {
 		global $DIC;
 		$ilCtrl = $DIC['ilCtrl'];
@@ -44,6 +48,7 @@ abstract class xvmpFormGUI extends ilPropertyFormGUI {
 		$this->lng = $lng;
 		$this->dic = $DIC;
 
+        parent::__construct();
 		$this->setFormAction($this->ctrl->getFormAction($this->parent_gui));
 
 		$this->initForm();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Class xvmpChapters
  *
@@ -12,7 +14,8 @@ class xvmpChapters extends xvmpObject {
 	 *
 	 * @return array
 	 */
-	public static function getObjectAsArray($id) {
+	public static function getObjectAsArray($id): array
+    {
 		$key = self::class . '-' . $id;
 		$existing = xvmpCacheFactory::getInstance()->get($key);
 		if ($existing) {
@@ -47,17 +50,18 @@ class xvmpChapters extends xvmpObject {
 	/**
 	 * @var string
 	 */
-	protected $lang;
+	protected string $lang;
 	/**
 	 * @var array
 	 */
-	protected $chapters;
+	protected array $chapters;
 
 
 	/**
 	 * @return string
 	 */
-	public function getLang() {
+	public function getLang(): string
+    {
 		return $this->lang;
 	}
 
@@ -65,7 +69,8 @@ class xvmpChapters extends xvmpObject {
 	/**
 	 * @return array
 	 */
-	public function getChapters() {
+	public function getChapters(): array
+    {
 		return $this->chapters;
 	}
 

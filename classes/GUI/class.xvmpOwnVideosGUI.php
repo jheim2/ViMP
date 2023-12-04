@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -23,14 +26,6 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 	const CMD_CREATE = 'create';
 	const CMD_CONFIRMED_DELETE_VIDEO = 'confirmedDeleteVideo';
 	const CMD_UPLOAD_CHUNKS = 'uploadChunks';
-
-
-	/**
-	 *
-	 */
-	public function executeCommand() {
-		parent::executeCommand();
-	}
 
 
 	protected function performCommand($cmd) {
@@ -66,9 +61,10 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 	}
 
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	public function editVideo() {
 		$mid = $_GET['mid'];
 		$xvmpEditVideoFormGUI = new xvmpEditVideoFormGUI($this, $mid);
@@ -77,9 +73,11 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 	}
 
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     * @throws xvmpException
+     */
 	public function changeOwner() {
 		$mid = filter_input(INPUT_GET, 'mid');
 		$login = filter_input(INPUT_POST, 'login');
@@ -99,7 +97,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 			$this->dic->ui()->mainTemplate()->setContent($ilConfirmationGUI->getHTML());
 		} else {
 			if ($login && !$login_exists) {
-				ilUtil::sendFailure($this->pl->txt('msg_error_login_not_found'));
+                $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('msg_error_login_not_found'));
 			}
 			$xvmpChangeOwnerFormGUI = new xvmpChangeOwnerFormGUI($this, $mid);
 			$this->dic->ui()->mainTemplate()->setContent($xvmpChangeOwnerFormGUI->getHTML());
@@ -116,7 +114,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 
 		$medium = xvmpMedium::getObjectAsArray($mid);
 		if ($medium['uid'] !== xvmpUser::getVimpUser($this->dic->user())->getUid()) {
-			ilUtil::sendFailure($this->pl->txt('permission_denied'), true);
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('permission_denied'));
 			$this->dic->ctrl()->redirect($this, self::CMD_STANDARD);
 		}
 
@@ -131,7 +129,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 		}
 		$response = xvmpRequest::editMedium($mid, $edit_fields)->getResponseBody();
 		if ($response) {
-			ilUtil::sendSuccess($this->pl->txt('form_saved'), true);
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('info', $this->pl->txt('form_saved'));
 			xvmpCacheFactory::getInstance()->delete(xvmpMedium::class . '-' . $mid);
 			xvmpMedium::cache(xvmpMedium::class . '-' . $mid, $medium);
 			xvmpEventLog::logEvent(xvmpEventLog::ACTION_CHANGE_OWNER, $this->getObjId(), array(
@@ -147,7 +145,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 				$xvmpUploadedMedia->update();
 			}
 		} else {
-			ilUtil::sendFailure($this->pl->txt('failure'));
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('failure'));
 		}
 
 		$this->dic->ctrl()->redirect($this, self::CMD_STANDARD);
@@ -160,10 +158,10 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 		$xvmpEditVideoFormGUI = new xvmpEditVideoFormGUI($this, $_POST['mid']);
 		$xvmpEditVideoFormGUI->setValuesByPost();
 		if ($xvmpEditVideoFormGUI->saveForm()) {
-			ilUtil::sendSuccess($this->pl->txt('form_saved'), true);
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('info', $this->pl->txt('form_saved'));
 			$this->dic->ctrl()->redirect($this, self::CMD_STANDARD);
 		}
-		ilUtil::sendFailure($this->pl->txt('msg_incomplete'));
+        $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('msg_incomplete'));
 		$this->dic->ui()->mainTemplate()->setContent($xvmpEditVideoFormGUI->getHTML());
 	}
 
@@ -184,11 +182,11 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 		$xvmpEditVideoFormGUI = new xvmpUploadVideoFormGUI($this);
 		$xvmpEditVideoFormGUI->setValuesByPost();
 		if ($xvmpEditVideoFormGUI->saveForm()) {
-			ilUtil::sendSuccess($this->pl->txt('video_uploaded'), true);
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('video_uploaded'));
 			$this->dic->ctrl()->redirect($this, self::CMD_STANDARD);
 		}
 
-		ilUtil::sendFailure($this->pl->txt('form_incomplete'));
+        $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('form_incomplete'));
 		$xvmpEditVideoFormGUI->setValuesByPost();
 		$this->dic->ui()->mainTemplate()->setContent($xvmpEditVideoFormGUI->getHTML());
 	}
@@ -223,7 +221,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 
 		xvmpEventLog::logEvent(xvmpEventLog::ACTION_DELETE, $this->getObjId(), $video);
 
-		ilUtil::sendSuccess($this->pl->txt('video_deleted'), true);
+        $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('video_deleted'));
 		$this->dic->ctrl()->redirect($this, self::CMD_STANDARD);
 	}
 
@@ -235,9 +233,9 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 		$xoctPlupload = new xoctPlupload();
 		$tmp_id = filter_input(INPUT_GET, 'tmp_id', FILTER_SANITIZE_STRING);
 
-		$dir = ILIAS_ABSOLUTE_PATH  . ltrim(ilUtil::getWebspaceDir(), '.') . '/vimp/' . $tmp_id;
+		$dir = ILIAS_ABSOLUTE_PATH  . ltrim(ilFileUtils::getWebspaceDir(), '.') . '/vimp/' . $tmp_id;
 		if (!is_dir($dir)) {
-			ilUtil::makeDir($dir);
+            ilFileUtils::makeDir($dir);
 		}
 
 		$xoctPlupload->setTargetDir($dir);

@@ -72,7 +72,7 @@ class ViMPJob extends ilCronJob
     /**
      * @inheritDoc
      */
-    public function getDefaultScheduleValue()/* : ?int*/
+    public function getDefaultScheduleValue(): ?int
     {
         return 1;
     }

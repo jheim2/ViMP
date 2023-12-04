@@ -11,7 +11,7 @@ var VimpConfig = {
 
 		$.ajax({
 			url: ajax_url,
-			type: "GET",
+			type: "POST",
 			data: "apikey=" + api_key + "&apiurl=" + api_url
 			// timeout: 5000
 		}).always(function(data, textStatus, jqXHR) {

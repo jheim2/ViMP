@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -9,25 +12,26 @@
 class xvmpChangeOwnerFormGUI extends xvmpFormGUI {
 
 	/**
-	 * @var
-	 */
-	protected $mid;
+	 * @var int
+     */
+	protected int $mid;
 	/**
 	 * @var mixed
 	 */
-	protected $global_tpl;
+	protected ?ilGlobalTemplateInterface $global_tpl;
 	/**
 	 * @var xvmpOwnVideosGUI
 	 */
 	protected $parent_gui;
 
 
-	/**
-	 * xvmpChangeOwnerFormGUI constructor.
-	 *
-	 * @param $parent_gui xvmpOwnVideosGUI
-	 * @param $mid
-	 */
+    /**
+     * xvmpChangeOwnerFormGUI constructor.
+     *
+     * @param $parent_gui xvmpOwnVideosGUI
+     * @param $mid
+     * @throws ilCtrlException
+     */
 	public function __construct($parent_gui, $mid) {
 		global $DIC;
 		$this->global_tpl = $DIC['tpl'];
@@ -39,13 +43,14 @@ class xvmpChangeOwnerFormGUI extends xvmpFormGUI {
 		$this->ctrl->setParameterByClass(xvmpOwnVideosGUI::class, 'mid', $this->mid);
 		$this->setFormAction($this->ctrl->getFormAction($this->parent_gui));
 		$this->addCommandButton(xvmpOwnVideosGUI::CMD_CHANGE_OWNER, $this->lng->txt('save'));
-		$this->addCommandButton(xvmpOwnVideosGUI::CMD_STANDARD,$this->lng->txt('cancel'));
+		$this->addCommandButton(xvmpGUI::CMD_STANDARD,$this->lng->txt('cancel'));
 	}
 
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	protected function initForm() {
 		$input = new ilTextInputGUI($this->pl->txt('username'), 'login');
 		$input->setRequired(true);

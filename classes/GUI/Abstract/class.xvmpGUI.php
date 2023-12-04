@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\DI\Container;
@@ -24,11 +27,11 @@ abstract class xvmpGUI {
     /**
 	 * @var ilObjViMPGUI
 	 */
-	protected $parent_gui;
+	protected ilObjViMPGUI $parent_gui;
 	/**
 	 * @var ilViMPPlugin
 	 */
-	protected $pl;
+	protected ilViMPPlugin $pl;
     /**
      * @var Container
      */
@@ -36,11 +39,11 @@ abstract class xvmpGUI {
     /**
      * @var Factory
      */
-	protected $renderer_factory;
+	protected Factory $renderer_factory;
     /**
      * @var MediumMetadataDTOBuilder
      */
-	protected $metadata_builder;
+	protected MediumMetadataDTOBuilder $metadata_builder;
 
 
 	/**
@@ -79,7 +82,7 @@ abstract class xvmpGUI {
     /**
      * @param xvmpMedium $medium
      * @return PlayerContainerDTO
-     * @throws xvmpException
+     * @throws xvmpException|ilCtrlException
      */
     public function buildPlayerContainerDTO(xvmpMedium $medium) : PlayerContainerDTO
     {
@@ -123,7 +126,7 @@ abstract class xvmpGUI {
     public function buildPermLinkUI(xvmpMedium $video) : array
     {
         $link_tpl = ilLink::_getStaticLink(
-            $this->parent_gui->ref_id,
+            $this->parent_gui->getRefId(),
             $this->parent_gui->getType(),
             true,
             '_' . $video->getMid() . '_0'
@@ -135,7 +138,7 @@ abstract class xvmpGUI {
         if (!xvmpConf::getConfig(xvmpConf::F_EMBED_PLAYER)) {
             $items[] = $this->dic->ui()->factory()->button()->shy($this->pl->txt('btn_copy_link_w_time'),
                 '')->withOnClick($popover->getShowSignal())->withOnLoadCode(function ($id) use ($link_tpl) {
-                return "document.getElementById('{$id}').addEventListener('click', () => VimpContent.copyDirectLinkWithTime('{$link_tpl}'));";
+                return "document.getElementById('$id').addEventListener('click', () => VimpContent.copyDirectLinkWithTime('$link_tpl'));";
             });
         }
         return [
@@ -153,8 +156,8 @@ abstract class xvmpGUI {
      * @param xvmpMedium $video
      * @return ILIAS\UI\Component\Component[]
      */
-	public function buildCopiableVideoLinkUI($video)
-	{
+	public function buildCopiableVideoLinkUI(xvmpMedium $video): array
+    {
 		$medium = $video->getMedium();
 		if (is_array($medium)){
 			$medium = $medium[0];
@@ -163,7 +166,7 @@ abstract class xvmpGUI {
 		if(ilObjViMPAccess::hasAccessToLink()){
 			$link_container = '<div class="ilPermalinkContainer input-group" id ="link_container">'.
 					'<input class="form-control" readonly="readonly" id="video_url" type="text"'.
-					'value="' .$medium .'"'.
+					' value="' .$medium .'"'.
 					' onclick="return false;">'.
 					'<span class="input-group-btn">	<div class="btn-group"><button type="button" class="btn btn-default" id="copy_video_url">'.
 					'<span class="sr-only">Copy to clipboard</span><span class="glyphicon glyphicon-copy"></span></button></div></span></div>';
@@ -181,8 +184,9 @@ abstract class xvmpGUI {
 	}
 
     /**
-	 *
-	 */
+     *
+     * @throws ilCtrlException
+     */
 	public function executeCommand() {
 		if (!$this->dic->ctrl()->isAsynch()) {
 			$this->dic->tabs()->activateTab(static::TAB_ACTIVE);
@@ -226,9 +230,10 @@ abstract class xvmpGUI {
 		ilTooltipGUI::addTooltip('xvmp_flush_video_cache', $this->pl->txt('flush_video_cache_tooltip'));
 	}
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	public function flushCache() {
 //		xvmpCacheFactory::getInstance()->flush();
 		foreach (xvmpSelectedMedia::getSelected($this->getObjId()) as $selected) {
@@ -244,41 +249,46 @@ abstract class xvmpGUI {
 	abstract protected function index();
 
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	protected function cancel() {
 		$this->dic->ctrl()->redirect($this, self::CMD_STANDARD);
 	}
 
 
 	/**
-	 * @return ilObjViMP
-	 */
-	public function getObject() {
-		return $this->parent_gui->object;
+	 * @return ilObject
+     */
+	public function getObject(): ilObject
+    {
+		return $this->parent_gui->getObject();
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getObjId() {
-		return $this->parent_gui->obj_id;
+	public function getObjId(): int
+    {
+		return $this->parent_gui->getObject()->getId();
 	}
 
 
-	/**
-	 * called by ilObjViMPAccess
-	 */
+    /**
+     * called by ilObjViMPAccess
+     * @throws ilCtrlException
+     */
 	public function accessDenied() {
-		ilUtil::sendFailure($this->pl->txt('access_denied'), true);
+        $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('access_denied'));
 		$this->dic->ctrl()->redirect($this->parent_gui, ilObjViMPGUI::CMD_SHOW_CONTENT);
 	}
 
 		/**
 	 * @return ilModalGUI
 	 */
-	public static function getModalPlayer() {
+	public static function getModalPlayer(): ilModalGUI
+    {
 		global $tpl;
 		$tpl->addCss(ilViMPPlugin::getInstance()->getAssetURL('default/modal.css'));
 		$modal = ilModalGUI::getInstance();
@@ -332,7 +342,8 @@ abstract class xvmpGUI {
      * @throws ilTemplateException
      * @throws xvmpException
      */
-	public function fillModalPlayer($play_video_id = null, bool $async = true) {
+	public function fillModalPlayer($play_video_id = null, bool $async = true): stdClass
+    {
 		$mid = $play_video_id ?? $_GET['mid'];
 		$video = xvmpMedium::find($mid);
         $playModalDto = $this->buildPlayerContainerDTO($video);
@@ -351,7 +362,7 @@ abstract class xvmpGUI {
 		} else {
 			$response->time_ranges = array();
 		}
-		if ($async == true) {
+		if ($async) {
             echo json_encode($response);
             exit;
         } else {
@@ -359,7 +370,10 @@ abstract class xvmpGUI {
         }
 	}
 
-	protected function downloadMedium()
+    /**
+     * @throws xvmpException
+     */
+    protected function downloadMedium()
     {
         $mid = filter_input(INPUT_GET, 'mid', FILTER_VALIDATE_INT);
         $video = xvmpMedium::find($mid);
@@ -368,11 +382,12 @@ abstract class xvmpGUI {
     }
 
 
-	/**
-	 * ajax
-	 */
+    /**
+     * ajax
+     * @throws xvmpException
+     */
 	public function updateProgress() {
-		$mid = $_POST[xvmpMedium::F_MID];
+		$mid = (int) $_POST[xvmpMedium::F_MID];
 		$ranges = $_POST[xvmpUserProgress::F_RANGES];
 		xvmpUserProgress::storeProgress($this->dic->user()->getid(), $mid, $ranges);
 		echo "ok";

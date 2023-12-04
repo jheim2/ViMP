@@ -1,6 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
-use srag\DIC\ViMP\DICTrait;
 
 /**
  * Class xvmpCron
@@ -8,7 +10,6 @@ use srag\DIC\ViMP\DICTrait;
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class xvmpCron {
-    use DICTrait;
 	const DEBUG = false;
 	/**
 	 * @var Ilias
@@ -17,7 +18,7 @@ class xvmpCron {
 	/**
 	 * @var ilViMPPlugin
 	 */
-	protected $pl;
+	protected ilViMPPlugin $pl;
 
 
 	/**
@@ -72,7 +73,6 @@ class xvmpCron {
                             $uploaded_medium->delete();
                             break;
                         case "uploaded":
-                            break;
                         case "converting":
                             break;
                         default:
@@ -88,12 +88,12 @@ class xvmpCron {
 		}
 
 		// delete abandoned uploads (older than 24 hours)
-        $path = ilUtil::getWebspaceDir() . '/vimp';
+        $path = ilFileUtils::getWebspaceDir() . '/vimp';
         if (is_dir($path)) {
             foreach (new DirectoryIterator($path) as $directory) {
                 if (!$directory->isDot()) {
                     if ((time() - $directory->getCTime()) > (24 * 60 * 60)) {
-                        ilUtil::delDir($directory->getPathname());
+                        ilFileUtils::delDir($directory->getPathname());
                     }
                 }
             }
@@ -101,10 +101,11 @@ class xvmpCron {
 	}
 
 
-	/**
-	 * @param xvmpMedium        $medium
-	 * @param xvmpUploadedMedia $uploaded_medium
-	 */
+    /**
+     * @param xvmpMedium $medium
+     * @param xvmpUploadedMedia $uploaded_medium
+     * @param $transcoding_succeeded
+     */
 	protected function sendNotification(xvmpMedium $medium, xvmpUploadedMedia $uploaded_medium, $transcoding_succeeded) {
 		$subject = xvmpConf::getConfig($transcoding_succeeded ? xvmpConf::F_NOTIFICATION_SUBJECT_SUCCESSFULL : xvmpConf::F_NOTIFICATION_SUBJECT_FAILED);
 		$body = xvmpConf::getConfig($transcoding_succeeded ? xvmpConf::F_NOTIFICATION_BODY_SUCCESSFULL : xvmpConf::F_NOTIFICATION_BODY_FAILED);
@@ -128,29 +129,15 @@ class xvmpCron {
 
 		// send mail
 		$notification = new ilMail(ANONYMOUS_USER_ID);
-        if (self::version()->is6()) {
-            $notification->sendMail(
-                $ilObjUser->getLogin(),
-                '',
-                '',
-                $subject,
-                $body,
-                array(),
-                true
-            );
-        } else {
-		$notification->sendMail(
-			$ilObjUser->getLogin(),
-			'',
-			'',
-			$subject,
-			$body,
-			array(),
-			array('normal'),
-			1
-		);
-		}
-
+        $notification->sendMail(
+            $ilObjUser->getLogin(),
+            '',
+            '',
+            $subject,
+            $body,
+            array(),
+            true
+        );
 //		xvmpLog::getInstance()->write('Notification sent to user: ' . ilObjUser::_lookupLogin($uploaded_medium->getUserId()) . ' (' . $uploaded_medium->getUserId() . ')');
 	}
 }

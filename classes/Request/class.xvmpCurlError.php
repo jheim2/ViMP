@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -10,7 +13,7 @@ class xvmpCurlError {
 	/**
 	 * @var array
 	 */
-	protected static $error_codes = array(
+	protected static array $error_codes = array(
 		1 => 'CURLE_UNSUPPORTED_PROTOCOL',
 		2 => 'CURLE_FAILED_INIT',
 		3 => 'CURLE_URL_MALFORMAT',
@@ -83,7 +86,6 @@ class xvmpCurlError {
 		82 => 'CURLE_SSL_CRL_BADFILE',
 		83 => 'CURLE_SSL_ISSUER_ERROR',
 		84 => 'CURLE_FTP_PRET_FAILED',
-		84 => 'CURLE_FTP_PRET_FAILED',
 		85 => 'CURLE_RTSP_CSEQ_ERROR',
 		86 => 'CURLE_RTSP_SESSION_ERROR',
 		87 => 'CURLE_FTP_BAD_FILE_LIST',
@@ -103,7 +105,8 @@ class xvmpCurlError {
 	/**
 	 * @return string
 	 */
-	public function getMessage() {
+	public function getMessage(): string
+    {
 		return $this->getErrorText() . ' (' . self::$error_codes[$this->getErrorNr()] . ')';
 	}
 
@@ -111,17 +114,18 @@ class xvmpCurlError {
 	/**
 	 * @var int
 	 */
-	protected $error_nr = 0;
+	protected int $error_nr = 0;
 	/**
 	 * @var string
 	 */
-	protected $error_text = '';
+	protected string $error_text = '';
 
 
 	/**
 	 * @return int
 	 */
-	public function getErrorNr() {
+	public function getErrorNr(): int
+    {
 		return $this->error_nr;
 	}
 
@@ -129,7 +133,7 @@ class xvmpCurlError {
 	/**
 	 * @param int $error_nr
 	 */
-	public function setErrorNr($error_nr) {
+	public function setErrorNr(int $error_nr) {
 		$this->error_nr = $error_nr;
 	}
 
@@ -137,7 +141,8 @@ class xvmpCurlError {
 	/**
 	 * @return string
 	 */
-	public function getErrorText() {
+	public function getErrorText(): string
+    {
 		return $this->error_text;
 	}
 
@@ -145,7 +150,7 @@ class xvmpCurlError {
 	/**
 	 * @param string $error_text
 	 */
-	public function setErrorText($error_text) {
+	public function setErrorText(string $error_text) {
 		$this->error_text = $error_text;
 	}
 }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -11,16 +14,18 @@ class xvmpUserRoles extends xvmpObject {
     const ROLE_ANONYMOUS = 0;
     const ROLE_ADMINISTRATOR = 1;
 
-	/**
-	 * @inheritdoc
-	 */
+    /**
+     * @inheritdoc
+     * @throws xvmpException
+     */
 	public static function find($id) {
 		return self::getAllAsArray()[$id];
 	}
 
-	/**
-	 * @inheritdoc
-	 */
+    /**
+     * @inheritdoc
+     * @throws xvmpException
+     */
 	public static function getAllAsArray() {
 		$existing = xvmpCacheFactory::getInstance()->get(self::class);
 		if ($existing) {
@@ -58,37 +63,38 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @var String
 	 */
-	protected $status;
+	protected string $status;
 	/**
 	 * @var String
 	 */
-	protected $name;
+	protected string $name;
 	/**
 	 * @var String
 	 */
-	protected $description;
+	protected ?string $description;
 	/**
 	 * @var bool
 	 */
-	protected $visible;
+	protected bool $visible;
 	/**
 	 * @var bool
 	 */
-	protected $default;
+	protected bool $default;
 	/**
 	 * @var String
 	 */
-	protected $created_at;
+	protected string $created_at;
 	/**
 	 * @var String
 	 */
-	protected $updated_at;
+	protected string $updated_at;
 
 
 	/**
 	 * @return String
 	 */
-	public function getStatus() {
+	public function getStatus(): string
+    {
 		return $this->status;
 	}
 
@@ -96,7 +102,7 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @param String $status
 	 */
-	public function setStatus($status) {
+	public function setStatus(string $status) {
 		$this->status = $status;
 	}
 
@@ -104,7 +110,8 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getName() {
+	public function getName(): string
+    {
 		return $this->name;
 	}
 
@@ -112,7 +119,7 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @param String $name
 	 */
-	public function setName($name) {
+	public function setName(string $name) {
 		$this->name = $name;
 	}
 
@@ -120,7 +127,8 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getDescription() {
+	public function getDescription(): string
+    {
 		return $this->description;
 	}
 
@@ -128,7 +136,7 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @param String $description
 	 */
-	public function setDescription($description) {
+	public function setDescription(string $description) {
 		$this->description = $description;
 	}
 
@@ -136,7 +144,8 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @return bool
 	 */
-	public function isVisible() {
+	public function isVisible(): bool
+    {
 		return $this->visible;
 	}
 
@@ -144,7 +153,7 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @param bool $visible
 	 */
-	public function setVisible($visible) {
+	public function setVisible(bool $visible) {
 		$this->visible = $visible;
 	}
 
@@ -152,7 +161,8 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @return bool
 	 */
-	public function isDefault() {
+	public function isDefault(): bool
+    {
 		return $this->default;
 	}
 
@@ -160,7 +170,7 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @param bool $default
 	 */
-	public function setDefault($default) {
+	public function setDefault(bool $default) {
 		$this->default = $default;
 	}
 
@@ -168,7 +178,8 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getCreatedAt() {
+	public function getCreatedAt(): string
+    {
 		return $this->created_at;
 	}
 
@@ -176,7 +187,7 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @param String $created_at
 	 */
-	public function setCreatedAt($created_at) {
+	public function setCreatedAt(string $created_at) {
 		$this->created_at = $created_at;
 	}
 
@@ -184,7 +195,8 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getUpdatedAt() {
+	public function getUpdatedAt(): string
+    {
 		return $this->updated_at;
 	}
 
@@ -192,7 +204,7 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @param String $updated_at
 	 */
-	public function setUpdatedAt($updated_at) {
+	public function setUpdatedAt(string $updated_at) {
 		$this->updated_at = $updated_at;
 	}
 

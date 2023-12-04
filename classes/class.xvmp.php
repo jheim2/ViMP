@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -8,39 +11,7 @@
  */
 class xvmp {
 
-    const ILIAS_54 = 54;
-    const ILIAS_6 = 6;
     const TOKEN = 'token';
-
-
-    /**
-	 * @return int
-	 */
-	public static function getILIASVersion() {
-		if (ilComponent::isVersionGreaterString(ILIAS_VERSION_NUMERIC, '5.4.999')) {
-			return self::ILIAS_6;
-		}
-		if (ilComponent::isVersionGreaterString(ILIAS_VERSION_NUMERIC, '5.3.999')) {
-			return self::ILIAS_54;
-		}
-
-		return 0;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public static function is6() {
-		return self::getILIASVersion() >= self::ILIAS_6;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public static function is54() {
-		return self::getILIASVersion() >= self::ILIAS_54;
-	}
 
 
 	/**
@@ -117,7 +88,8 @@ class xvmp {
 	 * @return mixed
 	 */
 	public static function lookupRefId($obj_id) {
-		return array_shift(ilObject2::_getAllReferences($obj_id));
+        $refs = array_keys(ilObject2::_getAllReferences((int)$obj_id));
+		return array_shift($refs);
 	}
 
 
@@ -126,7 +98,8 @@ class xvmp {
 	 *
 	 * @return bool
 	 */
-	public static function isLearningProgressPossible($obj_id) {
+	public static function isLearningProgressPossible($obj_id): bool
+    {
 		$ref_id = self::lookupRefId($obj_id);
 
 		return (ilObjUserTracking::_enabledLearningProgress() && self::getParentCourseRefId($ref_id));
@@ -135,7 +108,7 @@ class xvmp {
     /**
      * @return bool
      */
-    public static function isAllowedToSetPublic()
+    public static function isAllowedToSetPublic(): bool
     {
         global $DIC;
         $is_admin = $DIC->rbac()->review()->isAssigned($DIC->user()->getId(), 2);
@@ -166,7 +139,8 @@ class xvmp {
 	 * @return bool
 	 * @throws xvmpException
 	 */
-	public static function showWatched($obj_id, $video) {
+	public static function showWatched($obj_id, $video): bool
+    {
 		return !self::isUseEmbeddedPlayer($obj_id, $video);
 	}
 

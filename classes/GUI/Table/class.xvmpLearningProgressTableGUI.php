@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -10,12 +13,12 @@ class xvmpLearningProgressTableGUI extends xvmpTableGUI {
 	const ROW_TEMPLATE = 'tpl.learning_progress_row.html';
 
 
-	protected $js_files = array('xvmp_lp_table.js');
-	protected $css_files = array('xvmp_video_table.css');
+	protected array $js_files = array('xvmp_lp_table.js');
+	protected array $css_files = array('xvmp_video_table.css');
 
 	const THUMBSIZE = '170x108';
 
-	protected $available_columns = array(
+	protected array $available_columns = array(
 		'thumbnail' => array(
 			'no_header' => true
 		),
@@ -45,16 +48,18 @@ class xvmpLearningProgressTableGUI extends xvmpTableGUI {
 	);
 
 	/**
-	 * @var xvmpSelectedVideosGUI
+	 * @var ilObject
 	 */
-	protected $parent_obj;
+	protected ?object $parent_obj;
 
-	/**
-	 * xvmpSelectedVideosTableGUI constructor.
-	 *
-	 * @param int    $parent_gui
-	 * @param string $parent_cmd
-	 */
+    /**
+     * xvmpSelectedVideosTableGUI constructor.
+     *
+     * @param int $parent_gui
+     * @param string $parent_cmd
+     * @throws ilCtrlException|xvmpException
+     * @throws xvmpException
+     */
 	public function __construct($parent_gui, $parent_cmd) {
 		parent::__construct($parent_gui, $parent_cmd);
 
@@ -75,20 +80,25 @@ class xvmpLearningProgressTableGUI extends xvmpTableGUI {
 
 	protected function initColumns() {
 
-		$this->addColumn('', '', 210, true);
+		$this->addColumn('', '', "210", true);
 		parent::initColumns();
 
 	}
 
 
-	public function parseData() {
+    /**
+     * @throws xvmpException
+     */
+    public function parseData() {
 		$this->setData(xvmpMedium::getAvailableForLP($this->parent_obj->getObjId()));
 	}
 
-	/**
-	 * @param xvmpObject $a_set
-	 */
-	protected function fillRow($a_set) {
+    /**
+     * @param xvmpObject $a_set
+     * @throws ilTemplateException
+     */
+	protected function fillRow($a_set): void
+    {
 		$transcoded = ($a_set['status'] == 'legal');
 		if ($transcoded) {
 			$this->tpl->setCurrentBlock('transcoded');

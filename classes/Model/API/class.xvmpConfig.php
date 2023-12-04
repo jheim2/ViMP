@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Class xvmpConfig
  *
@@ -7,12 +9,14 @@
  */
 class xvmpConfig extends xvmpObject {
 
-	/**
-	 * @param $id
-	 *
-	 * @return array
-	 */
-	public static function getObjectAsArray($id) {
+    /**
+     * @param $id
+     *
+     * @return array
+     * @throws xvmpException
+     */
+	public static function getObjectAsArray($id): array
+    {
 		$key = self::class . '-' . $id;
 		$existing = xvmpCacheFactory::getInstance()->get($key);
 		if ($existing) {
@@ -42,7 +46,7 @@ class xvmpConfig extends xvmpObject {
 	/**
 	 * @var string
 	 */
-	protected $name;
+	protected string $name;
 	/**
 	 * @var string
 	 */
@@ -52,7 +56,8 @@ class xvmpConfig extends xvmpObject {
 	/**
 	 * @return string
 	 */
-	public function getName() {
+	public function getName(): string
+    {
 		return $this->name;
 	}
 
@@ -60,7 +65,8 @@ class xvmpConfig extends xvmpObject {
 	/**
 	 * @return string
 	 */
-	public function getValue() {
+	public function getValue()
+    {
 		return $this->value;
 	}
 

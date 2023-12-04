@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 /**
  * Class xvmpSearchVideosTableGUI
@@ -9,13 +12,13 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 
 	const ROW_TEMPLATE = 'tpl.search_videos_row.html';
 
-	protected $js_files = array('xvmp_search_videos.js', 'xvmp_content.js');
-	protected $css_files = array('xvmp_video_table.css');
+	protected array $js_files = array('xvmp_search_videos.js', 'xvmp_content.js');
+	protected array $css_files = array('xvmp_video_table.css');
 
 
 	const THUMBSIZE = '170x108';
 
-	protected $available_columns = array(
+	protected array $available_columns = array(
 		'thumbnail' => array(
 			'no_header' => true
 		),
@@ -35,18 +38,17 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 	);
 
 
-	/**
-	 * @var xvmpSearchVideosGUI|ilVimpPageComponentPluginGUI
-	 */
-	protected $parent_obj;
+	protected ?object $parent_obj;
 
 
-	/**
-	 * xvmpSearchVideosTableGUI constructor.
-	 *
-	 * @param int    $parent_gui
-	 * @param string $parent_cmd
-	 */
+    /**
+     * xvmpSearchVideosTableGUI constructor.
+     *
+     * @param int $parent_gui
+     * @param string $parent_cmd
+     * @throws ilException
+     * @throws Exception
+     */
 	public function __construct($parent_gui, $parent_cmd) {
 		global $DIC;
 		$ilCtrl = $DIC['ilCtrl'];
@@ -74,8 +76,8 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 	 *
 	 */
 	protected function initColumns() {
-		$this->addColumn($this->pl->txt('added'), '', 75, false);
-		$this->addColumn('', '', 210, true);
+		$this->addColumn($this->pl->txt('added'), '', "75", false);
+		$this->addColumn('', '', "210", true);
 
 		parent::initColumns();
 	}
@@ -103,7 +105,7 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 						}
 						$filter['userid'] = $xvmpUser->getId();
 					} else {
-						ilUtil::sendInfo($this->pl->txt('msg_username_not_found'), true);
+                        $this->dic->ui()->mainTemplate()->setOnScreenMessage('info', $this->pl->txt('msg_username_not_found'));
 						$this->setData(array());
 						return;
 					}
@@ -129,7 +131,7 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 
 		$filter = array_filter($filter);
 		if (empty($filter)) {
-			ilUtil::sendQuestion($this->pl->txt('msg_please_enter_filter'), true);
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('question', $this->pl->txt('msg_please_enter_filter'));
 			$this->redirectToParent();
 		}
 		
@@ -143,17 +145,19 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 	}
 
 
-	public function initFilter() {
+	public function initFilter(): void
+    {
 		$filter_item = new ilTextInputGUI($this->pl->txt('title'), 'title');
 		$this->addAndReadFilterItem($filter_item);
 
 		$filter_item = new ilTextInputGUI($this->pl->txt('username'), 'username');
 		$this->ctrl->setParameterByClass('ilViMPPlugin', 'ref_id', $_GET['ref_id']);
-		$filter_item->setDataSource($this->ctrl->getLinkTargetByClass(array('ilUIPluginRouterGUI', 'ilViMPPlugin'),
-			'addUserAutoComplete', "", true));
+
+        $filter_item->setDataSource($this->dic->ctrl()->getLinkTarget($this->parent_obj, 'addUserAutoComplete', "", true));
 		$this->addAndReadFilterItem($filter_item);
 
 		$filter_item = new ilMultiSelectSearchInputGUI($this->pl->txt('category'), 'categories');
+        $filter_item->setCustomAttributes(['min-width' => '150px']);
 		$categories = xvmpCategory::getAll();
 		$options = array();
 		/** @var xvmpCategory $category */
@@ -200,10 +204,12 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 	}
 
 
-	/**
-	 * @param xvmpObject $a_set
-	 */
-	protected function fillRow($a_set) {
+    /**
+     * @param xvmpObject $a_set
+     * @throws ilTemplateException
+     */
+	protected function fillRow($a_set): void
+    {
         $transcoded = ($a_set['status'] === 'legal');
         $transcoding = ($a_set['status'] === 'converting');
 
@@ -240,17 +246,19 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 	}
 
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	protected function redirectToParent() {
-		$this->ctrl->redirect($this->parent_obj, xvmpSearchVideosGUI::CMD_STANDARD);
+		$this->ctrl->redirect($this->parent_obj, xvmpGUI::CMD_STANDARD);
 	}
 
     /**
      * @return array
      */
-    function getSelectableColumns() {
+    function getSelectableColumns(): array
+    {
         $selectable_columns = array(
             'categories' => array(
                 'sort_field' => 'categories',

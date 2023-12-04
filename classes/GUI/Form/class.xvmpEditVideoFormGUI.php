@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -18,7 +21,10 @@ class xvmpEditVideoFormGUI extends xvmpVideoFormGUI {
 	protected $medium;
 
 
-	public function __construct($parent_gui, $mid) {
+    /**
+     * @throws ilCtrlException
+     */
+    public function __construct($parent_gui, $mid) {
 		// load the video from the api, not from the cache
 		xvmpCacheFactory::getInstance()->delete(xvmpMedium::class . '-' . $mid);
 		$this->medium = xvmpMedium::getObjectAsArray($mid);
@@ -95,16 +101,16 @@ class xvmpEditVideoFormGUI extends xvmpVideoFormGUI {
     {
         xvmpMedium::update($this->data);
         $this->upload_service->cleanUp();
-        return $this->data['mid'];
+        return (int) $this->data['mid'];
     }
 
     protected function addCommandButtons() {
 		if ($this->parent_gui instanceof xvmpOwnVideosGUI) {
 			$this->addCommandButton(xvmpOwnVideosGUI::CMD_UPDATE_VIDEO, $this->lng->txt('save'));
-			$this->addCommandButton(xvmpOwnVideosGUI::CMD_CANCEL, $this->lng->txt(xvmpOwnVideosGUI::CMD_CANCEL));
+			$this->addCommandButton(xvmpGUI::CMD_CANCEL, $this->lng->txt(xvmpGUI::CMD_CANCEL));
 		} else {
 			$this->addCommandButton(ilVimpPageComponentPluginGUI::CMD_STANDARD, $this->lng->txt('save'));
-			$this->addCommandButton(ilVimpPageComponentPluginGUI::CMD_OWN_VIDEOS, $this->lng->txt(xvmpOwnVideosGUI::CMD_CANCEL));
+			$this->addCommandButton(ilVimpPageComponentPluginGUI::CMD_OWN_VIDEOS, $this->lng->txt(xvmpGUI::CMD_CANCEL));
 		}
 	}
 }

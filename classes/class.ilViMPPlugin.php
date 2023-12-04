@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -21,13 +24,20 @@ class ilViMPPlugin extends ilRepositoryObjectPlugin {
 	/**
 	 * @var ilViMPPlugin
 	 */
-	protected static $instance;
+	protected static ilViMPPlugin $instance;
 
+    public function __construct()
+    {
+        global $DIC;
+        $this->db = $DIC->database();
+        parent::__construct($this->db, $DIC["component.repository"], self::XVMP);
+    }
 
 	/**
 	 * @return ilViMPPlugin
 	 */
-	public static function getInstance() {
+	public static function getInstance(): ilViMPPlugin
+    {
 		if (!isset(self::$instance)) {
 			self::$instance = new self();
 		}
@@ -64,7 +74,8 @@ class ilViMPPlugin extends ilRepositoryObjectPlugin {
 	 *
 	 * @return string
 	 */
-	public function confTxt($lang_var) {
+	public function confTxt($lang_var): string
+    {
 		return $this->txt('conf_' . $lang_var);
 	}
 
@@ -72,7 +83,8 @@ class ilViMPPlugin extends ilRepositoryObjectPlugin {
 	/**
 	 * @return bool
 	 */
-	public function hasConnection() {
+	public function hasConnection(): bool
+    {
 		try {
 			$version = xvmpRequest::version();
 			return ($version->getResponseStatus() == 200);
@@ -85,7 +97,8 @@ class ilViMPPlugin extends ilRepositoryObjectPlugin {
 	/**
 	 * @return string
 	 */
-	function getPluginName() {
+	function getPluginName(): string
+    {
 		return self::PLUGIN_NAME;
 	}
 
@@ -93,7 +106,8 @@ class ilViMPPlugin extends ilRepositoryObjectPlugin {
 	/**
 	 *
 	 */
-	protected function uninstallCustom() {
+	protected function uninstallCustom(): void
+    {
 		global $DIC;
 		$DIC->database()->dropTable(xvmpConf::returnDbTableName());
 		$DIC->database()->dropTable(xvmpEventLog::returnDbTableName());
@@ -130,8 +144,9 @@ class ilViMPPlugin extends ilRepositoryObjectPlugin {
 
     /**
      * Before activation processing
+     * @throws ilPluginException
      */
-    protected function beforeActivation()
+    protected function beforeActivation(): bool
     {
         global $DIC;
         parent::beforeActivation();
@@ -166,5 +181,16 @@ class ilViMPPlugin extends ilRepositoryObjectPlugin {
         }
 
         return true;
+    }
+
+    public function getImagePath(string $a_img) : string
+    {
+        return self::_getImagePath(
+            "Services",
+            "Repository",
+            self::getPluginInfo()->getPluginSlot()->getId(),
+            $this->getPluginName(),
+            $a_img
+        );
     }
 }

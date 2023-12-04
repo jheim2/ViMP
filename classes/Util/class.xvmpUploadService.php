@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use ILIAS\Filesystem\Filesystems;
 use ILIAS\FileUpload\FileUpload;
 use ILIAS\FileUpload\Location;
@@ -15,15 +17,15 @@ class xvmpUploadService
     /**
      * @var Filesystems
      */
-    protected $file_system;
+    protected Filesystems $file_system;
     /**
      * @var FileUpload
      */
-    protected $file_upload;
+    protected FileUpload $file_upload;
     /**
      * @var string[]
      */
-    protected $temp_directories = [];
+    protected array $temp_directories = [];
 
     /**
      * xvmpUploadService constructor.
@@ -95,7 +97,7 @@ class xvmpUploadService
     protected function signWithWAC(string $path) : string
     {
         ilWACSignedPath::setTokenMaxLifetimeInSeconds(ilWACSignedPath::MAX_LIFETIME);
-        $thumbnail_path = ilWACSignedPath::signFile(ilUtil::getWebspaceDir() . $path);
+        $thumbnail_path = ilWACSignedPath::signFile(ilFileUtils::getWebspaceDir() . $path);
         $thumbnail_path .= '&' . ilWebAccessChecker::DISPOSITION . '=' . ilFileDelivery::DISP_ATTACHMENT;
         return $thumbnail_path;
     }
@@ -103,7 +105,7 @@ class xvmpUploadService
     public function cleanUp()
     {
         foreach ($this->temp_directories as $temp_directory) {
-            ilUtil::delDir(ilUtil::getWebspaceDir() . $temp_directory);
+            ilFileUtils::delDir(ilFileUtils::getWebspaceDir() . $temp_directory);
         }
     }
 

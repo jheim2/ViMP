@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -10,13 +13,13 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
 
 	const ROW_TEMPLATE = 'tpl.own_videos_row.html';
 
-	protected $js_files = array('xvmp_search_videos.js');
-	protected $css_files = array('xvmp_video_table.css');
+	protected array $js_files = array('xvmp_search_videos.js');
+	protected array $css_files = array('xvmp_video_table.css');
 
 
 	const THUMBSIZE = '170x108';
 
-	protected $available_columns = array(
+	protected array $available_columns = array(
 		'thumbnail' => array(
 			'no_header' => true
 		),
@@ -35,18 +38,17 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
 		)
 	);
 
-	/**
-	 * @var xvmpOwnVideosGUI
-	 */
-	protected $parent_obj;
+	protected ?object $parent_obj;
 
 
-	/**
-	 * xvmpOwnVideosTableGUI constructor.
-	 *
-	 * @param     $parent_gui
-	 * @param string $parent_cmd
-	 */
+    /**
+     * xvmpOwnVideosTableGUI constructor.
+     *
+     * @param     $parent_gui
+     * @param string $parent_cmd
+     * @throws ilException
+     * @throws Exception
+     */
 	public function __construct($parent_gui, $parent_cmd) {
 		global $DIC;
 		$ilUser = $DIC['ilUser'];
@@ -64,11 +66,11 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
 		$base_link = $this->ctrl->getLinkTarget($this->parent_obj,'', '', true);
 		$this->tpl_global->addOnLoadCode('VimpSearch.base_link = "'.$base_link.'";');
 
-		if ($parent_cmd !== xvmpOwnVideosGUI::CMD_SHOW_FILTERED) {
+		if ($parent_cmd !== xvmpVideosGUI::CMD_SHOW_FILTERED) {
 			$this->tpl = new ilTemplate("tpl.own_videos_table.html", true, true, $this->pl->getDirectory());
 			$this->tpl->setVariable('TABLE_CONTENT_HIDDEN', 'hidden');
 			$this->tpl->setCurrentBlock('xvmp_show_videos_button');
-			$this->tpl->setVariable('SHOW_VIDEOS_LINK', $this->ctrl->getLinkTarget($this->parent_obj, xvmpOwnVideosGUI::CMD_SHOW_FILTERED));
+			$this->tpl->setVariable('SHOW_VIDEOS_LINK', $this->ctrl->getLinkTarget($this->parent_obj, xvmpVideosGUI::CMD_SHOW_FILTERED));
 			$this->tpl->setVariable('SHOW_VIDEOS_LABEL', $this->pl->txt('btn_show_own_videos'));
 			$this->tpl->parseCurrentBlock();
 		}
@@ -79,16 +81,17 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
 	 *
 	 */
 	protected function initColumns() {
-		$this->addColumn($this->pl->txt('added'), '', 75, false);
-		$this->addColumn('', '', 210, true);
+		$this->addColumn($this->pl->txt('added'), '', "75", false);
+		$this->addColumn('', '',  "210", true);
 
 		parent::initColumns();
 
-		$this->addColumn('', '', 75, true);
+		$this->addColumn('', '', "75", true);
 	}
 
 
-	public function initFilter() {
+	public function initFilter(): void
+    {
 		$filter_item = new ilTextInputGUI($this->pl->txt('title'), 'title');
 		$this->addAndReadFilterItem($filter_item);
 
@@ -153,7 +156,7 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
 			}
 		}
 
-		// fetch data with pre filter
+		// fetch data with pre-filter
         $pre_filter = array_filter($pre_filter);
 		$videos = xvmpMedium::getUserMedia($this->user, $pre_filter);
 
@@ -184,10 +187,12 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
 		$this->setMaxCount(count($data));
 	}
 
-	/**
-	 * @param xvmpObject $a_set
-	 */
-	protected function fillRow($a_set) {
+    /**
+     * @param xvmpObject $a_set
+     * @throws ilTemplateException
+     */
+	protected function fillRow($a_set): void
+    {
         $transcoded = ($a_set['status'] === 'legal');
         $transcoding = ($a_set['status'] === 'converting');
 
@@ -242,7 +247,8 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
     /**
      * @return array
      */
-    function getSelectableColumns() {
+    function getSelectableColumns(): array
+    {
         $selectable_columns = array(
             'categories' => array(
                 'sort_field' => 'categories',
@@ -258,12 +264,14 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
         return $selectable_columns;
     }
 
-	/**
-	 * @param $a_set
-	 *
-	 * @return string
-	 */
-	protected function buildActionList($a_set) {
+    /**
+     * @param $a_set
+     *
+     * @return string
+     * @throws ilCtrlException
+     */
+	protected function buildActionList($a_set): string
+    {
 		$actions = new ilAdvancedSelectionListGUI();
 		$actions->setListTitle($this->lng->txt('actions'));
 		$this->ctrl->setParameter($this->parent_obj, 'mid', $a_set['mid']);
@@ -280,7 +288,8 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
      * @param $data
      * @return array
      */
-    protected function postFilterData($post_filter, $data) {
+    protected function postFilterData($post_filter, $data): array
+    {
         if (!empty($post_filter['title'])) {
             $data = array_filter($data, function ($video) use ($post_filter) {
                 return strpos(strtolower($video['title']), strtolower($post_filter['title'])) !== false;

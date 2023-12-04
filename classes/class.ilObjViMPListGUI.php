@@ -1,6 +1,8 @@
 <?php
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
+declare(strict_types=1);
+
 use ILIAS\UI\Component\Card\RepositoryObject;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -12,12 +14,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
  */
 class ilObjViMPListGUI extends ilObjectPluginListGUI {
 
-	function getGuiClass() {
+	function getGuiClass(): string
+    {
 		return ilObjViMPGUI::class;
 	}
 
 
-	function initCommands() {
+	function initCommands(): array
+    {
 		// Always set
 		$this->timings_enabled = true;
 		$this->subscribe_enabled = true;
@@ -32,20 +36,18 @@ class ilObjViMPListGUI extends ilObjectPluginListGUI {
 		$this->cut_enabled = true;
 		$this->copy_enabled = true;
 
-		$commands = array(
-			array(
-				'permission' => 'read',
-				'cmd' => ilObjViMPGUI::CMD_SHOW_CONTENT,
-				'default' => true,
-			),
-			array(
-				'permission' => 'write',
-				'cmd' => ilObjViMPGUI::CMD_SHOW_CONTENT,
-				'lang_var' => 'edit'
-			)
-		);
-
-		return $commands;
+        return array(
+            array(
+                'permission' => 'read',
+                'cmd' => ilObjViMPGUI::CMD_SHOW_CONTENT,
+                'default' => true,
+            ),
+            array(
+                'permission' => 'write',
+                'cmd' => ilObjViMPGUI::CMD_SHOW_CONTENT,
+                'lang_var' => 'edit'
+            )
+        );
 	}
 
 
@@ -58,27 +60,29 @@ class ilObjViMPListGUI extends ilObjectPluginListGUI {
 	 *
 	 * @return array
 	 */
-	public function getAlertProperties() {
-		$alert = array();
-		foreach ((array)$this->getCustomProperties(array()) as $prop) {
-			if ($prop['alert'] == true) {
-				$alert[] = $prop;
-			}
-		}
-
-		return $alert;
+	public function getAlertProperties(): array
+    {
+        $alert = [];
+        foreach ($this->getProperties() as $prop) {
+            if (isset($prop['alert']) && $prop['alert']) {
+                $alert[] = $prop;
+            }
+        }
+        return $alert;
 	}
 
 
-	/**
-	 * Get item properties
-	 *
-	 * @return    array        array of property arrays:
-	 *                        'alert' (boolean) => display as an alert property (usually in red)
-	 *                        'property' (string) => property name
-	 *                        'value' (string) => property value
-	 */
-	public function getCustomProperties($a_prop) {
+    /**
+     * Get item properties
+     *
+     * @return    array        array of property arrays:
+     *                        'alert' (boolean) => display as an alert property (usually in red)
+     *                        'property' (string) => property name
+     *                        'value' (string) => property value
+     * @throws arException
+     */
+	public function getCustomProperties($a_prop): array
+    {
 		$props = parent::getCustomProperties(array());
 
 		$settings = xvmpSettings::find($this->obj_id);
@@ -106,8 +110,12 @@ class ilObjViMPListGUI extends ilObjectPluginListGUI {
 	}
 
 
-	protected function getVideoPreview($count) {
-		$selected_videos = xvmpSelectedMedia::where(['obj_id' => $this->obj_id, 'visible' => 1])->orderBy('sort')->limit(0, $count)->get();
+    /**
+     * @throws arException
+     */
+    protected function getVideoPreview($count): string
+    {
+		$selected_videos = xvmpSelectedMedia::where(['obj_id' => $this->obj_id, 'visible' => 1])->orderBy('sort')->limit(0, (int)$count)->get();
 		$preview = '';
 		foreach ($selected_videos as $selected) {
 			try {
@@ -136,7 +144,8 @@ class ilObjViMPListGUI extends ilObjectPluginListGUI {
         string $type,
         string $title,
         string $description
-    ) : ?\ILIAS\UI\Component\Card\Card {
+    ) : ?RepositoryObject
+    {
 	    /** @var RepositoryObject $card */
         $card = parent::getAsCard($ref_id, $obj_id, $type, $title, $description);
         return $card->withObjectIcon(

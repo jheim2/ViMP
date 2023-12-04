@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Class xvmpFileUploadInputGUI
  *
@@ -10,61 +12,34 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
     /**
      * @var ilViMPPlugin
      */
-    private $pl;
+    private ilViMPPlugin $pl;
+	protected array $suffixes = array();
+	protected string $url = '';
+	protected string $chunk_size = '2M';
+	protected bool $unique_names = true;
+	protected string $max_file_size = '20000mb';
+	protected bool $log = false;
+	protected string $form_id = '';
+	protected string $cmd = '';
+	protected array $mime_types = array();
+
 
     /**
-	 * @var array
-	 */
-	protected $suffixes = array();
-	/**
-	 * @var string
-	 */
-	protected $url = '';
-	/**
-	 * @var string
-	 */
-	protected $chunk_size = '2M';
-	/**
-	 * @var bool
-	 */
-	protected $unique_names = true;
-	/**
-	 * @var string
-	 */
-	protected $max_file_size = '20000mb';
-	/**
-	 * @var bool
-	 */
-	protected $log = false;
-	/**
-	 * @var string
-	 */
-	protected $form_id = '';
-	/**
-	 * @var string
-	 */
-	protected $cmd = '';
-	/**
-	 * @var array
-	 */
-	protected $mime_types = array();
-
-
-	/**
-	 * xoctFileUploadInputGUI constructor.
-	 *
-	 * @param ilPropertyFormGUI $ilPropertyFormGUI
-	 * @param string $a_title
-	 * @param $a_postvar
-	 */
-	public function __construct(ilPropertyFormGUI $ilPropertyFormGUI, $cmd, $a_title, $a_postvar) {
+     * xoctFileUploadInputGUI constructor.
+     *
+     * @param ilPropertyFormGUI $ilPropertyFormGUI
+     * @param string $cmd
+     * @param string $a_title
+     * @param string $a_postvar
+     */
+	public function __construct(ilPropertyFormGUI $ilPropertyFormGUI, string $cmd, string $a_title, string $a_postvar) {
 		global $DIC;
 		$tpl = $DIC['tpl'];
 		$this->pl = ilViMPPlugin::getInstance();
 		$tpl->addJavaScript($this->pl->getAssetURL('/js/waiter.js'));
 		$tpl->addCss($this->pl->getAssetURL('default/waiter.css'));
 
-		$ilPropertyFormGUI->setId($ilPropertyFormGUI->getId() ? $ilPropertyFormGUI->getId() : md5(rand(1, 99)));
+		$ilPropertyFormGUI->setId($ilPropertyFormGUI->getId() ? $ilPropertyFormGUI->getId() : md5((string)rand(1, 99)));
 		$this->setFormId($ilPropertyFormGUI->getId());
 		$this->setCmd($cmd);
 		$tpl->addJavaScript($this->pl->getAssetURL('js/plupload-2.1.8/js/plupload.full.min.js'));
@@ -73,10 +48,12 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	}
 
 
-	/**
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * @return string
+     * @throws ilTemplateException
+     */
+	public function render(): string
+    {
 		$tpl = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/ViMP/templates/default/form/tpl.uploader.html', false, true);
 		$this->initJS();
 		$tpl->setVariable('BUTTON_SELECT', $this->pl->txt('upload_select'));
@@ -118,7 +95,8 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @return string
 	 */
-	public function getCmd() {
+	public function getCmd(): string
+    {
 		return $this->cmd;
 	}
 
@@ -126,7 +104,7 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @param string $cmd
 	 */
-	public function setCmd($cmd) {
+	public function setCmd(string $cmd) {
 		$this->cmd = $cmd;
 	}
 
@@ -142,7 +120,8 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @return array
 	 */
-	public function getSuffixes() {
+	public function getSuffixes(): array
+    {
 		return $this->suffixes;
 	}
 
@@ -151,9 +130,10 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	}
 
 
-	/**
-	 * @param ilTemplate $a_tpl
-	 */
+    /**
+     * @param ilTemplate $a_tpl
+     * @throws ilTemplateException
+     */
 	public function insert(ilTemplate &$a_tpl) {
 		$html = $this->render();
 
@@ -168,7 +148,8 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	 *
 	 * @return    boolean        Input ok, true/false
 	 */
-	function checkInput() {
+	function checkInput(): bool
+    {
 		return true;
 	}
 
@@ -176,7 +157,8 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @return string
 	 */
-	public function getUrl() {
+	public function getUrl(): string
+    {
 		return $this->url;
 	}
 
@@ -184,7 +166,7 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @param string $url
 	 */
-	public function setUrl($url) {
+	public function setUrl(string $url) {
 		$this->url = $url;
 	}
 
@@ -192,7 +174,8 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @return string
 	 */
-	public function getChunkSize() {
+	public function getChunkSize(): string
+    {
 		return $this->chunk_size;
 	}
 
@@ -200,7 +183,7 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @param string $chunk_size
 	 */
-	public function setChunkSize($chunk_size) {
+	public function setChunkSize(string $chunk_size) {
 		$this->chunk_size = $chunk_size;
 	}
 
@@ -208,7 +191,8 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @return boolean
 	 */
-	public function isUniqueNames() {
+	public function isUniqueNames(): bool
+    {
 		return $this->unique_names;
 	}
 
@@ -216,7 +200,7 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @param boolean $unique_names
 	 */
-	public function setUniqueNames($unique_names) {
+	public function setUniqueNames(bool $unique_names) {
 		$this->unique_names = $unique_names;
 	}
 
@@ -224,7 +208,8 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @return string
 	 */
-	public function getMaxFileSize() {
+	public function getMaxFileSize(): string
+    {
 		return $this->max_file_size;
 	}
 
@@ -232,7 +217,7 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @param string $max_file_size
 	 */
-	public function setMaxFileSize($max_file_size) {
+	public function setMaxFileSize(string $max_file_size) {
 		$this->max_file_size = $max_file_size;
 	}
 
@@ -240,7 +225,8 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @return boolean
 	 */
-	public function isLog() {
+	public function isLog(): bool
+    {
 		return $this->log;
 	}
 
@@ -248,7 +234,7 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @param boolean $log
 	 */
-	public function setLog($log) {
+	public function setLog(bool $log) {
 		$this->log = $log;
 	}
 
@@ -256,7 +242,8 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @return string
 	 */
-	public function getFormId() {
+	public function getFormId(): string
+    {
 		return $this->form_id;
 	}
 
@@ -264,7 +251,7 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @param string $form_id
 	 */
-	public function setFormId($form_id) {
+	public function setFormId(string $form_id) {
 		$this->form_id = $form_id;
 	}
 
@@ -272,7 +259,8 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @return array
 	 */
-	public function getMimeTypes() {
+	public function getMimeTypes(): array
+    {
 		return $this->mime_types;
 	}
 
@@ -280,7 +268,7 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
 	/**
 	 * @param array $mime_types
 	 */
-	public function setMimeTypes($mime_types) {
+	public function setMimeTypes(array $mime_types) {
 		$this->mime_types = $mime_types;
 	}
 }
@@ -292,36 +280,25 @@ class xvmpFileUploadInputGUI extends ilSubEnabledFormPropertyGUI {
  */
 class xoctPlupload {
 
-	/**
-	 * @var bool
-	 */
-	protected $finished = false;
-	/**
-	 * @var string
-	 */
-	protected $target_dir = '';
-	/**
-	 * @var string
-	 */
-	protected $file_path = '';
-	/**
-	 * @var bool
-	 */
-	protected $clean_up = false;
+	protected bool $finished = false;
+	protected string $target_dir = '';
+	protected string $file_path = '';
+	protected bool $clean_up = false;
 
 
 	/**
 	 * xoctPlupload constructor.
 	 */
 	public function __construct() {
-		$this->setTargetDir(ilUtil::getDataDir() . "/temp/plupload");
+		$this->setTargetDir(ilFileUtils::getDataDir() . "/temp/plupload");
 	}
 
 
 	/**
 	 * @return boolean
 	 */
-	public function isFinished() {
+	public function isFinished(): bool
+    {
 		return $this->finished;
 	}
 
@@ -329,7 +306,7 @@ class xoctPlupload {
 	/**
 	 * @param boolean $finished
 	 */
-	public function setFinished($finished) {
+	public function setFinished(bool $finished) {
 		$this->finished = $finished;
 	}
 
@@ -337,7 +314,8 @@ class xoctPlupload {
 	/**
 	 * @return string
 	 */
-	public function getFilePath() {
+	public function getFilePath(): string
+    {
 		return $this->file_path;
 	}
 
@@ -345,7 +323,7 @@ class xoctPlupload {
 	/**
 	 * @param string $file_path
 	 */
-	public function setFilePath($file_path) {
+	public function setFilePath(string $file_path) {
 		$this->file_path = $file_path;
 	}
 
@@ -353,7 +331,8 @@ class xoctPlupload {
 	/**
 	 * @return string
 	 */
-	public function getTargetDir() {
+	public function getTargetDir(): string
+    {
 		return $this->target_dir;
 	}
 
@@ -361,7 +340,7 @@ class xoctPlupload {
 	/**
 	 * @param string $target_dir
 	 */
-	public function setTargetDir($target_dir) {
+	public function setTargetDir(string $target_dir) {
 		$this->target_dir = $target_dir;
 	}
 
@@ -369,7 +348,8 @@ class xoctPlupload {
 	/**
 	 * @return boolean
 	 */
-	public function isCleanUp() {
+	public function isCleanUp(): bool
+    {
 		return $this->clean_up;
 	}
 
@@ -377,12 +357,15 @@ class xoctPlupload {
 	/**
 	 * @param boolean $clean_up
 	 */
-	public function setCleanUp($clean_up) {
+	public function setCleanUp(bool $clean_up) {
 		$this->clean_up = $clean_up;
 	}
 
 
-	public function handleUpload() {
+    /**
+     * @throws ilException
+     */
+    public function handleUpload() {
 		$this->setHeaders();
 
 		// 15 minutes execution time

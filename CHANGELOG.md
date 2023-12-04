@@ -1,4 +1,8 @@
 # Changelog
+## [v1.8.4]
+- ILIAS 8 supported
+- dropped ILIAS 7 support
+
 ## [v1.8.3]
 - fix: language bug of vimp repository object label
 ## [1.8.2]

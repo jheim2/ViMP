@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -8,7 +11,8 @@
  */
 class srDateDurationInputGUI extends ilDateDurationInputGUI {
 
-	public function getValue() {
+	public function getValue(): array
+    {
 		$start = $this->getStart() ? $this->getStart()->get(IL_CAL_UNIX) : 0;
 		$end = $this->getEnd() ? $this->getEnd()->get(IL_CAL_UNIX) : 0;
 
@@ -23,8 +27,8 @@ class srDateDurationInputGUI extends ilDateDurationInputGUI {
 	 *
 	 * @return	boolean		Input ok, true/false
 	 */
-	public function checkInput()
-	{
+	public function checkInput(): bool
+    {
 		global $lng;
 
 		if($this->getDisabled())
@@ -42,7 +46,7 @@ class srDateDurationInputGUI extends ilDateDurationInputGUI {
 		$end = $post["end"];
 
 		// if full day is active, ignore time format
-		$format = $post['tgl']
+		$format = isset($post['tgl'])
 			? 0
 			: $this->getDatePickerTimeFormat();
 
@@ -53,7 +57,7 @@ class srDateDurationInputGUI extends ilDateDurationInputGUI {
 		$valid_start = false;
 		if(trim($start))
 		{
-			$parsed = ilCalendarUtil::parseIncomingDate($start, $format);
+			$parsed = ilCalendarUtil::parseIncomingDate($start, (bool)$format);
 			if($parsed)
 			{
 				$this->setStart($parsed);
@@ -68,7 +72,7 @@ class srDateDurationInputGUI extends ilDateDurationInputGUI {
 		$valid_end = false;
 		if(trim($end))
 		{
-			$parsed = ilCalendarUtil::parseIncomingDate($end, $format);
+			$parsed = ilCalendarUtil::parseIncomingDate($end, (bool)$format);
 			if($parsed)
 			{
 				$this->setEnd($parsed);

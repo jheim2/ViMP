@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 require_once("./Services/Form/classes/class.ilMultiSelectInputGUI.php");
 require_once("./Services/User/classes/class.ilObjUser.php");
 
@@ -14,12 +17,12 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 	/**
 	 * @var string
 	 */
-	protected $width;
+	protected int $width;
 
 	/**
 	 * @var string
 	 */
-	protected $height;
+	protected int $height;
 
 	/**
 	 * @var string
@@ -53,10 +56,11 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 
 		$this->lng = $lng;
 		$tpl->addJavaScript("./Customizing/global/plugins/Services/Repository/RepositoryObject/ViMP/templates/default/form/select2/select2.min.js");
-		$tpl->addJavaScript("./Customizing/global/plugins/Services/Repository/RepositoryObject/ViMP/templates/default/form/select2/select2_locale_".$ilUser->getCurrentLanguage().".js");
+		//$tpl->addJavaScript("./Customizing/global/plugins/Services/Repository/RepositoryObject/ViMP/templates/default/form/select2/select2_locale_".$ilUser->getCurrentLanguage().".js");
 		$tpl->addCss("./Customizing/global/plugins/Services/Repository/RepositoryObject/ViMP/templates/default/form/select2/select2.css");
 		$this->setInputTemplate(new ilTemplate("tpl.multiple_select.html", true, true,"Customizing/global/plugins/Services/Repository/RepositoryObject/ViMP"));
-		$this->setWidth("308px");
+		$this->setWidth(308);
+        $this->setHeight(100);
 	}
 
 	/**
@@ -64,12 +68,11 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 	 *
 	 * @return	boolean		Input ok, true/false
 	 */
-	function checkInput()
-	{
+	function checkInput(): bool
+    {
 		global $DIC;
 		$lng = $DIC['lng'];
 
-		//var_dump($this->getValue());
 		if ($this->getRequired() && count($this->getValue()) == 0)
 		{
 			$this->setAlert($lng->txt("msg_input_is_required"));
@@ -79,11 +82,16 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 		return true;
 	}
 
-	public function getSubItems(){
+	public function getSubItems(): array
+    {
 		return array();
 	}
 
-	public function render(){
+    /**
+     * @throws ilTemplateException
+     */
+    public function render(): string
+    {
 		$tpl = $this->getInputTemplate();
 		$values = $this->getValue();
 		$options = $this->getOptions();
@@ -131,7 +139,7 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 						"selected");
 				}
 
-				$tpl->setVariable("VAL", ilUtil::prepareFormOutput($option_value));
+				$tpl->setVariable("VAL", ilLegacyFormElementsUtil::prepareFormOutput($option_value));
 				$tpl->setVariable("TEXT", $option_text);
 				$tpl->parseCurrentBlock();
 			}
@@ -140,44 +148,43 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 	}
 
 	/**
-	 * @deprecated setting inline style items from the controller is bad practice. please use the setClass together with an appropriate css class.
-	 * @param string $height
+	 * @param int $a_height
+	 *@deprecated setting inline style items from the controller is bad practice. please use the setClass together with an appropriate css class.
 	 */
-	public function setHeight($height)
-	{
-		$this->height = $height;
+	public function setHeight(int $a_height): void
+    {
+		$this->height = $a_height;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getHeight()
-	{
+	public function getHeight(): int
+    {
 		return $this->height;
-
 	}
 
 	/**
-	 * @deprecated setting inline style items from the controller is bad practice. please use the setClass together with an appropriate css class.
-	 * @param string $width
+	 * @param int $a_width
+	 *@deprecated setting inline style items from the controller is bad practice. please use the setClass together with an appropriate css class.
 	 */
-	public function setWidth($width)
-	{
-		$this->width = $width;
+	public function setWidth(int $a_width): void
+    {
+		$this->width = $a_width;
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getWidth()
-	{
+	 * @return int
+     */
+	public function getWidth(): int
+    {
 		return $this->width;
 	}
 
 	/**
 	 * @param string $css_class
 	 */
-	public function setCssClass($css_class)
+	public function setCssClass(string $css_class)
 	{
 		$this->css_class = $css_class;
 	}
@@ -185,15 +192,15 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 	/**
 	 * @return string
 	 */
-	public function getCssClass()
-	{
+	public function getCssClass(): ?string
+    {
 		return $this->css_class;
 	}
 
 	/**
 	 * @param int $minimum_input_length
 	 */
-	public function setMinimumInputLength($minimum_input_length)
+	public function setMinimumInputLength(int $minimum_input_length)
 	{
 		$this->minimum_input_length = $minimum_input_length;
 	}
@@ -201,15 +208,15 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 	/**
 	 * @return int
 	 */
-	public function getMinimumInputLength()
-	{
+	public function getMinimumInputLength(): int
+    {
 		return $this->minimum_input_length;
 	}
 
 	/**
 	 * @param string $ajax_link setting the ajax link will lead to ignoration of the "setOptions" function as the link given will be used to get the
 	 */
-	public function setAjaxLink($ajax_link)
+	public function setAjaxLink(string $ajax_link)
 	{
 		$this->ajax_link = $ajax_link;
 	}
@@ -217,8 +224,8 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 	/**
 	 * @return string
 	 */
-	public function getAjaxLink()
-	{
+	public function getAjaxLink(): string
+    {
 		return $this->ajax_link;
 	}
 
@@ -239,7 +246,7 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 	/**
 	 * @param \ilTemplate $input_template
 	 */
-	public function setInputTemplate($input_template)
+	public function setInputTemplate(ilTemplate $input_template)
 	{
 		$this->input_template = $input_template;
 	}
@@ -257,23 +264,24 @@ class ilMultiSelectSearchInputGUI extends ilMultiSelectInputGUI
 	 * This implementation might sound silly. But the multiple select input used parses the post vars differently if you use ajax. thus we have to do this stupid "trick". Shame on select2 project ;)
 	 * @return string the real postvar.
 	 */
-	protected function searchPostVar(){
-		if(substr($this->getPostVar(), -2) == "[]")
-			return substr($this->getPostVar(), 0 , -2);
-		else
-			return $this->getPostVar();
+	protected function searchPostVar(): string
+    {
+        $postVar = $this->getPostVar();
+		if (substr($postVar, -2) === "[]") {
+            $postVar = substr($postVar, 0, -2);
+            return $postVar;
+        }
+
+        return $postVar;
 	}
 
-	public function setValueByArray($array){
-//		print_r($array);
+	public function setValueByArray($array): void
+    {
+		$val = isset($array[$this->searchPostVar()]) ? $array[$this->searchPostVar()] : array();
+        if (!is_array($val)) {
+            $val = explode(",", $val);
+        }
 
-		$val = $array[$this->searchPostVar()] ?? $array[$this->getPostVar()];
-		if(is_array($val))
-			$val;
-		elseif(!$val)
-			$val =  array();
-		else
-			$val = explode(",", $val);
 		$this->setValue($val);
 	}
 }

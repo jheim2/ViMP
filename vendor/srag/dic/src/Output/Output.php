@@ -98,11 +98,7 @@ final class Output implements OutputInterface
             exit;
         } else {
             if ($main_template) {
-                if (self::version()->is6()) {
-                    self::dic()->ui()->mainTemplate()->loadStandardTemplate();
-                } else {
-                    self::dic()->ui()->mainTemplate()->getStandardTemplate();
-                }
+                self::dic()->ui()->mainTemplate()->loadStandardTemplate();
             }
 
             self::dic()->ui()->mainTemplate()->setLocator();
@@ -112,11 +108,7 @@ final class Output implements OutputInterface
             }
 
             if ($show) {
-                if (self::version()->is6()) {
-                    self::dic()->ui()->mainTemplate()->printToStdout();
-                } else {
-                    self::dic()->ui()->mainTemplate()->show();
-                }
+                self::dic()->ui()->mainTemplate()->printToStdout();
             }
         }
     }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -12,7 +15,8 @@ class xvmpUploadFile {
 	 *
 	 * @return xvmpUploadFile
 	 */
-	public static function getInstanceFromFileArray($name) {
+	public static function getInstanceFromFileArray($name): xvmpUploadFile
+    {
 		$file = $_POST[$name];
 
 		$inst = new self();
@@ -29,8 +33,8 @@ class xvmpUploadFile {
 	 * @return CURLFile
 	 */
 	public function getCURLFile() {
-		$xoctPlupload = new xvmpPlupload();
-		$CURLFile = new CURLFile($xoctPlupload->getTargetDir() . '/' . $this->getTitle());
+		$xvmpPlupload = new xvmpPlupload();
+		$CURLFile = new CURLFile($xvmpPlupload->getTargetDir() . '/' . $this->getTitle());
 
 		return $CURLFile;
 	}
@@ -39,29 +43,30 @@ class xvmpUploadFile {
 	/**
 	 * @var string
 	 */
-	protected $file_path = '';
+	protected string $file_path = '';
 	/**
 	 * @var string
 	 */
-	protected $title = '';
+	protected string $title = '';
 	/**
 	 * @var int
 	 */
-	protected $file_size = 0;
+	protected int $file_size = 0;
 	/**
 	 * @var string
 	 */
-	protected $post_var = '';
+	protected string $post_var = '';
 	/**
 	 * @var string
 	 */
-	protected $mime_type = '';
+	protected string $mime_type = '';
 
 
 	/**
 	 * @return string
 	 */
-	public function getFilePath() {
+	public function getFilePath(): string
+    {
 		return $this->file_path;
 	}
 
@@ -69,7 +74,7 @@ class xvmpUploadFile {
 	/**
 	 * @param string $file_path
 	 */
-	public function setFilePath($file_path) {
+	public function setFilePath(string $file_path) {
 		$this->file_path = $file_path;
 	}
 
@@ -77,7 +82,8 @@ class xvmpUploadFile {
 	/**
 	 * @return string
 	 */
-	public function getTitle() {
+	public function getTitle(): string
+    {
 		return $this->title;
 	}
 
@@ -85,7 +91,7 @@ class xvmpUploadFile {
 	/**
 	 * @param string $title
 	 */
-	public function setTitle($title) {
+	public function setTitle(string $title) {
 		$this->title = $title;
 	}
 
@@ -93,7 +99,8 @@ class xvmpUploadFile {
 	/**
 	 * @return int
 	 */
-	public function getFileSize() {
+	public function getFileSize(): int
+    {
 		return $this->file_size;
 	}
 
@@ -101,7 +108,7 @@ class xvmpUploadFile {
 	/**
 	 * @param int $file_size
 	 */
-	public function setFileSize($file_size) {
+	public function setFileSize(int $file_size) {
 		$this->file_size = $file_size;
 	}
 
@@ -109,7 +116,8 @@ class xvmpUploadFile {
 	/**
 	 * @return string
 	 */
-	public function getPostVar() {
+	public function getPostVar(): string
+    {
 		return $this->post_var;
 	}
 
@@ -117,7 +125,7 @@ class xvmpUploadFile {
 	/**
 	 * @param string $post_var
 	 */
-	public function setPostVar($post_var) {
+	public function setPostVar(string $post_var) {
 		$this->post_var = $post_var;
 	}
 
@@ -125,7 +133,8 @@ class xvmpUploadFile {
 	/**
 	 * @return string
 	 */
-	public function getMimeType() {
+	public function getMimeType(): string
+    {
 		return $this->mime_type;
 	}
 
@@ -133,7 +142,7 @@ class xvmpUploadFile {
 	/**
 	 * @param string $mime_type
 	 */
-	public function setMimeType($mime_type) {
+	public function setMimeType(string $mime_type) {
 		$this->mime_type = $mime_type;
 	}
 }

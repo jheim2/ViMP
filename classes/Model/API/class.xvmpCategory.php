@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -67,64 +70,66 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @var int
 	 */
-	protected $cid;
+	protected int $cid;
 	/**
 	 * @var int
 	 */
-	protected $pid;
+	protected int $pid;
 	/**
 	 * @var int
 	 */
-	protected $parent;
+	protected ?int $parent;
 	/**
 	 * @var String
 	 */
-	protected $culture;
+	protected string $culture;
 	/**
 	 * @var String
 	 */
-	protected $name;
+	protected string $name;
 	/**
 	 * @var String
 	 */
-	protected $description;
+	protected ?string $description;
 	/**
 	 * @var String
 	 */
-	protected $categorytype;
+	protected string $categorytype;
 	/**
 	 * @var String
 	 */
-	protected $status;
+	protected string $status;
 	/**
 	 * @var String
 	 */
-	protected $picture;
+	protected string $picture;
 	/**
 	 * @var int
 	 */
-	protected $weight;
+	protected int $weight;
 	/**
 	 * @var String
 	 */
-	protected $created_at;
+	protected string $created_at;
 	/**
 	 * @var String
 	 */
-	protected $updated_at;
+	protected string $updated_at;
 
 
 	/**
 	 * @return int
 	 */
-	public function getId() {
+	public function getId(): int
+    {
 		return $this->cid;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getCid() {
+	public function getCid(): int
+    {
 		return $this->cid;
 	}
 
@@ -132,7 +137,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param int $cid
 	 */
-	public function setCid($cid) {
+	public function setCid(int $cid) {
 		$this->cid = $cid;
 	}
 
@@ -140,7 +145,8 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return int
 	 */
-	public function getPid() {
+	public function getPid(): int
+    {
 		return $this->pid;
 	}
 
@@ -148,7 +154,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param int $pid
 	 */
-	public function setPid($pid) {
+	public function setPid(int $pid) {
 		$this->pid = $pid;
 	}
 
@@ -156,7 +162,8 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return int
 	 */
-	public function getParent() {
+	public function getParent(): ?int
+    {
 		return $this->parent;
 	}
 
@@ -164,7 +171,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param int $parent
 	 */
-	public function setParent($parent) {
+	public function setParent(int $parent) {
 		$this->parent = $parent;
 	}
 
@@ -172,7 +179,8 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getCulture() {
+	public function getCulture(): string
+    {
 		return $this->culture;
 	}
 
@@ -180,7 +188,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param String $culture
 	 */
-	public function setCulture($culture) {
+	public function setCulture(string $culture) {
 		$this->culture = $culture;
 	}
 
@@ -188,11 +196,13 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getName() {
+	public function getName(): string
+    {
 		return $this->name;
 	}
 
-	public function getNameWithPath() {
+	public function getNameWithPath(): string
+    {
 		$path = array($this->getName());
 		$category = $this;
 		$already_handled = array($this->getId());
@@ -211,7 +221,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param String $name
 	 */
-	public function setName($name) {
+	public function setName(string $name) {
 		$this->name = $name;
 	}
 
@@ -219,7 +229,8 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getDescription() {
+	public function getDescription(): string
+    {
 		return $this->description;
 	}
 
@@ -227,7 +238,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param String $description
 	 */
-	public function setDescription($description) {
+	public function setDescription(string $description) {
 		$this->description = $description;
 	}
 
@@ -235,7 +246,8 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getCategorytype() {
+	public function getCategorytype(): string
+    {
 		return $this->categorytype;
 	}
 
@@ -243,7 +255,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param String $categorytype
 	 */
-	public function setCategorytype($categorytype) {
+	public function setCategorytype(string $categorytype) {
 		$this->categorytype = $categorytype;
 	}
 
@@ -251,7 +263,8 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getStatus() {
+	public function getStatus(): string
+    {
 		return $this->status;
 	}
 
@@ -259,7 +272,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param String $status
 	 */
-	public function setStatus($status) {
+	public function setStatus(string $status) {
 		$this->status = $status;
 	}
 
@@ -267,7 +280,8 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getPicture() {
+	public function getPicture(): string
+    {
 		return $this->picture;
 	}
 
@@ -275,7 +289,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param String $picture
 	 */
-	public function setPicture($picture) {
+	public function setPicture(string $picture) {
 		$this->picture = $picture;
 	}
 
@@ -283,7 +297,8 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return int
 	 */
-	public function getWeight() {
+	public function getWeight(): int
+    {
 		return $this->weight;
 	}
 
@@ -291,7 +306,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param int $weight
 	 */
-	public function setWeight($weight) {
+	public function setWeight(int $weight) {
 		$this->weight = $weight;
 	}
 
@@ -299,7 +314,8 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getCreatedAt() {
+	public function getCreatedAt(): string
+    {
 		return $this->created_at;
 	}
 
@@ -307,7 +323,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param String $created_at
 	 */
-	public function setCreatedAt($created_at) {
+	public function setCreatedAt(string $created_at) {
 		$this->created_at = $created_at;
 	}
 
@@ -315,7 +331,8 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @return String
 	 */
-	public function getUpdatedAt() {
+	public function getUpdatedAt(): string
+    {
 		return $this->updated_at;
 	}
 
@@ -323,7 +340,7 @@ class xvmpCategory extends xvmpObject {
 	/**
 	 * @param String $updated_at
 	 */
-	public function setUpdatedAt($updated_at) {
+	public function setUpdatedAt(string $updated_at) {
 		$this->updated_at = $updated_at;
 	}
 

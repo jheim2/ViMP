@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -65,14 +68,14 @@ class xvmpConf extends ActiveRecord {
     /**
 	 * @var array
 	 */
-	protected static $cache = array();
+	protected static array $cache = array();
 	/**
 	 * @var array
 	 */
-	protected static $cache_loaded = array();
+	protected static array $cache_loaded = array();
 
 	/**
-	 * @var string
+	 * @var ?string
 	 *
 	 * @db_has_field        true
 	 * @db_is_unique        true
@@ -81,18 +84,23 @@ class xvmpConf extends ActiveRecord {
 	 * @db_fieldtype        text
 	 * @db_length           250
 	 */
-	protected $name;
+	protected ?string $name;
 	/**
-	 * @var string
+	 * @var ?string
 	 *
 	 * @db_has_field        true
 	 * @db_fieldtype        text
 	 * @db_length           4000
 	 */
-	protected $value;
+	protected ?string $value = null;
 
+    public function __construct($primary_key = 0)
+    {
+        parent::__construct($primary_key);
+    }
 
-	public static function returnDbTableName() {
+    public static function returnDbTableName(): string
+    {
 		return self::DB_TABLE_NAME;
 	}
 
@@ -102,7 +110,7 @@ class xvmpConf extends ActiveRecord {
 	 * @return mixed
 	 */
 	public static function getConfig($name) {
-		if (!self::$cache_loaded[$name]) {
+		if (!isset(self::$cache_loaded[$name])) {
 			try {
 				$obj = new self($name);
 			} catch (Exception $e) {
@@ -135,7 +143,7 @@ class xvmpConf extends ActiveRecord {
 	/**
 	 * @param string $name
 	 */
-	public function setName($name) {
+	public function setName(string $name) {
 		$this->name = $name;
 	}
 
@@ -143,7 +151,8 @@ class xvmpConf extends ActiveRecord {
 	/**
 	 * @return string
 	 */
-	public function getName() {
+	public function getName(): string
+    {
 		return $this->name;
 	}
 
@@ -151,7 +160,7 @@ class xvmpConf extends ActiveRecord {
 	/**
 	 * @param string $value
 	 */
-	public function setValue($value) {
+	public function setValue(string $value) {
 		$this->value = $value;
 	}
 
@@ -159,7 +168,8 @@ class xvmpConf extends ActiveRecord {
 	/**
 	 * @return string
 	 */
-	public function getValue() {
+	public function getValue(): string
+    {
 		return $this->value;
 	}
 }

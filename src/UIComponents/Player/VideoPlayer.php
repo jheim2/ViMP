@@ -137,7 +137,8 @@ class VideoPlayer
             $medium = str_replace('mp4', 'smil', $medium);
             $medium = preg_replace('/(_[0-9]{3,4}p)?\.smil/', '.smil', $medium);
         }
-        $id = ilUtil::randomhash();
+        $random = new \ilRandom();
+        $id = md5($random->int(1, 9999999) + str_replace(" ", "", (string) microtime()));
 
         if (xvmp::ViMPVersionGreaterEquals('4.0.5')) {
             $pathinfo['extension'] = $abr_conf ? 'application/x-mpegURL' : 'video/' . pathinfo($medium)['extension'];
@@ -202,7 +203,7 @@ class VideoPlayer
         }
 
         if ($isABRStream) {
-            $videojs_script .= "player.httpSourceSelector();";
+            $videojs_script .= " player.httpSourceSelector();";
         }
 
         if ($this->video->getProperties()['source-is360video']) {

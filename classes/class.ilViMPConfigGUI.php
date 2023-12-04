@@ -1,10 +1,13 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
  * Class ilViMPConfigGUI
- *
+ * @ilCtrl_IsCalledBy ilViMPConfigGUI: ilObjComponentSettingsGUI
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class ilViMPConfigGUI extends ilPluginConfigGUI {
@@ -28,7 +31,7 @@ class ilViMPConfigGUI extends ilPluginConfigGUI {
 	/**
 	 * @var ilViMPPlugin
 	 */
-	protected $pl;
+	protected ilViMPPlugin $pl;
 	/**
 	 * @var ilToolbarGUI
 	 */
@@ -37,11 +40,16 @@ class ilViMPConfigGUI extends ilPluginConfigGUI {
 	 * @var ilTabsGUI
 	 */
 	protected $tabs;
+
+    /* @var Container
+     */
+	protected $dic;
 	/**
 	 * ilViMPConfigGUI constructor.
 	 */
 	public function __construct() {
 		global $DIC;
+        $this->dic = $DIC;
 		$tpl = $DIC['tpl'];
 		$ilCtrl = $DIC['ilCtrl'];
 		$ilToolbar = $DIC['ilToolbar'];
@@ -54,10 +62,12 @@ class ilViMPConfigGUI extends ilPluginConfigGUI {
 	}
 
 
-	/**
-	 * @param $cmd
-	 */
-	function performCommand($cmd) {
+    /**
+     * @param string $cmd
+     * @throws ilCtrlException
+     */
+	function performCommand(string $cmd): void
+    {
 		$this->addSubTabs();
 		switch ($cmd) {
 			default:
@@ -66,33 +76,53 @@ class ilViMPConfigGUI extends ilPluginConfigGUI {
 		}
 	}
 
-	protected function addSubTabs() {
+    /**
+     * @throws ilCtrlException
+     */
+    protected function addSubTabs() {
 		$this->tabs->addSubTab(self::SUBTAB_SETTINGS, $this->pl->txt(self::SUBTAB_SETTINGS), $this->ctrl->getLinkTarget($this, self::CMD_STANDARD));
 		$this->tabs->addSubTab(self::SUBTAB_LOG, $this->pl->txt(self::SUBTAB_LOG), $this->ctrl->getLinkTarget($this, self::CMD_SHOW_LOG));
 	}
 
-	protected function showLog() {
+    /**
+     * @throws arException
+     * @throws Exception
+     */
+    protected function showLog() {
 		$this->tabs->activateSubTab(self::SUBTAB_LOG);
 		$xvmpEventLogTableGUI = new xvmpEventLogTableGUI($this, self::CMD_SHOW_LOG);
 		$xvmpEventLogTableGUI->parseData();
 		$this->tpl->setContent($xvmpEventLogTableGUI->getHTML());
 	}
 
-	protected function applyFilter() {
+    /**
+     * @throws ilCtrlException
+     * @throws JsonException
+     * @throws Exception
+     */
+    protected function applyFilter() {
 		$xvmpEventLogTableGUI = new xvmpEventLogTableGUI($this, self::CMD_SHOW_LOG);
 		$xvmpEventLogTableGUI->writeFilterToSession();
 		$xvmpEventLogTableGUI->resetOffset();
 		$this->ctrl->redirect($this, self::CMD_SHOW_LOG);
 	}
 
-	protected function resetFilter() {
+    /**
+     * @throws ilCtrlException
+     * @throws JsonException
+     * @throws Exception
+     */
+    protected function resetFilter() {
 		$xvmpEventLogTableGUI = new xvmpEventLogTableGUI($this, self::CMD_SHOW_LOG);
 		$xvmpEventLogTableGUI->resetFilter();
 		$xvmpEventLogTableGUI->resetOffset();
 		$this->ctrl->redirect($this, self::CMD_SHOW_LOG);
 	}
 
-	public function addFlushCacheButton () {
+    /**
+     * @throws ilCtrlException
+     */
+    public function addFlushCacheButton () {
 		$button = ilLinkButton::getInstance();
 		$button->setUrl($this->ctrl->getLinkTarget($this,self::CMD_FLUSH_CACHE));
 		$button->setCaption($this->pl->txt('flush_cache'), false);
@@ -108,9 +138,10 @@ class ilViMPConfigGUI extends ilPluginConfigGUI {
 		$this->ctrl->redirect($this, self::CMD_STANDARD);
 	}
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException
+     */
 	protected function configure() {
 		$this->tabs->activateSubTab(self::SUBTAB_SETTINGS);
 		$this->addFlushCacheButton();
@@ -120,14 +151,15 @@ class ilViMPConfigGUI extends ilPluginConfigGUI {
 	}
 
 
-	/**
-	 *
-	 */
+    /**
+     *
+     * @throws ilCtrlException|JsonException
+     */
 	protected function update() {
 		$xvmpConfFormGUI = new xvmpConfFormGUI($this);
 		$xvmpConfFormGUI->setValuesByPost();
 		if ($xvmpConfFormGUI->saveObject()) {
-			ilUtil::sendSuccess($this->pl->txt('msg_success'), true);
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('msg_success'));
 			$this->ctrl->redirect($this, self::CMD_STANDARD);
 		}
 		$this->tpl->setContent($xvmpConfFormGUI->getHTML());

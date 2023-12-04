@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 /**
  * Class xvmpCacheFactory
@@ -6,14 +9,15 @@
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class xvmpCacheFactory {
-	private static $cache_instance = null;
+	private static ?xvmpCache $cache_instance = null;
 
 	/**
-	 * Generates an new instance of the live voting service.
+	 * Generates a new instance of the service.
 	 *
 	 * @return xvmpCache
 	 */
-	public static function getInstance() {
+	public static function getInstance(): ?xvmpCache
+    {
 
 		if(self::$cache_instance === null)
 		{

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\DI\Container;
@@ -16,17 +19,17 @@ abstract class xvmpTableGUI extends ilTable2GUI {
      */
     protected $dic;
 
-    protected $js_files = array();
-	protected $css_files = array();
+    protected array $js_files = array();
+	protected array $css_files = array();
 
 	/**
 	 * @var ilViMPPlugin
 	 */
-	protected $pl;
+	protected ilViMPPlugin $pl;
 	/**
 	 * @var ilCtrl
 	 */
-	protected $ctrl;
+	protected ilCtrl $ctrl;
 	/**
 	 * @var ilObjUser
 	 */
@@ -34,25 +37,25 @@ abstract class xvmpTableGUI extends ilTable2GUI {
 	/**
 	 * @var array
 	 */
-	protected $available_columns = array();
+	protected array $available_columns = array();
     /**
      * @var array
      */
-	protected $selectable_columns = array();
+	protected array $selectable_columns = array();
 	/**
 	 * @var array
 	 */
-	protected $available_filters = array();
+	protected array $available_filters = array();
 	/**
 	 * @var ilTemplate
 	 */
 	protected $tpl_global;
 
 
-
-	/**
-	 * xvmpTableGUI constructor.
-	 */
+    /**
+     * xvmpTableGUI constructor.
+     * @throws Exception
+     */
 	public function __construct($parent_gui, $parent_cmd) {
 		global $DIC;
 		$ilCtrl = $DIC['ilCtrl'];
@@ -86,29 +89,33 @@ abstract class xvmpTableGUI extends ilTable2GUI {
 
 	protected function initColumns() {
 		foreach ($this->available_columns as $title => $props) {
-			if (!$props['no_header']) {
-				$this->addColumn($this->pl->txt($title), $props['sort_field'], $props['width']);
+			if (!isset($props['no_header'])) {
+				$this->addColumn($this->pl->txt($title), $props['sort_field'] ?? '');
 			}
 		}
 
 		foreach ($this->getSelectableColumns() as $title => $props) {
 		    if ($this->isColumnSelected($title)) {
-		        $this->addColumn($props['txt'], $props['sort_field'], $props['width']);
+		        $this->addColumn($props['txt'], $props['sort_field']);
             }
         }
 	}
 
-	public function initFilter() {
+    /**
+     * @throws Exception
+     */
+    public function initFilter(): void
+    {
 		foreach ($this->available_filters as $title => $props){
 			$filter_item = new $props['input_gui']($this->pl->txt($title), $props['post_var'] ? $props['post_var'] : $title);
 			$this->addAndReadFilterItem($filter_item);
 		}
 	}
 
-	/**
-	 * @param $item
-	 */
-	protected function addAndReadFilterItem(ilFormPropertyGUI $item)
+    /**
+     * @param ilTableFilterItem $item
+     */
+	protected function addAndReadFilterItem(ilTableFilterItem $item)
 	{
 		$this->addFilterItem($item);
 		$item->readFromSession();
@@ -138,7 +145,8 @@ abstract class xvmpTableGUI extends ilTable2GUI {
      *
      * @return bool
      */
-    public function isColumnSelected($column) {
+    public function isColumnSelected($column): bool
+    {
         if (!array_key_exists($column, $this->getSelectableColumns())) {
             return true;
         }
@@ -151,7 +159,8 @@ abstract class xvmpTableGUI extends ilTable2GUI {
      * @param $value
      * @return string
      */
-    protected function parseColumnValue($column, $value) {
+    protected function parseColumnValue($column, $value): string
+    {
         switch ($column) {
             case 'categories':
                 return implode(', ', $value);
@@ -166,7 +175,7 @@ abstract class xvmpTableGUI extends ilTable2GUI {
                 }
                 return $value;
             default:
-                return $value ? $value : '&nbsp';
+                return $value ?: '&nbsp';
         }
     }
 

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
@@ -22,15 +25,18 @@ class xvmpDeletedMedium extends xvmpMedium {
 	/**
 	 * @return String
 	 */
-	public function getTitle() {
+	public function getTitle(): string
+    {
 		return ilViMPPlugin::getInstance()->txt('not_available');
 	}
 
 
-	/**
-	 * @return String
-	 */
-	public function getDescription($max_length = 0) {
+    /**
+     * @param int $max_length
+     * @return String
+     */
+	public function getDescription(int $max_length = 0): string
+    {
 		return ilViMPPlugin::getInstance()->txt('not_available_description');
 	}
 
@@ -38,7 +44,8 @@ class xvmpDeletedMedium extends xvmpMedium {
 	/**
 	 * @return int
 	 */
-	public function getDuration() {
+	public function getDuration(): int
+    {
 		return 0;
 	}
 
@@ -46,31 +53,38 @@ class xvmpDeletedMedium extends xvmpMedium {
 	/**
 	 * @return String
 	 */
-	public function getDurationFormatted() {
+	public function getDurationFormatted(): string
+    {
 		return '';
 	}
 
 
-	/**
-	 * @return String
-	 */
-	public function getThumbnail($width = 0, $height = 0) {
+    /**
+     * @param int $width
+     * @param int $height
+     * @return String
+     */
+	public function getThumbnail(int $width = 0, int $height = 0): string
+    {
 		return ilViMPPlugin::getInstance()->getDirectory() . '/templates/images/not_available.png';
 	}
 
 
 	/**
-	 * @return array
-	 */
-	public function getMedium() {
+	 * @return string
+     */
+	public function getMedium(): string
+    {
 		return '';
 	}
 
 
-	/**
-	 * @return String
-	 */
-	public function getCreatedAt($format = '') {
+    /**
+     * @param string $format
+     * @return String
+     */
+	public function getCreatedAt(string $format = ''): string
+    {
 		return '';
 	}
 
