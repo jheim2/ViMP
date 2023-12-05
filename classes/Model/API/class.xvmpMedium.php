@@ -67,7 +67,8 @@ class xvmpMedium extends xvmpObject {
 	 * @return xvmpDeletedMedium|static
 	 * @throws xvmpException|Exception
      */
-	public static function find($id) {
+	public static function find($id): xvmpObject
+    {
 		try {
 			return parent::find($id);
 		} catch (Exception $e) {
@@ -219,7 +220,8 @@ class xvmpMedium extends xvmpObject {
      * @return bool|mixed|null
      * @throws xvmpException
      */
-	public static function getObjectAsArray($id) {
+	public static function getObjectAsArray($id): array
+    {
 		$key = self::class . '-' . $id;
 		$existing = xvmpCacheFactory::getInstance()->get($key);
 		if ($existing) {
@@ -244,7 +246,8 @@ class xvmpMedium extends xvmpObject {
      * @return mixed
      * @throws xvmpException
      */
-	public static function getAllAsArray() {
+	public static function getAllAsArray(): array
+    {
 		$response = xvmpRequest::getMedia()->getResponseArray();
 		return $response['media']['medium'];
 	}
@@ -352,8 +355,8 @@ class xvmpMedium extends xvmpObject {
 	 * @param array $object
 	 * @param null  $ttl
 	 */
-	public static function cache($identifier, $object, $ttl = NULL) {
-		parent::cache($identifier, $object, ($ttl ? $ttl : xvmpConf::getConfig(xvmpConf::F_CACHE_TTL_VIDEOS)));
+	public static function cache($identifier, array $object, $ttl = NULL) {
+		parent::cache($identifier, $object, (int)($ttl ? $ttl : xvmpConf::getConfig(xvmpConf::F_CACHE_TTL_VIDEOS)));
 	}
 
 	/**
@@ -604,7 +607,7 @@ class xvmpMedium extends xvmpObject {
 	/**
 	 * @param int $id
 	 */
-	public function setId($id) {
+	public function setId(int $id) {
 		$this->setMid($id);
 	}
 
@@ -1212,18 +1215,18 @@ class xvmpMedium extends xvmpObject {
 
 
 	/**
-	 * @return array
+	 * @return string
 	 */
-	public function getTags(): array
+	public function getTags(): string
     {
 		return $this->tags;
 	}
 
 
 	/**
-	 * @param array $tags
+	 * @param string $tags
 	 */
-	public function setTags(array $tags) {
+	public function setTags(string $tags) {
 		$this->tags = $tags;
 	}
 

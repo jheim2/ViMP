@@ -13,7 +13,8 @@ class xvmpCategory extends xvmpObject {
 
 	const DEFAULT_CACHE_TTL = 86400; // 1 day
 
-	public static function getObjectAsArray($id) {
+	public static function getObjectAsArray($id): array
+    {
 		$key = self::class;
 		$existing = xvmpCacheFactory::getInstance()->get($key);
 		if ($existing && isset($existing[$id])) {
@@ -35,7 +36,8 @@ class xvmpCategory extends xvmpObject {
 		return $response;
 	}
 
-	public static function getAllAsArray() {
+	public static function getAllAsArray(): array
+    {
 		$key = self::class;
 		$existing = xvmpCacheFactory::getInstance()->get($key);
 		if ($existing && ($existing['loaded'] == 1)) {
@@ -62,8 +64,8 @@ class xvmpCategory extends xvmpObject {
 	}
 
 
-	public static function cache($identifier, $object, $ttl = NULL) {
-		parent::cache($identifier, $object, ($ttl ? $ttl : xvmpConf::getConfig(xvmpConf::F_CACHE_TTL_CATEGORIES)));
+	public static function cache($identifier, array $object, $ttl = NULL) {
+		parent::cache($identifier, $object, (int)($ttl ? $ttl : xvmpConf::getConfig(xvmpConf::F_CACHE_TTL_CATEGORIES)));
 	}
 
 

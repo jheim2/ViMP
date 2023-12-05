@@ -14,10 +14,10 @@ class xvmpObject {
 	/**
 	 * @var int
 	 */
-	protected $id;
+	protected int $id;
 
-	protected static $cache_initialized = array();
-	protected static $cache = array();
+	protected static array $cache_initialized = array();
+	protected static array $cache = array();
 
 
 	/**
@@ -27,7 +27,8 @@ class xvmpObject {
 	 *
 	 * @return static
 	 */
-	public static function find($id) {
+	public static function find($id): xvmpObject
+    {
 		$class_name = get_called_class();
 		if (!isset(self::$cache[$class_name][$id])) {
 			if (!isset(self::$cache[$class_name])) {
@@ -47,7 +48,8 @@ class xvmpObject {
 	 *
 	 * @return self[]
 	 */
-	public static function getAll() {
+	public static function getAll(): array
+    {
 		$class_name = get_called_class();
 		if (!isset(self::$cache_initialized[$class_name])) {
 			self::buildAllFromArray($class_name::getAllAsArray());
@@ -60,7 +62,8 @@ class xvmpObject {
 	 *
 	 * @return array
 	 */
-	public static function getFiltered(array $filter) {
+	public static function getFiltered(array $filter): array
+    {
 		$class_name = get_called_class();
 		if (!self::$cache_initialized[$class_name]) {
 			self::buildFromArray($class_name::getFilteredAsArray($filter));
@@ -111,7 +114,8 @@ class xvmpObject {
 	/**
 	 * @return array
 	 */
-	public function __toArray() {
+	public function __toArray(): array
+    {
 		$data = $this->__toStdClass();
 		$array = (array)$data;
 
@@ -121,7 +125,8 @@ class xvmpObject {
 	/**
 	 * @return stdClass
 	 */
-	public function __toStdClass() {
+	public function __toStdClass(): stdClass
+    {
 		$r = new ReflectionClass($this);
 		$stdClass = new stdClass();
 		foreach ($r->getProperties() as $name) {
@@ -183,7 +188,7 @@ class xvmpObject {
 	 * @param array $object
 	 * @param null  $ttl
 	 */
-	public static function cache($identifier, $object, $ttl = null) {
+	public static function cache($identifier, array $object, $ttl = null) {
 //		self::$cache[$key] = $object;
 		xvmpCurlLog::getInstance()->write('CACHE: added to cache: ' . $identifier, xvmpCurlLog::DEBUG_LEVEL_1);
 		xvmpCacheFactory::getInstance()->set($identifier, $object, (int) $ttl);
@@ -194,7 +199,8 @@ class xvmpObject {
 	 *
 	 * @return string
 	 */
-	public static function convertToUtf8($string) {
+	public static function convertToUtf8($string): string
+    {
 		if (is_object($string) || ilStr::isUtf8($string)) {
 			return $string;
 		}
@@ -218,7 +224,8 @@ class xvmpObject {
 	 *
 	 * @return array
 	 */
-	public static function getFilteredAsArray(array $filter) {
+	public static function getFilteredAsArray(array $filter): array
+    {
 		return array();
 	}
 
@@ -228,7 +235,8 @@ class xvmpObject {
 	 *
 	 * @return array()
 	 */
-	public static function getAllAsArray() {
+	public static function getAllAsArray(): array
+    {
 		return array();
 	}
 
@@ -240,7 +248,8 @@ class xvmpObject {
 	 *
 	 * @return array
 	 */
-	public static function getObjectAsArray($id) {
+	public static function getObjectAsArray($id): array
+    {
 		return array();
 	}
 
@@ -248,7 +257,8 @@ class xvmpObject {
 	/**
 	 * @return int
 	 */
-	public function getId() {
+	public function getId(): int
+    {
 		return $this->id;
 	}
 
@@ -256,7 +266,7 @@ class xvmpObject {
 	/**
 	 * @param int $id
 	 */
-	public function setId($id) {
+	public function setId(int $id) {
 		$this->id = $id;
 	}
 

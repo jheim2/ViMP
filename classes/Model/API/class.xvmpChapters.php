@@ -42,8 +42,8 @@ class xvmpChapters extends xvmpObject {
 	 * @param array $object
 	 * @param null  $ttl
 	 */
-	public static function cache($identifier, $object, $ttl = null) {
-		parent::cache($identifier, $object, xvmpConf::getConfig(xvmpConf::F_CACHE_TTL_VIDEOS));
+	public static function cache($identifier, array $object, $ttl = null) {
+		parent::cache($identifier, $object, (int) xvmpConf::getConfig(xvmpConf::F_CACHE_TTL_VIDEOS));
 	}
 
 

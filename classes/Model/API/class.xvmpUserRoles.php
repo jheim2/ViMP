@@ -18,7 +18,8 @@ class xvmpUserRoles extends xvmpObject {
      * @inheritdoc
      * @throws xvmpException
      */
-	public static function find($id) {
+	public static function find($id): xvmpObject
+    {
 		return self::getAllAsArray()[$id];
 	}
 
@@ -26,7 +27,8 @@ class xvmpUserRoles extends xvmpObject {
      * @inheritdoc
      * @throws xvmpException
      */
-	public static function getAllAsArray() {
+	public static function getAllAsArray(): array
+    {
 		$existing = xvmpCacheFactory::getInstance()->get(self::class);
 		if ($existing) {
 			xvmpCurlLog::getInstance()->write('CACHE: used cached: ' . self::class, xvmpCurlLog::DEBUG_LEVEL_2);
@@ -59,7 +61,7 @@ class xvmpUserRoles extends xvmpObject {
 	/**
 	 * @var int
 	 */
-	protected $id;
+	protected int $id;
 	/**
 	 * @var String
 	 */
@@ -69,7 +71,7 @@ class xvmpUserRoles extends xvmpObject {
 	 */
 	protected string $name;
 	/**
-	 * @var String
+	 * @var ?String
 	 */
 	protected ?string $description;
 	/**
