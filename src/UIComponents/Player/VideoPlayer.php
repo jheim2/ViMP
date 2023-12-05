@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\UIComponents\Player;
 
+use ilRandom;
 use ilViMPPlugin;
 use ilTemplate;
 use ilCtrl;
+use Throwable;
 use xvmpMedium;
 use xvmpException;
 use ilTemplateException;
 use xvmp;
 use xvmpRequest;
 use xvmpConfig;
-use ilUtil;
 use xvmpChapters;
 use ilObjViMPGUI;
 use xvmpDeletedMedium;
@@ -25,12 +28,12 @@ class VideoPlayer
     /**
      * @var bool
      */
-    private $increase_view_count;
+    private bool $increase_view_count;
 
     /**
      * @var ilViMPPlugin
      */
-    protected $pl;
+    protected ilViMPPlugin $pl;
     /**
      * @var ilTemplate
      */
@@ -46,11 +49,11 @@ class VideoPlayer
     /**
      * @var bool
      */
-    protected $embed;
+    protected bool $embed;
     /**
      * @var array
      */
-    protected $options = array(
+    protected array $options = array(
         "controls" => true,
         "autoplay" => false,
         "preload" => "auto",
@@ -58,7 +61,7 @@ class VideoPlayer
         "playbackRates" => [0.5, 1.0, 1.25, 1.5],
         "plugins" => ["httpSourceSelector" => ["default" => "auto"]]
     );
-    protected static $count = 1;
+    protected static int $count = 1;
 
     /**
      * xvmpVideoPlayer constructor.
@@ -108,9 +111,9 @@ class VideoPlayer
     /**
      * @return string
      * @throws ilTemplateException
-     * @throws xvmpException
+     * @throws xvmpException|Throwable
      */
-    public function getHTML()
+    public function getHTML(): string
     {
         if (xvmp::ViMPVersionGreaterEquals('4.4.0')
             && $this->increase_view_count
@@ -137,8 +140,8 @@ class VideoPlayer
             $medium = str_replace('mp4', 'smil', $medium);
             $medium = preg_replace('/(_[0-9]{3,4}p)?\.smil/', '.smil', $medium);
         }
-        $random = new \ilRandom();
-        $id = md5($random->int(1, 9999999) + str_replace(" ", "", (string) microtime()));
+        $random = new ilRandom();
+        $id = md5($random->int(1, 9999999) . str_replace(" ", "", (string) microtime()));
 
         if (xvmp::ViMPVersionGreaterEquals('4.0.5')) {
             $pathinfo['extension'] = $abr_conf ? 'application/x-mpegURL' : 'video/' . pathinfo($medium)['extension'];

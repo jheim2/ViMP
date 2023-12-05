@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\UIComponents\PlayerModal;
 
 /**
@@ -11,11 +13,11 @@ class MediumAttribute
     /**
      * @var string
      */
-    protected $title;
+    protected string $title;
     /**
      * @var string
      */
-    protected $value;
+    protected string $value;
 
     /**
      * VideoInfo constructor.

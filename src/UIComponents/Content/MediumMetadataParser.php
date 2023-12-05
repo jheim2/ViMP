@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\Content;
 
 use ilViMPPlugin;
@@ -16,12 +18,12 @@ class MediumMetadataParser
     /**
      * @var ilViMPPlugin
      */
-    protected $plugin;
+    protected ilViMPPlugin $plugin;
 
     /**
      * @var Container
      */
-    protected $dic;
+    protected Container $dic;
 
     /**
      * @param Container    $dic
@@ -36,8 +38,10 @@ class MediumMetadataParser
     /**
      * @param DateTime|null $availability_start
      * @param DateTime|null $availability_end
+     * @param bool $short
+     * @return string
      */
-    public function parseAvailability(/*?DateTime*/ $availability_start, /*?DateTime*/ $availability_end, bool $short) : string
+    public function parseAvailability(?DateTime $availability_start, ?DateTime $availability_end, bool $short) : string
     {
         if (!is_null($availability_start) && !is_null($availability_end)) {
             return sprintf($this->plugin->txt('availability_between' . ($short ? '_short' : '')),

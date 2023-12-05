@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\UIComponents\PlayerModal;
 
 use ILIAS\UI\Component\Button\Button;
@@ -15,15 +17,15 @@ class PlayerContainerDTO
     /**
      * @var VideoPlayer
      */
-    protected $video_player;
+    protected VideoPlayer $video_player;
     /**
      * @var MediumMetadataDTO
      */
-    protected $medium_metadata;
+    protected MediumMetadataDTO $medium_metadata;
     /**
      * @var Button[]
      */
-    protected $buttons = [];
+    protected array $buttons = [];
 
     /**
      * PlayModal constructor.

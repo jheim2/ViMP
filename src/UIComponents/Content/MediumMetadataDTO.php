@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\Content;
 
 use DateTime;
@@ -13,35 +15,35 @@ class MediumMetadataDTO
     /**
      * @var int
      */
-    private $mid;
+    private int $mid;
     /**
      * @var string
      */
-    private $title;
+    private string $title;
     /**
      * @var string
      */
-    private $description;
+    private string $description;
     /**
      * @var MediumAttribute[]
      */
-    private $medium_attributes = [];
+    private array $medium_attributes;
     /**
      * @var bool
      */
-    private $transcoding;
+    private bool $transcoding;
     /**
      * @var string
      */
-    private $thumbnail_url;
+    private string $thumbnail_url;
     /**
      * @var DateTime|null
      */
-    private $availability_start;
+    private ?DateTime $availability_start;
     /**
      * @var DateTime|null
      */
-    private $availability_end;
+    private ?DateTime $availability_end;
 
     /**
      * VideoMetadataDTO constructor.
@@ -93,7 +95,7 @@ class MediumMetadataDTO
     /**
      * @return DateTime|null
      */
-    public function getAvailabilityStart() /*: ?DateTime*/
+    public function getAvailabilityStart(): ?DateTime /*: ?DateTime*/
     {
         return $this->availability_start;
     }
@@ -101,7 +103,7 @@ class MediumMetadataDTO
     /**
      * @return DateTime|null
      */
-    public function getAvailabilityEnd() /*: ?DateTime*/
+    public function getAvailabilityEnd(): ?DateTime /*: ?DateTime*/
     {
         return $this->availability_end;
     }

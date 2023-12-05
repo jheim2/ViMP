@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\UIComponents\Renderer;
 
 use ILIAS\DI\Container;
 use ILIAS\UI\Component\Component;
 use ilTemplate;
+use Throwable;
 use xvmpException;
 use ilTemplateException;
 use xvmpConf;
@@ -22,16 +25,16 @@ class PlayerModalRenderer
     /**
      * @var ilViMPPlugin
      */
-    private $plugin;
+    private ilViMPPlugin $plugin;
     /**
      * @var MediumMetadataParser
      */
-    private $metadata_parser;
+    private MediumMetadataParser $metadata_parser;
 
     /**
      * @var Container
      */
-    protected $dic;
+    protected Container $dic;
 
     /**
      * @param MediumMetadataParser $metadata_parser
@@ -47,7 +50,7 @@ class PlayerModalRenderer
 
     /**
      * @throws ilTemplateException
-     * @throws xvmpException
+     * @throws xvmpException|Throwable
      */
     public function render(PlayerContainerDTO $playerContainerDTO, bool $async, bool $show_unavailable = false) : string
     {
@@ -91,7 +94,9 @@ class PlayerModalRenderer
 
     /**
      * @param PlayerContainerDTO $playerContainerDTO
-     * @param ilTemplate         $tpl
+     * @param ilTemplate $tpl
+     * @param bool $available
+     * @throws ilTemplateException
      */
     protected function renderInfoMessage(PlayerContainerDTO $playerContainerDTO, ilTemplate $tpl, bool $available)
     {

@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\UIComponents\Renderer;
 
 use ilTemplate;
+use ilTemplateException;
 use srag\Plugins\ViMP\Content\MediumMetadataDTO;
 use ilViMPPlugin;
 use ILIAS\DI\Container;
 use xvmpMedium;
-use DateTime;
-use xvmpException;
 use srag\Plugins\ViMP\Content\MediumMetadataParser;
 
 /**
@@ -22,16 +23,16 @@ abstract class ContentElementRenderer
     /**
      * @var MediumMetadataParser
      */
-    protected $metadata_parser;
+    protected MediumMetadataParser $metadata_parser;
     /**
      * @var ilViMPPlugin
      */
-    protected $plugin;
+    protected ilViMPPlugin $plugin;
 
     /**
      * @var Container
      */
-    protected $dic;
+    protected Container $dic;
 
     /**
      * @param MediumMetadataParser $metadata_parser
@@ -46,7 +47,7 @@ abstract class ContentElementRenderer
     }
 
     /**
-     * @throws xvmpException
+     * @throws ilTemplateException
      */
     protected function buildInnerTemplate(MediumMetadataDTO $mediumMetadataDTO) : ilTemplate
     {
@@ -86,7 +87,8 @@ abstract class ContentElementRenderer
 
     /**
      * @param MediumMetadataDTO $mediumMetadataDTO
-     * @param ilTemplate        $tpl
+     * @param ilTemplate $tpl
+     * @throws ilTemplateException
      */
     protected function fillMediumInfos(MediumMetadataDTO $mediumMetadataDTO, ilTemplate $tpl)
     {
@@ -99,6 +101,9 @@ abstract class ContentElementRenderer
         }
     }
 
+    /**
+     * @throws ilTemplateException
+     */
     protected function fillAvailabilityInfo(MediumMetadataDTO $mediumMetadataDTO, ilTemplate $tpl)
     {
         $tpl->setCurrentBlock('info_paragraph');
@@ -110,6 +115,9 @@ abstract class ContentElementRenderer
         $tpl->parseCurrentBlock();
     }
 
+    /**
+     * @throws ilTemplateException
+     */
     protected function fillAvailabilityOverlay(MediumMetadataDTO $mediumMetadataDTO, ilTemplate $tpl)
     {
         $tpl->setCurrentBlock('not_available_overlay');
@@ -121,6 +129,9 @@ abstract class ContentElementRenderer
         $tpl->parseCurrentBlock();
     }
 
+    /**
+     * @throws ilTemplateException
+     */
     public function render(MediumMetadataDTO $mediumMetadataDTO) : string
     {
         $tpl = $this->buildTemplate($mediumMetadataDTO);

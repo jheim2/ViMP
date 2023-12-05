@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\UIComponents\Renderer;
 
 use ilViMPPlugin;
 use ILIAS\DI\Container;
 use ilTemplateException;
+use Throwable;
 use xvmpException;
 use srag\Plugins\ViMP\UIComponents\PlayerModal\PlayerContainerDTO;
 use ILIAS\UI\Component\Component;
 use ilTemplate;
-use DateTime;
 use srag\Plugins\ViMP\Content\MediumMetadataParser;
 
 /**
@@ -24,16 +26,16 @@ class PlayerInSiteRenderer
     /**
      * @var ilViMPPlugin
      */
-    private $plugin;
+    private ilViMPPlugin $plugin;
     /**
      * @var MediumMetadataParser
      */
-    private $metadata_parser;
+    private MediumMetadataParser $metadata_parser;
 
     /**
      * @var Container
      */
-    protected $dic;
+    protected Container $dic;
 
     /**
      * @param MediumMetadataParser $metadata_parser
@@ -49,7 +51,7 @@ class PlayerInSiteRenderer
 
     /**
      * @throws ilTemplateException
-     * @throws xvmpException
+     * @throws xvmpException|Throwable
      */
     public function render(PlayerContainerDTO $playerContainerDTO, bool $deleted) : string
     {
@@ -58,7 +60,7 @@ class PlayerInSiteRenderer
             $playerContainerDTO->getVideoPlayer()->getHTML()
             : $this->renderUnavailablePlayer($playerContainerDTO));
         $tpl->setVariable('TITLE', $playerContainerDTO->getMediumMetadata()->getTitle());
-        $tpl->setVariable('DESCRIPTION', nl2br($playerContainerDTO->getMediumMetadata()->getDescription(0), false));
+        $tpl->setVariable('DESCRIPTION', nl2br($playerContainerDTO->getMediumMetadata()->getDescription(), false));
 
         if (!$playerContainerDTO->getMediumMetadata()->isAvailable()) {
             $tpl->setCurrentBlock('info_message');

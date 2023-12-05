@@ -1,18 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\UIComponents\Renderer;
 
+use ilCtrlException;
+use ilTemplateException;
 use srag\Plugins\ViMP\Content\MediumMetadataDTO;
 use ilTemplate;
 use xvmpContentGUI;
-use DateTime;
-use xvmpException;
 
 /**
  * @author Theodor Truffer <tt@studer-raimann.ch>
  */
 class TileSmallRenderer extends TileRenderer
 {
+    /**
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
     protected function buildTemplate(MediumMetadataDTO $mediumMetadataDTO) : ilTemplate
     {
         $tpl = $this->getContainerTemplate();

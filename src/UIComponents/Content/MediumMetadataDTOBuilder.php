@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\Content;
 
+use ilLanguage;
 use ilViMPPlugin;
 use xvmpMedium;
 use srag\Plugins\ViMP\UIComponents\PlayerModal\MediumAttribute;
@@ -17,15 +20,17 @@ class MediumMetadataDTOBuilder
     /**
      * @var ilViMPPlugin
      */
-    private $plugin;
+    private ilViMPPlugin $plugin;
     /**
      * @var Container
      */
-    private $dic;
+    private Container $dic;
 
-    private $lng;
+    private ilLanguage $lng;
+
     /**
      * VideoMetadataDTOBuilder constructor.
+     * @param Container $dic
      * @param ilViMPPlugin $plugin
      */
     public function __construct(Container $dic, ilViMPPlugin $plugin)
@@ -77,7 +82,7 @@ class MediumMetadataDTOBuilder
                     $title = $this->lng->exists($this->plugin->getPrefix() . "_" . $field[xvmpConf::F_FORM_FIELD_ID])
                         ? $this->lng->txt($this->plugin->getPrefix() . "_" . $field[xvmpConf::F_FORM_FIELD_ID])
                         : $field[xvmpConf::F_FORM_FIELD_TITLE];
-                    $medium_infos[] = new MediumAttribute($value, $title);
+                    $medium_infos[] = new MediumAttribute((string)$value, (string)$title);
                 }
             }
         }

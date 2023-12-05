@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace srag\Plugins\ViMP\UIComponents\Renderer;
 
 use ilViMPPlugin;
@@ -14,12 +16,12 @@ class Factory
     /**
      * @var ilViMPPlugin
      */
-    private $plugin;
+    private ilViMPPlugin $plugin;
 
     /**
      * @var Container
      */
-    private $dic;
+    private Container $dic;
 
     /**
      * @param Container    $dic

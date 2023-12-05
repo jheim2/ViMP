@@ -5,7 +5,6 @@ namespace srag\Plugins\ViMP\Cron;
 use ilViMPPlugin;
 use ilCronJob;
 use ilCronJobResult;
-use srag\DIC\ViMP\DICTrait;
 use xvmpCron;
 
 /**
@@ -17,25 +16,19 @@ use xvmpCron;
  */
 class ViMPJob extends ilCronJob
 {
-
-    use DICTrait;
-
     const CRON_JOB_ID = ilViMPPlugin::XVMP;
     const PLUGIN_CLASS_NAME = ilViMPPlugin::class;
-
+    private ilViMPPlugin $pl;
 
     /**
      * ViMPJob constructor
      */
     public function __construct()
     {
-
+        $this->pl = ilViMPPlugin::getInstance();
     }
 
 
-    /**
-     * @inheritDoc
-     */
     public function getId() : string
     {
         return self::CRON_JOB_ID;
@@ -51,54 +44,36 @@ class ViMPJob extends ilCronJob
     }
 
 
-    /**
-     * @inheritDoc
-     */
     public function hasFlexibleSchedule() : bool
     {
         return true;
     }
 
 
-    /**
-     * @inheritDoc
-     */
     public function getDefaultScheduleType() : int
     {
         return self::SCHEDULE_TYPE_IN_MINUTES;
     }
 
 
-    /**
-     * @inheritDoc
-     */
     public function getDefaultScheduleValue(): ?int
     {
         return 1;
     }
 
 
-    /**
-     * @inheritDoc
-     */
     public function getTitle() : string
     {
-        return ilViMPPlugin::PLUGIN_NAME . ": " . self::plugin()->translate("cron_title");
+        return ilViMPPlugin::PLUGIN_NAME . ": " . $this->pl->txt("cron_title");
     }
 
 
-    /**
-     * @inheritDoc
-     */
     public function getDescription() : string
     {
-        return self::plugin()->translate("cron_description");
+        return $this->pl->txt("cron_description");
     }
 
 
-    /**
-     * @inheritDoc
-     */
     public function run() : ilCronJobResult
     {
         $result = new ilCronJobResult();
@@ -106,8 +81,6 @@ class ViMPJob extends ilCronJob
         $srViMPCronjob = new xvmpCron();
         $srViMPCronjob->run();
 
-        $result->setStatus(ilCronJobResult::STATUS_OK);
-
-        return $result;
+        return $result->setStatus(ilCronJobResult::STATUS_OK);
     }
 }
