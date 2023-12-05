@@ -64,7 +64,7 @@ class xvmpCategory extends xvmpObject {
 	}
 
 
-	public static function cache($identifier, array $object, $ttl = NULL) {
+	public static function cache($identifier, $object, $ttl = NULL) {
 		parent::cache($identifier, $object, (int)($ttl ? $ttl : xvmpConf::getConfig(xvmpConf::F_CACHE_TTL_CATEGORIES)));
 	}
 

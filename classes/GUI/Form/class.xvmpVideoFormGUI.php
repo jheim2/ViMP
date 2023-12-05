@@ -41,7 +41,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
         $this->dic = $DIC;
         $this->upload_service = new xvmpUploadService($DIC->filesystem(), $DIC->upload());
         $random = new ilRandom();
-        $tmp_id = md5($random->int(1, 9999999) . str_replace(" ", "", microtime()));
+        $tmp_id = md5((string)($random->int(1, 9999999) + str_replace(" ", "", microtime())));
         $this->dic->ctrl()->setParameter($parent_gui, 'tmp_id', $tmp_id);
         parent::__construct($parent_gui);
         $this->dic->ui()->mainTemplate()->addCss($this->pl->getAssetURL('default/form/video_form.css'));

@@ -168,7 +168,7 @@ class ilObjViMPGUI extends ilObjectPluginGUI
                     break;
             }
         } catch (Exception $e) {
-            self::dic()->logger()->root()->logStack(ilLogLevel::ERROR, $e->getMessage());
+            $this->dic->logger()->root()->logStack(ilLogLevel::ERROR, $e->getMessage());
             $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $e->getMessage());
             $this->tpl->printToStdout();
         }

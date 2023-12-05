@@ -141,7 +141,7 @@ class VideoPlayer
             $medium = preg_replace('/(_[0-9]{3,4}p)?\.smil/', '.smil', $medium);
         }
         $random = new ilRandom();
-        $id = md5($random->int(1, 9999999) . str_replace(" ", "", (string) microtime()));
+        $id = md5(((string)($random->int(1, 9999999) + str_replace(" ", "", (string) microtime()))));
 
         if (xvmp::ViMPVersionGreaterEquals('4.0.5')) {
             $pathinfo['extension'] = $abr_conf ? 'application/x-mpegURL' : 'video/' . pathinfo($medium)['extension'];
