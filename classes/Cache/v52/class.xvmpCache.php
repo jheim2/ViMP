@@ -191,7 +191,7 @@ class xvmpCache extends ilGlobalCache {
 			return false;
 		}
 
-        return $this->global_cache->set($key, $this->global_cache->serialize($value), $ttl);
+        return $this->global_cache->set($key, $this->global_cache->serialize($value), (int) $ttl);
 	}
 
 
