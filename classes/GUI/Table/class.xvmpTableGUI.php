@@ -25,7 +25,7 @@ abstract class xvmpTableGUI extends ilTable2GUI {
 	/**
 	 * @var ilViMPPlugin
 	 */
-	protected ilViMPPlugin $pl;
+	protected $pl;
 	/**
 	 * @var ilCtrl
 	 */

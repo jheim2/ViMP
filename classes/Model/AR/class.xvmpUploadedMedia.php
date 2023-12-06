@@ -61,7 +61,7 @@ class xvmpUploadedMedia extends ActiveRecord {
 	 * @db_fieldtype        text
 	 * @db_length           256
 	 */
-	protected int $email;
+	protected string $email;
 	/**
 	 * @var int
 	 *
@@ -151,9 +151,9 @@ class xvmpUploadedMedia extends ActiveRecord {
 
 
 	/**
-	 * @param int $email
+	 * @param string $email
 	 */
-	public function setEmail(int $email) {
+	public function setEmail(string $email) {
 		$this->email = $email;
 	}
 
