@@ -414,23 +414,23 @@ class xvmpMedium extends xvmpObject {
 	/**
 	 * @var String
 	 */
-	protected string $description;
+	protected ?string $description;
 	/**
-	 * @var int
+	 * @var ?int
 	 */
-	protected int $duration;
-	/**
-	 * @var String
-	 */
-	protected string $duration_formatted;
+	protected ?int $duration;
 	/**
 	 * @var String
 	 */
-	protected string $thumbnail;
+	protected ?string $duration_formatted;
 	/**
 	 * @var String
 	 */
-	protected string $embed_code;
+	protected ?string $thumbnail;
+	/**
+	 * @var String
+	 */
+	protected ?string $embed_code;
 	/**
 	 * @var array|string
 	 */
