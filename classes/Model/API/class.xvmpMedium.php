@@ -406,7 +406,7 @@ class xvmpMedium extends xvmpObject {
 	/**
 	 * @var array
 	 */
-	protected array $properties;
+	protected ?array $properties;
 	/**
 	 * @var String
 	 */
