@@ -80,7 +80,7 @@ class xvmpEventLog extends ActiveRecord {
 	 * @db_fieldtype        text
 	 * @db_length           256
 	 */
-	protected string $title;
+	protected ?string $title;
 	/**
 	 * @var Array
 	 *
@@ -196,7 +196,7 @@ class xvmpEventLog extends ActiveRecord {
 	/**
 	 * @param String $title
 	 */
-	public function setTitle(string $title) {
+	public function setTitle(?string $title) {
 		$this->title = $title;
 	}
 

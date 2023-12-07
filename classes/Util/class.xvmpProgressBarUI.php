@@ -74,7 +74,7 @@ class xvmpProgressBarUI
         try {
             $progress = xvmpRequest::getTranscodingProgress($this->mid, 1);
         } catch (xvmpException $e) {
-            xvmpCurlLog::getInstance()->logError($e->getCode(), $e->getMessage());
+            xvmpCurlLog::getInstance()->logError((string) $e->getCode(), $e->getMessage());
             $progress = '...';
         }
         $this->tpl->setVariable('PROGRESS', $progress);

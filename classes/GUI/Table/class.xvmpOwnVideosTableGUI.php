@@ -326,7 +326,7 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
             $field_id = $custom_filter_field[xvmpConf::F_FILTER_FIELD_ID];
             if ($post_filter[$field_id]) {
                 $data = array_filter($data, function ($video) use ($post_filter, $field_id) {
-                    return strpos(strtolower($video[$field_id]), strtolower($post_filter[$field_id])) !== false;
+                    return strpos(strtolower((string) $video[$field_id]), strtolower($post_filter[$field_id])) !== false;
                 });
             }
         }

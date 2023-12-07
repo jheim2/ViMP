@@ -77,7 +77,7 @@ class MediumMetadataDTOBuilder
 
         if (!$short) {
             foreach (xvmpConf::getConfig(xvmpConf::F_FORM_FIELDS) as $field) {
-                if ($field[xvmpConf::F_FORM_FIELD_SHOW_IN_PLAYER]
+                if (isset($field[xvmpConf::F_FORM_FIELD_SHOW_IN_PLAYER]) && $field[xvmpConf::F_FORM_FIELD_SHOW_IN_PLAYER]
                     && ($value = $medium->getField($field[xvmpConf::F_FORM_FIELD_ID]))) {
                     $title = $this->lng->exists($this->plugin->getPrefix() . "_" . $field[xvmpConf::F_FORM_FIELD_ID])
                         ? $this->lng->txt($this->plugin->getPrefix() . "_" . $field[xvmpConf::F_FORM_FIELD_ID])
