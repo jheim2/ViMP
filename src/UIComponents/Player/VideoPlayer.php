@@ -206,7 +206,7 @@ class VideoPlayer
         }
 
         if ($isABRStream) {
-            $videojs_script .= " player.httpSourceSelector();";
+            $videojs_script .= " player.qualityLevels(); player.httpSourceSelector(); ";
         }
 
         if ($this->video->getProperties()['source-is360video']) {
@@ -216,7 +216,7 @@ class VideoPlayer
         }
 
         $template->setCurrentBlock('script');
-        $template->setVariable('SCRIPT', $videojs_script);
+        $template->setVariable('SCRIPT', 'if (typeof videojs === "undefined") { document.addEventListener("DOMContentLoaded", function() { ' . $videojs_script . ' });} else {  ' . $videojs_script . ' }');
         $template->parseCurrentBlock();
 
         return $template->get();

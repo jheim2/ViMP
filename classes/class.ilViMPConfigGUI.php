@@ -159,7 +159,7 @@ class ilViMPConfigGUI extends ilPluginConfigGUI {
 		$xvmpConfFormGUI = new xvmpConfFormGUI($this);
 		$xvmpConfFormGUI->setValuesByPost();
 		if ($xvmpConfFormGUI->saveObject()) {
-            $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('msg_success'));
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('msg_success'), true);
 			$this->ctrl->redirect($this, self::CMD_STANDARD);
 		}
 		$this->tpl->setContent($xvmpConfFormGUI->getHTML());

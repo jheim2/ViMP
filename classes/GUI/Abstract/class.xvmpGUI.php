@@ -259,9 +259,9 @@ abstract class xvmpGUI {
 
 
 	/**
-	 * @return ilObject
+	 * @return ?ilObject
      */
-	public function getObject(): ilObject
+	public function getObject(): ?ilObject
     {
 		return $this->parent_gui->getObject();
 	}
@@ -271,7 +271,8 @@ abstract class xvmpGUI {
 	 */
 	public function getObjId(): int
     {
-		return $this->parent_gui->getObject()->getId();
+        $obj = $this->parent_gui->getObject();
+        return $obj ? $obj->getId() : 0;
 	}
 
 
