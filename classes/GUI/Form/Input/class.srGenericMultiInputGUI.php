@@ -193,17 +193,17 @@ class srGenericMultiInputGUI extends ilFormPropertyGUI {
         $this->value = $value;
 
         foreach ($this->inputs as $key => $item) {
-            if (array_key_exists($key, $value)) {
-                if ($item instanceof ilCheckboxInputGUI) {
-                    $item->setChecked((bool) $value[$key]);
-                } else {
-                    if ($item instanceof ilDateTimeInputGUI) {
-                        if (ilCalendarUtil::parseIncomingDate($value[$key])) {
-                            $item->setDate(new ilDate($value[$key], IL_CAL_DATE));
-                        } else {
-                            $item->setDate();
-                        }
+            if ($item instanceof ilCheckboxInputGUI) {
+                $item->setChecked((bool)($value[$key] ?? false));
+            } else {
+                if ($item instanceof ilDateTimeInputGUI) {
+                    if (ilCalendarUtil::parseIncomingDate($value[$key])) {
+                        $item->setDate(new ilDate($value[$key], IL_CAL_DATE));
                     } else {
+                        $item->setDate();
+                    }
+                } else {
+                    if (isset($value[$key])) {
                         $item->setValue($value[$key]);
                     }
                 }
