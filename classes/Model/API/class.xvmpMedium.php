@@ -301,9 +301,9 @@ class xvmpMedium extends xvmpObject {
 
 
 	/**
-	 * @param $mid
+	 * @param int $mid
 	 */
-	public static function deleteObject($mid) {
+	public static function deleteObject(int $mid) {
 		xvmpRequest::deleteMedium($mid);
 		xvmpSelectedMedia::deleteVideo($mid);
 		if ($uploaded_media = xvmpUploadedMedia::find($mid)) {

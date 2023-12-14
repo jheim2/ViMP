@@ -212,7 +212,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 	 *
 	 */
 	public function confirmedDeleteVideo() {
-		$mid = $_POST['mid'];
+		$mid = (int) $_POST['mid'];
 
 		// fetch the video for logging purposes
 		$video = xvmpMedium::getObjectAsArray($mid);
