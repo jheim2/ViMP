@@ -74,7 +74,7 @@ class xvmpMedium extends xvmpObject {
 		} catch (Exception $e) {
 			if ($e->getCode() == 404) {
 				$deleted = new xvmpDeletedMedium();
-				$deleted->setMid($id);
+				$deleted->setMid((int)$id);
 				return $deleted;
 			} else {
 				throw $e;
@@ -172,7 +172,7 @@ class xvmpMedium extends xvmpObject {
 	public static function isVimeoOrYoutube($video): bool
     {
 		if (is_array($video)) {
-			return in_array($video['mediasubtype'], ['youtube', 'vimeo']);
+			return in_array($video['mediasubtype'] ?? array(), ['youtube', 'vimeo']);
 		} elseif ($video instanceof xvmpMedium) {
 			return in_array($video->getMediasubtype(), ['youtube', 'vimeo']);
 		} else {

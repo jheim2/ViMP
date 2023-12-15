@@ -277,7 +277,7 @@ class xvmpOwnVideosTableGUI extends xvmpTableGUI {
 		$this->ctrl->setParameter($this->parent_obj, 'mid', $a_set['mid']);
 		if ($a_set['status'] == 'legal') {
 			$actions->addItem($this->lng->txt('edit'), 'edit', $this->ctrl->getLinkTarget($this->parent_obj, xvmpOwnVideosGUI::CMD_EDIT_VIDEO));
-			$actions->addItem($this->lng->txt('change_owner'), 'change_owner', $this->ctrl->getLinkTarget($this->parent_obj, xvmpOwnVideosGUI::CMD_CHANGE_OWNER));
+			$actions->addItem($this->pl->txt('change_owner'), 'change_owner', $this->ctrl->getLinkTarget($this->parent_obj, xvmpOwnVideosGUI::CMD_CHANGE_OWNER));
 		}
 		$actions->addItem($this->lng->txt('delete'), 'delete', $this->ctrl->getLinkTarget($this->parent_obj, xvmpOwnVideosGUI::CMD_DELETE_VIDEO));
 		return $actions->getHTML();

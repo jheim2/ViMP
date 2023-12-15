@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 /**
  * Class xvmpChangeOwnerFormGUI
- *
+ * @ilCtrl_isCalledBy xvmpChangeOwnerFormGUI: ilObjViMPGUI
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
 class xvmpChangeOwnerFormGUI extends xvmpFormGUI {
@@ -36,7 +36,7 @@ class xvmpChangeOwnerFormGUI extends xvmpFormGUI {
 		global $DIC;
 		$this->global_tpl = $DIC['tpl'];
 		parent::__construct($parent_gui);
-		$this->mid = $mid;
+		$this->mid = (int) $mid;
 
 		$this->setTitle($this->pl->txt('form_title_change_owner'));
 
@@ -55,11 +55,7 @@ class xvmpChangeOwnerFormGUI extends xvmpFormGUI {
 		$input = new ilTextInputGUI($this->pl->txt('username'), 'login');
 		$input->setRequired(true);
 		$input->setInfo($this->pl->txt('info_autocomplete'));
-		$input->setDataSource($this->ctrl->getLinkTargetByClass(array(
-			ilUIPluginRouterGUI::class,
-			ilViMPPlugin::class
-		), ilViMPPlugin::CMD_ADD_USER_AUTO_COMPLETE, "", true));
-
+        $input->setDataSource($this->dic->ctrl()->getLinkTarget($this, 'addUserAutoComplete', "", true));
 		$this->addItem($input);
 	}
 }

@@ -361,7 +361,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
             } else {
                 $input = new ilTextInputGUI($title, $field[xvmpConf::F_FORM_FIELD_ID]);
             }
-            $input->setRequired((bool)$field[xvmpConf::F_FORM_FIELD_REQUIRED]);
+            $input->setRequired((bool)($field[xvmpConf::F_FORM_FIELD_REQUIRED] ?? false));
             $this->addItem($input);
         }
     }

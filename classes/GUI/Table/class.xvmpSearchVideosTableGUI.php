@@ -153,7 +153,7 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 		$filter_item = new ilTextInputGUI($this->pl->txt('username'), 'username');
 		$this->ctrl->setParameterByClass('ilViMPPlugin', 'ref_id', $_GET['ref_id']);
 
-        $filter_item->setDataSource($this->dic->ctrl()->getLinkTarget($this->parent_obj, 'addUserAutoComplete', "", true));
+        $filter_item->setDataSource($this->dic->ctrl()->getLinkTarget(new ilObjViMPGUI(), 'addUserAutoComplete', "", true));
 		$this->addAndReadFilterItem($filter_item);
 
 		$filter_item = new ilMultiSelectSearchInputGUI($this->pl->txt('category'), 'categories');

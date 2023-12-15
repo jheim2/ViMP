@@ -81,7 +81,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 	public function changeOwner() {
 		$mid = filter_input(INPUT_GET, 'mid');
 		$login = filter_input(INPUT_POST, 'login');
-		$login_exists = ilObjUser::_loginExists($login);
+		$login_exists = ilObjUser::_loginExists((string) $login);
 		if ($login && $login_exists) {
 			$ilConfirmationGUI = new ilConfirmationGUI();
 			$ilConfirmationGUI->setFormAction($this->dic->ctrl()->getFormAction($this));
@@ -109,7 +109,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 	 *
 	 */
 	public function confirmedChangeOwner() {
-		$mid = filter_input(INPUT_POST, 'mid');
+		$mid = (int) filter_input(INPUT_POST, 'mid');
 		$login = filter_input(INPUT_POST, 'login');
 
 		$medium = xvmpMedium::getObjectAsArray($mid);
@@ -123,9 +123,15 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 		$edit_fields = ['uid' => $xvmpUser->getUid(), 'mediapermissions' => implode(',', $medium['mediapermissions'])];
 		foreach (xvmpConf::getConfig(xvmpConf::F_FORM_FIELDS) as $form_field) {
 			// workaround for vimp bug (see PLVIMP-53)
-			if ($form_field[xvmpConf::F_FORM_FIELD_REQUIRED] == 1 && $form_field[xvmpConf::F_FORM_FIELD_TYPE] == 1) {
-				$edit_fields[$form_field[xvmpConf::F_FORM_FIELD_ID]] = 1;
-			}
+            if (
+                isset($form_field[xvmpConf::F_FORM_FIELD_REQUIRED]) &&
+                isset($form_field[xvmpConf::F_FORM_FIELD_TYPE]) &&
+                $form_field[xvmpConf::F_FORM_FIELD_REQUIRED] == 1 &&
+                $form_field[xvmpConf::F_FORM_FIELD_TYPE] == 1
+            ) {
+                $edit_fields[$form_field[xvmpConf::F_FORM_FIELD_ID]] = 1;
+            }
+
 		}
 		$response = xvmpRequest::editMedium($mid, $edit_fields)->getResponseBody();
 		if ($response) {

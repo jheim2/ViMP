@@ -19,8 +19,6 @@ class ilViMPPlugin extends ilRepositoryObjectPlugin {
 
 	const DEV = true;
 
-	const CMD_ADD_USER_AUTO_COMPLETE = 'addUserAutoComplete';
-
 	/**
 	 * @var ilViMPPlugin
 	 */
@@ -117,30 +115,6 @@ class ilViMPPlugin extends ilRepositoryObjectPlugin {
 		$DIC->database()->dropTable(xvmpUserLPStatus::returnDbTableName());
 		$DIC->database()->dropTable(xvmpUserProgress::returnDbTableName());
 	}
-
-	/**
-	 * async auto complete method for user filter in search table
-	 */
-	public function addUserAutoComplete() {
-		include_once './Services/User/classes/class.ilUserAutoComplete.php';
-		$auto = new ilUserAutoComplete();
-		$auto->setSearchFields(array('login','firstname','lastname', 'email'));
-		$auto->setResultField('login');
-		$auto->enableFieldSearchableCheck(false);
-		$auto->setMoreLinkAvailable(true);
-
-
-		if(($_REQUEST['fetchall']))
-		{
-			$auto->setLimit(ilUserAutoComplete::MAX_ENTRIES);
-		}
-
-		$list = $auto->getList($_REQUEST['term']);
-
-		echo $list;
-		exit();
-	}
-
 
     /**
      * Before activation processing

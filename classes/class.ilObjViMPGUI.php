@@ -442,4 +442,27 @@ class ilObjViMPGUI extends ilObjectPluginGUI
         $key = $_GET['key'];
         // TODO: implement picture wrapper, if api action is implemented
     }
+
+    /**
+     * async auto complete method for user filter in search table
+     */
+    public function addUserAutoComplete() {
+        include_once './Services/User/classes/class.ilUserAutoComplete.php';
+        $auto = new ilUserAutoComplete();
+        $auto->setSearchFields(array('login','firstname','lastname', 'email'));
+        $auto->setResultField('login');
+        $auto->enableFieldSearchableCheck(false);
+        $auto->setMoreLinkAvailable(true);
+
+
+        if(($_REQUEST['fetchall']))
+        {
+            $auto->setLimit(ilUserAutoComplete::MAX_ENTRIES);
+        }
+
+        $list = $auto->getList($_REQUEST['term']);
+
+        echo $list;
+        exit();
+    }
 }
