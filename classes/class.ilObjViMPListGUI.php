@@ -14,6 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
  */
 class ilObjViMPListGUI extends ilObjectPluginListGUI {
 
+    protected int $obj_id = 0;
 	function getGuiClass(): string
     {
 		return ilObjViMPGUI::class;
@@ -63,7 +64,7 @@ class ilObjViMPListGUI extends ilObjectPluginListGUI {
 	public function getAlertProperties(): array
     {
         $alert = [];
-        foreach ($this->getProperties() as $prop) {
+        foreach ((array)$this->getCustomProperties(array()) as $prop) {
             if (isset($prop['alert']) && $prop['alert']) {
                 $alert[] = $prop;
             }

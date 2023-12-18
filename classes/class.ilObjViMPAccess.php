@@ -217,10 +217,10 @@ class ilObjViMPAccess extends ilObjectPluginAccess {
 	/**
 	 * @param $obj_id
 	 *
-	 * @return mixed
+	 * @return bool
 	 */
-	public function checkOnline($obj_id) {
-		return xvmpSettings::find($obj_id)->getIsOnline();
+	public function checkOnline($obj_id): bool {
+		return (bool) xvmpSettings::find($obj_id)->getIsOnline();
 	}
 
 }
