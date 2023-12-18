@@ -317,7 +317,9 @@ class xvmpMedium extends xvmpObject {
 	 */
 	public static function formatResponse($response) {
         $response['duration_formatted'] = gmdate("H:i:s", $response['duration']);
-        $response['description'] = strip_tags(html_entity_decode($response['description']));
+        $response['description'] = strip_tags(html_entity_decode((string)$response['description']));
+        $response['title'] = (string) $response['title'];
+        $response['slug'] = (string) $response['slug'];
 
 		if (isset($response['mediapermissions']['rid']) && is_array($response['mediapermissions']['rid'])) {
 			$response['mediapermissions'] = $response['mediapermissions']['rid'];
