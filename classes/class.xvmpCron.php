@@ -58,7 +58,7 @@ class xvmpCron
             try {
                 $medium = xvmpMedium::find($uploaded_medium->getMid());
                 if ($medium instanceof xvmpDeletedMedium) {
-                    throw new xvmpException(xvmpException::API_CALL_STATUS_404, 'Video not found');
+                    throw new xvmpException(xvmpException::API_CALL_STATUS_404, 'Medium not exist');
                 }
                 switch ($medium->getStatus()) {
                     case "legal":
