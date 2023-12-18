@@ -81,6 +81,7 @@ class ViMPJob extends ilCronJob
         $srViMPCronjob = new xvmpCron();
         $srViMPCronjob->run();
 
-        return $result->setStatus(ilCronJobResult::STATUS_OK);
+        $result->setStatus(ilCronJobResult::STATUS_OK);
+        return $result;
     }
 }
