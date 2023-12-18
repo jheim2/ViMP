@@ -316,7 +316,7 @@ class xvmpMedium extends xvmpObject {
 	 * some attributes have to be formatted to fill the form correctly
 	 */
 	public static function formatResponse($response) {
-        $response['duration_formatted'] = gmdate("H:i:s", $response['duration']);
+        $response['duration_formatted'] = gmdate("H:i:s", $response['duration'] ?? 0);
         $response['description'] = strip_tags(html_entity_decode((string)$response['description']));
         $response['title'] = (string) $response['title'];
         $response['slug'] = (string) $response['slug'];
