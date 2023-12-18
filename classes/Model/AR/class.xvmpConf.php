@@ -149,9 +149,9 @@ class xvmpConf extends ActiveRecord {
 
 
 	/**
-	 * @return string
+	 * @return ?string
 	 */
-	public function getName(): string
+	public function getName(): ?string
     {
 		return $this->name;
 	}
@@ -166,9 +166,9 @@ class xvmpConf extends ActiveRecord {
 
 
 	/**
-	 * @return string
+	 * @return ?string
 	 */
-	public function getValue(): string
+	public function getValue(): ?string
     {
 		return $this->value;
 	}

@@ -188,7 +188,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 		$xvmpEditVideoFormGUI = new xvmpUploadVideoFormGUI($this);
 		$xvmpEditVideoFormGUI->setValuesByPost();
 		if ($xvmpEditVideoFormGUI->saveForm()) {
-            $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('video_uploaded'));
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('video_uploaded'), true);
 			$this->dic->ctrl()->redirect($this, self::CMD_STANDARD);
 		}
 
@@ -227,7 +227,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 
 		xvmpEventLog::logEvent(xvmpEventLog::ACTION_DELETE, $this->getObjId(), $video);
 
-        $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('video_deleted'));
+        $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('video_deleted'), true);
 		$this->dic->ctrl()->redirect($this, self::CMD_STANDARD);
 	}
 
