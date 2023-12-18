@@ -215,3 +215,4 @@ available#:#Verfügbar
 obj_xvmp#:#ViMP
 objs_xvmp#:#ViMP
 change_owner#:#Besitzer ändern
+auto_subtitle#:#Automatische Untertitel generieren<br><br><div class="help-block">Bei Nutzung dieser Funktion erfolgt eine Übertragung <br>der Tonspur an den externen Dienst "Amberscript".<br> Bitte beachten Sie die dazugehörige <a href="https://www.amberscript.com/de/datenschutzerklaerung/">Datenschutzerklärung</a></div>

@@ -215,3 +215,4 @@ available#:#Available
 obj_xvmp#:#ViMP
 objs_xvmp#:#ViMP
 change_owner#:#Change Owner
+auto_subtitle#:#Automatic subtitle creation<br><br><div class="help-block">Using this functionality results in a transfer of the <br>audio track to the third-party service Amberscript. <br>Please note the corresponding <a href="https://www.amberscript.com/en/privacy-policy/">privacy policy</a>.</div>
