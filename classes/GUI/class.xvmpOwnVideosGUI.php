@@ -120,7 +120,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI {
 
 		$xvmpUser = xvmpUser::getOrCreateVimpUser(new ilObjUser(ilObjUser::getUserIdByLogin($login)));
 		$medium['uid'] = $xvmpUser->getUid();
-		$edit_fields = ['uid' => $xvmpUser->getUid(), 'mediapermissions' => implode(',', $medium['mediapermissions'])];
+		$edit_fields = ['uid' => $xvmpUser->getUid(), 'mediapermissions' => implode(',', $medium['mediapermissions']['rid'])];
 		foreach (xvmpConf::getConfig(xvmpConf::F_FORM_FIELDS) as $form_field) {
 			// workaround for vimp bug (see PLVIMP-53)
             if (
