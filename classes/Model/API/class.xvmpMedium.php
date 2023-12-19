@@ -155,7 +155,7 @@ class xvmpMedium extends xvmpObject {
     {
 		$selected = self::getSelectedAsArray($obj_id);
 		foreach ($selected as $key => $video) {
-			if (self::isVimeoOrYoutube($video)) {
+			if (self::isVimeoOrYoutube($video) || (isset($video['status']) && $video['status'] === 'deleted')) {
 				unset($selected[$key]);
 			}
 		}
