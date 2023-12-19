@@ -14,7 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  *
  * @ilCtrl_isCalledBy ilObjViMPGUI: ilRepositoryGUI, ilObjPluginDispatchGUI, ilAdministrationGUI
- * @ilCtrl_Calls      ilObjViMPGUI: ilPermissionGUI, ilInfoScreenGUI, ilObjectCopyGUI, ilCommonActionDispatcherGUI
+ * @ilCtrl_Calls      ilObjViMPGUI: ilPermissionGUI, ilInfoScreenGUI, ilObjectCopyGUI, ilCommonActionDispatcherGUI, ilLearningProgressGUI
  */
 class ilObjViMPGUI extends ilObjectPluginGUI
 {
