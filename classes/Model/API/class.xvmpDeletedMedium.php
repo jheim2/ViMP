@@ -9,54 +9,58 @@ declare(strict_types=1);
  *
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class xvmpDeletedMedium extends xvmpMedium {
+class xvmpDeletedMedium extends xvmpMedium
+{
 
-	public function __construct() {
-		$this->title = $this->getTitle();
-		$this->description = $this->getDescription();
-		$this->duration = 0;
-		$this->duration_formatted = '';
-		$this->thumbnail = $this->getThumbnail();
-		$this->medium = $this->getMedium();
-		$this->created_at = $this->getCreatedAt();
-	}
-
-
-	/**
-	 * @return String
-	 */
-	public function getTitle(): string
+    public function __construct()
     {
-		return ilViMPPlugin::getInstance()->txt('not_available');
-	}
+        $this->username = '';
+        $this->status = 'deleted';
+        $this->title = $this->getTitle();
+        $this->description = $this->getDescription();
+        $this->duration = 0;
+        $this->duration_formatted = '';
+        $this->thumbnail = $this->getThumbnail();
+        $this->medium = $this->getMedium();
+        $this->created_at = $this->getCreatedAt();
+    }
+
+
+    /**
+     * @return String
+     */
+    public function getTitle(): string
+    {
+        return ilViMPPlugin::getInstance()->txt('not_available');
+    }
 
 
     /**
      * @param int $max_length
      * @return String
      */
-	public function getDescription(int $max_length = 0): string
+    public function getDescription(int $max_length = 0): string
     {
-		return ilViMPPlugin::getInstance()->txt('not_available_description');
-	}
+        return ilViMPPlugin::getInstance()->txt('not_available_description');
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function getDuration(): int
+    /**
+     * @return int
+     */
+    public function getDuration(): int
     {
-		return 0;
-	}
+        return 0;
+    }
 
 
-	/**
-	 * @return String
-	 */
-	public function getDurationFormatted(): string
+    /**
+     * @return String
+     */
+    public function getDurationFormatted(): string
     {
-		return '';
-	}
+        return '';
+    }
 
 
     /**
@@ -64,28 +68,42 @@ class xvmpDeletedMedium extends xvmpMedium {
      * @param int $height
      * @return String
      */
-	public function getThumbnail(int $width = 0, int $height = 0): string
+    public function getThumbnail(int $width = 0, int $height = 0): string
     {
-		return ilViMPPlugin::getInstance()->getDirectory() . '/templates/images/not_available.png';
-	}
+        return ilViMPPlugin::getInstance()->getDirectory() . '/templates/images/not_available.png';
+    }
 
 
-	/**
-	 * @return string
+    /**
+     * @return string
      */
-	public function getMedium(): string
+    public function getMedium(): string
     {
-		return '';
-	}
+        return '';
+    }
 
 
     /**
      * @param string $format
      * @return String
      */
-	public function getCreatedAt(string $format = ''): string
+    public function getCreatedAt(string $format = ''): string
     {
-		return '';
-	}
+        return '';
+    }
+
+    public function __toArray(): array
+    {
+        return [
+            'title' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'mid' => $this->getMid(),
+            'thumbnail' => $this->getThumbnail(),
+            'status' => $this->getStatus(),
+            'username' => '',
+            'created_at' => $this->getCreatedAt()
+        ];
+    }
+
 
 }
