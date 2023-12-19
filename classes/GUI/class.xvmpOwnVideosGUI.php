@@ -154,7 +154,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI
 
         $response = xvmpRequest::editMedium($mid, $edit_fields)->getResponseBody();
         if ($response) {
-            $this->dic->ui()->mainTemplate()->setOnScreenMessage('info', $this->pl->txt('form_saved'), true);
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('form_saved'), true);
             xvmpCacheFactory::getInstance()->delete(xvmpMedium::class . '-' . $mid);
             xvmpMedium::cache(xvmpMedium::class . '-' . $mid, $medium);
             xvmpEventLog::logEvent(xvmpEventLog::ACTION_CHANGE_OWNER, $this->getObjId(), array(
@@ -184,7 +184,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI
         $xvmpEditVideoFormGUI = new xvmpEditVideoFormGUI($this, $_POST['mid']);
         $xvmpEditVideoFormGUI->setValuesByPost();
         if ($xvmpEditVideoFormGUI->saveForm()) {
-            $this->dic->ui()->mainTemplate()->setOnScreenMessage('info', $this->pl->txt('form_saved'), true);
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('success', $this->pl->txt('form_saved'), true);
             $this->dic->ctrl()->redirect($this, self::CMD_STANDARD);
         }
         $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('msg_incomplete'));
