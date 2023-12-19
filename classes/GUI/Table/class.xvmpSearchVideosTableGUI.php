@@ -131,7 +131,7 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 
 		$filter = array_filter($filter);
 		if (empty($filter)) {
-            $this->dic->ui()->mainTemplate()->setOnScreenMessage('question', $this->pl->txt('msg_please_enter_filter'));
+            $this->dic->ui()->mainTemplate()->setOnScreenMessage('question', $this->pl->txt('msg_please_enter_filter'), true);
 			$this->redirectToParent();
 		}
 		
