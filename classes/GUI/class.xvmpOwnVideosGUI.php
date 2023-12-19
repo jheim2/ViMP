@@ -40,7 +40,9 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI
             case self::CMD_CONFIRMED_DELETE_VIDEO:
                 $mid = max($_GET['mid'], $_POST['mid']);
                 $medium = xvmpMedium::find($mid);
-                ilObjViMPAccess::checkAction(ilObjViMPAccess::ACTION_MANIPULATE_VIDEO, $this, $medium);
+                if (!$medium instanceof xvmpDeletedMedium) {
+                    ilObjViMPAccess::checkAction(ilObjViMPAccess::ACTION_MANIPULATE_VIDEO, $this, $medium);
+                }
                 break;
             case self::CMD_FILL_MODAL:
                 $mid = max($_GET['mid'], $_POST['mid']);

@@ -304,12 +304,20 @@ class xvmpMedium extends xvmpObject {
 	 * @param int $mid
 	 */
 	public static function deleteObject(int $mid) {
-		xvmpRequest::deleteMedium($mid);
-		xvmpSelectedMedia::deleteVideo($mid);
-		if ($uploaded_media = xvmpUploadedMedia::find($mid)) {
-			$uploaded_media->delete();
-		}
-		xvmpCacheFactory::getInstance()->delete(self::class . '-' . $mid);
+        try {
+            xvmpCacheFactory::getInstance()->delete(self::class . '-' . $mid);
+            xvmpRequest::deleteMedium($mid);
+            xvmpSelectedMedia::deleteVideo($mid);
+            if ($uploaded_media = xvmpUploadedMedia::find($mid)) {
+                $uploaded_media->delete();
+            }
+        } catch (xvmpException $e) {
+            if ($e->getCode() == 404) {
+                xvmpCurlLog::getInstance()->writeWarning("couldn't delete video $mid, it was not found");
+            } else {
+                throw $e;
+            }
+        }
 	}
 
 	/**

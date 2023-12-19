@@ -45,31 +45,31 @@ class xvmpUploadedMedia extends ActiveRecord {
 	 * @db_fieldtype        integer
 	 * @db_length           8
 	 */
-	protected int $user_id;
+	protected ?int $user_id = null;
     /**
-     * @var int
+     * @var ?int
      *
      * @db_has_field        true
      * @db_fieldtype        integer
      * @db_length           8
      */
-	protected int $ref_id;
+	protected ?int $ref_id = null;
 	/**
-	 * @var int
+	 * @var ?string
 	 *
 	 * @db_has_field        true
 	 * @db_fieldtype        text
 	 * @db_length           256
 	 */
-	protected string $email;
+	protected ?string $email = null;
 	/**
-	 * @var int
+	 * @var ?int
 	 *
 	 * @db_has_field        true
 	 * @db_fieldtype        integer
 	 * @db_length           1
 	 */
-	protected int $notification = 1;
+	protected ?int $notification = 1;
 
 
 
@@ -144,7 +144,7 @@ class xvmpUploadedMedia extends ActiveRecord {
 	/**
 	 * @return int
 	 */
-	public function getEmail(): int
+	public function getEmail(): string
     {
 		return $this->email;
 	}
