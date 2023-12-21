@@ -59,7 +59,7 @@ class xvmpContentGUI extends xvmpGUI {
                 break;
 			case xvmpSettings::LAYOUT_TYPE_PLAYER:
 				$xvmpContentPlayerGUI = new xvmpContentPlayerGUI($this);
-                $this->dic->ui()->mainTemplate()->setContent($xvmpContentPlayerGUI->getHTML());
+                $this->dic->ui()->mainTemplate()->setContent((string)$xvmpContentPlayerGUI->getHTML());
                 break;
 		}
 	}
