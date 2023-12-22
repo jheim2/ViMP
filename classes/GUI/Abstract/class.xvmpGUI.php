@@ -249,7 +249,7 @@ abstract class xvmpGUI {
      * @throws ilCtrlException
      */
 	public function accessDenied() {
-        $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('access_denied'));
+        $this->dic->ui()->mainTemplate()->setOnScreenMessage('failure', $this->pl->txt('access_denied'), true);
 		$this->dic->ctrl()->redirect($this->parent_gui, ilObjViMPGUI::CMD_SHOW_CONTENT);
 	}
 
