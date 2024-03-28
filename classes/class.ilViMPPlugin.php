@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
+use srag\Plugins\ViMP\Cron\ViMPJob;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
@@ -12,7 +13,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
  *
  * @author  Theodor Truffer <tt@studer-raimann.ch>
  */
-class ilViMPPlugin extends ilRepositoryObjectPlugin {
+class ilViMPPlugin extends ilRepositoryObjectPlugin implements ilCronJobProvider {
 
 	const PLUGIN_NAME = 'ViMP';
 	const XVMP = 'xvmp';
@@ -166,5 +167,17 @@ class ilViMPPlugin extends ilRepositoryObjectPlugin {
             $this->getPluginName(),
             $a_img
         );
+    }
+
+    public function getCronJobInstances(): array
+    {
+        return [
+            new ViMPJob()
+        ];
+    }
+
+    public function getCronJobInstance(string $jobId): ilCronJob
+    {
+        return new ViMPJob();
     }
 }

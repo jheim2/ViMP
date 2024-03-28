@@ -22,10 +22,7 @@ class xvmpCurl {
 		global $DIC;
 		$lng = $DIC['lng'];
 		self::$api_key = xvmpConf::getConfig(xvmpConf::F_API_KEY);
-		if (strpos($url, 'http') === false) {
-			$url = rtrim(xvmpConf::getConfig(xvmpConf::F_API_URL), '/') . '/' . ltrim($url, '/');
-		}
-		$this->url = $url;
+        $this->url = strpos($url, 'http') !== false ? $url : xvmpConf::getConfig(xvmpConf::F_API_URL) . '/' . $url;
 		$this->addPostField('apikey', xvmpConf::getConfig(xvmpConf::F_API_KEY));
 		$this->addPostField('format', self::FORMAT_JSON);
 		$this->addPostField('language', $lng->getLangKey());

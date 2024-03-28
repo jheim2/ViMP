@@ -11,5 +11,3 @@ cd Customizing/global/plugins/Services/Repository/RepositoryObject
 git clone https://github.com/E-Learning-FHDO/ViMP.git
 ```
 
-Please also install and enable [ViMPCron](https://github.com/E-Learning-FHDO/ViMPCron).
-

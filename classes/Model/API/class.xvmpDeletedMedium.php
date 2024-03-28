@@ -22,6 +22,8 @@ class xvmpDeletedMedium extends xvmpMedium
         $this->duration_formatted = '';
         $this->thumbnail = $this->getThumbnail();
         $this->medium = $this->getMedium();
+        $this->startdate = null;
+        $this->enddate = null;
         $this->created_at = $this->getCreatedAt();
     }
 
@@ -104,6 +106,4 @@ class xvmpDeletedMedium extends xvmpMedium
             'created_at' => $this->getCreatedAt()
         ];
     }
-
-
 }

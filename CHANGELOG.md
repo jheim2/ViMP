@@ -1,4 +1,8 @@
 # Changelog
+## [v1.8.5]
+- Feature: Cronjob has been integrated, ViMPCron-Plugin is no longer necessary.
+- Fix: added missing null check in configuration
+
 ## [v1.8.4]
 - ILIAS 8 supported
 - dropped ILIAS 7 support
