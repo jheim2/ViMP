@@ -58,8 +58,7 @@ class VideoPlayer
         "autoplay" => false,
         "preload" => "auto",
         "fluid" => true,
-        "playbackRates" => [0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
-        "plugins" => ["httpSourceSelector" => ["default" => "auto"]]
+        "playbackRates" => [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
     );
     protected static int $count = 1;
 
@@ -102,7 +101,7 @@ class VideoPlayer
         $tpl->addJavaScript($ilViMPPlugin->getDirectory()
             . '/node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js');
         $tpl->addJavaScript($ilViMPPlugin->getDirectory()
-            . '/node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js');
+            . '/node_modules/videojs-hls-quality-selector/dist/videojs-hls-quality-selector.min.js');
         $tpl->addCss($ilViMPPlugin->getDirectory() . '/node_modules/videojs-vr/dist/videojs-vr.css');
         $tpl->addJavaScript($ilViMPPlugin->getDirectory()
             . '/node_modules/videojs-vr/dist/videojs-vr.min.js');
@@ -207,7 +206,7 @@ class VideoPlayer
         }
 
         if ($isABRStream) {
-            $videojs_script .= " player.httpSourceSelector(); ";
+            $videojs_script .= " player.hlsQualitySelector();";
         }
 
         if ($this->video->getProperties()['source-is360video']) {
