@@ -170,7 +170,7 @@ class xvmpSearchVideosTableGUI extends xvmpTableGUI {
 		$filter_item = new ilTextInputGUI($this->pl->txt('tags'), 'tags');
 		$this->addAndReadFilterItem($filter_item);
 
-		$filter_item = new srDateDurationInputGUI($this->pl->txt('create_date'), 'created');
+		$filter_item = new ilDateDurationInputGUI($this->pl->txt('create_date'), 'created');
 		$filter_item->setShowTime(false);
 		$filter_item->setStartText($this->pl->txt('from'));
 		$filter_item->setEndText($this->pl->txt('to'));

@@ -1,4 +1,10 @@
 # Changelog
+## [v1.8.6]
+- Feature: updated VideoJS to 8.16.1
+- Feature: added playback rates 0.75 and 2.0
+- Fix: replaced srDateDurationInputGUI with ilDateDurationInputGUI
+- Fix: mediapermission role id must be numeric
+
 ## [v1.8.5]
 - Feature: Cronjob has been integrated, ViMPCron-Plugin is no longer necessary.
 - Fix: added missing null check in configuration

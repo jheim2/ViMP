@@ -16,7 +16,6 @@ return array(
     'ilObjViMPListGUI' => $baseDir . '/classes/class.ilObjViMPListGUI.php',
     'ilViMPConfigGUI' => $baseDir . '/classes/class.ilViMPConfigGUI.php',
     'ilViMPPlugin' => $baseDir . '/classes/class.ilViMPPlugin.php',
-    'srDateDurationInputGUI' => $baseDir . '/classes/GUI/Form/Input/class.srDateDurationInputGUI.php',
     'srGenericMultiInputGUI' => $baseDir . '/classes/GUI/Form/Input/class.srGenericMultiInputGUI.php',
     'srag\\Plugins\\ViMP\\Cron\\ViMPJob' => $baseDir . '/src/Cron/ViMPJob.php',
     'srag\\Plugins\\ViMP\\UIComponents\\PlayerModal\\MediumAttribute' => $baseDir . '/src/UIComponents/PlayerModal/MediumAttribute.php',

@@ -41,7 +41,6 @@ class ComposerStaticInit64f7216efcdcf8ddae98e6499b2ca798
         'ilObjViMPListGUI' => __DIR__ . '/../..' . '/classes/class.ilObjViMPListGUI.php',
         'ilViMPConfigGUI' => __DIR__ . '/../..' . '/classes/class.ilViMPConfigGUI.php',
         'ilViMPPlugin' => __DIR__ . '/../..' . '/classes/class.ilViMPPlugin.php',
-        'srDateDurationInputGUI' => __DIR__ . '/../..' . '/classes/GUI/Form/Input/class.srDateDurationInputGUI.php',
         'srGenericMultiInputGUI' => __DIR__ . '/../..' . '/classes/GUI/Form/Input/class.srGenericMultiInputGUI.php',
         'srag\\Plugins\\ViMP\\Cron\\ViMPJob' => __DIR__ . '/../..' . '/src/Cron/ViMPJob.php',
         'srag\\Plugins\\ViMP\\UIComponents\\PlayerModal\\MediumAttribute' => __DIR__ . '/../..' . '/src/UIComponents/PlayerModal/MediumAttribute.php',

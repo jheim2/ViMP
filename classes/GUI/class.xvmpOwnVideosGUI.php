@@ -139,7 +139,7 @@ class xvmpOwnVideosGUI extends xvmpVideosGUI
 
         $edit_fields = [
             'uid' => $xvmpUser->getUid(),
-            'mediapermissions' => implode(',', $mediapermissions),
+            'mediapermissions' => implode(',', array_filter($medium['mediapermissions'], 'is_numeric')),
         ];
 
         foreach (xvmpConf::getConfig(xvmpConf::F_FORM_FIELDS) as $form_field) {

@@ -1,6 +1,6 @@
 <?php
 $id = 'xvmp';
-$version = '1.8.5';
+$version = '1.8.6';
 $ilias_min_version = '8.0';
 $ilias_max_version = '8.999';
 $responsible = 'fluxlabs ag';

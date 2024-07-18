@@ -14,11 +14,14 @@ import {
   addPropertiesToMain,
   mainForMedia,
   setupMediaPlaylist,
-  forEachMediaGroup
+  forEachMediaGroup,
+  createPlaylistID,
+  groupID
 } from './manifest';
 import {getKnownPartCount} from './playlist.js';
 import {merge} from './util/vjs-compat';
 import DateRangesStorage from './util/date-ranges';
+import { getStreamingNetworkErrorMetadata } from './error-codes.js';
 
 const { EventTarget } = videojs;
 
@@ -369,6 +372,34 @@ export const refreshDelay = (media, update) => {
   return (media.partTargetDuration || media.targetDuration || 10) * 500;
 };
 
+const playlistMetadataPayload = (playlists, type, isLive) => {
+  if (!playlists) {
+    return;
+  }
+  const renditions = [];
+
+  playlists.forEach((playlist) => {
+    // we need attributes to populate rendition data.
+    if (!playlist.attributes) {
+      return;
+    }
+    const { BANDWIDTH, RESOLUTION, CODECS } = playlist.attributes;
+
+    renditions.push({
+      id: playlist.id,
+      bandwidth: BANDWIDTH,
+      resolution: RESOLUTION,
+      codecs: CODECS
+    });
+  });
+
+  return {
+    type,
+    isLive,
+    renditions
+  };
+};
+
 /**
  * Load a playlist from a remote location
  *
@@ -444,7 +475,8 @@ export default class PlaylistLoader extends EventTarget {
 
     this.request = this.vhs_.xhr({
       uri,
-      withCredentials: this.withCredentials
+      withCredentials: this.withCredentials,
+      requestType: 'hls-playlist'
     }, (error, req) => {
       // disposed
       if (!this.request) {
@@ -482,21 +514,30 @@ export default class PlaylistLoader extends EventTarget {
       status: xhr.status,
       message: `HLS playlist request error at URL: ${uri}.`,
       responseText: xhr.responseText,
-      code: (xhr.status >= 500) ? 4 : 2
+      code: (xhr.status >= 500) ? 4 : 2,
+      metadata: getStreamingNetworkErrorMetadata({ requestType: xhr.requestType, request: xhr, error: xhr.error })
     };
 
     this.trigger('error');
   }
 
   parseManifest_({url, manifestString}) {
-    return parseManifest({
-      onwarn: ({message}) => this.logger_(`m3u8-parser warn for ${url}: ${message}`),
-      oninfo: ({message}) => this.logger_(`m3u8-parser info for ${url}: ${message}`),
-      manifestString,
-      customTagParsers: this.customTagParsers,
-      customTagMappers: this.customTagMappers,
-      llhls: this.llhls
-    });
+    try {
+      return parseManifest({
+        onwarn: ({message}) => this.logger_(`m3u8-parser warn for ${url}: ${message}`),
+        oninfo: ({message}) => this.logger_(`m3u8-parser info for ${url}: ${message}`),
+        manifestString,
+        customTagParsers: this.customTagParsers,
+        customTagMappers: this.customTagMappers,
+        llhls: this.llhls
+      });
+    } catch (error) {
+      this.error = error;
+      this.error.metadata = {
+        errorType: videojs.Error.StreamingHlsPlaylistParserError,
+        error
+      };
+    }
   }
 
   /**
@@ -516,6 +557,14 @@ export default class PlaylistLoader extends EventTarget {
     this.request = null;
     this.state = 'HAVE_METADATA';
 
+    const metadata = {
+      playlistInfo: {
+        type: 'media',
+        uri: url
+      }
+    };
+
+    this.trigger({type: 'playlistparsestart', metadata });
     const playlist = playlistObject || this.parseManifest_({
       url,
       manifestString: playlistString
@@ -544,7 +593,8 @@ export default class PlaylistLoader extends EventTarget {
     }
 
     this.updateMediaUpdateTimeout_(refreshDelay(this.media(), !!update));
-
+    metadata.parsedPlaylist = playlistMetadataPayload(this.main.playlists, metadata.playlistInfo.type, !this.media_.endList);
+    this.trigger({ type: 'playlistparsecomplete', metadata });
     this.trigger('loadedplaylist');
   }
 
@@ -684,10 +734,19 @@ export default class PlaylistLoader extends EventTarget {
     }
 
     this.pendingMedia_ = playlist;
+    const metadata = {
+      playlistInfo: {
+        type: 'media',
+        uri: playlist.uri
+      }
+    };
+
+    this.trigger({ type: 'playlistrequeststart', metadata });
 
     this.request = this.vhs_.xhr({
       uri: playlist.resolvedUri,
-      withCredentials: this.withCredentials
+      withCredentials: this.withCredentials,
+      requestType: 'hls-playlist'
     }, (error, req) => {
       // disposed
       if (!this.request) {
@@ -701,6 +760,8 @@ export default class PlaylistLoader extends EventTarget {
       if (error) {
         return this.playlistRequestError(this.request, playlist, startingState);
       }
+
+      this.trigger({ type: 'playlistrequestcomplete', metadata });
 
       this.haveMetadata({
         playlistString: req.responseText,
@@ -829,11 +890,19 @@ export default class PlaylistLoader extends EventTarget {
       }, 0);
       return;
     }
+    const metadata = {
+      playlistInfo: {
+        type: 'multivariant',
+        uri: this.src
+      }
+    };
 
+    this.trigger({ type: 'playlistrequeststart', metadata });
     // request the specified URL
     this.request = this.vhs_.xhr({
       uri: this.src,
-      withCredentials: this.withCredentials
+      withCredentials: this.withCredentials,
+      requestType: 'hls-playlist'
     }, (error, req) => {
       // disposed
       if (!this.request) {
@@ -849,20 +918,27 @@ export default class PlaylistLoader extends EventTarget {
           message: `HLS playlist request error at URL: ${this.src}.`,
           responseText: req.responseText,
           // MEDIA_ERR_NETWORK
-          code: 2
+          code: 2,
+          metadata: getStreamingNetworkErrorMetadata({ requestType: req.requestType, request: req, error })
         };
         if (this.state === 'HAVE_NOTHING') {
           this.started = false;
         }
         return this.trigger('error');
       }
+      this.trigger({ type: 'playlistrequestcomplete', metadata });
 
       this.src = resolveManifestRedirect(this.src, req);
 
+      this.trigger({ type: 'playlistparsestart', metadata });
       const manifest = this.parseManifest_({
         manifestString: req.responseText,
         url: this.src
       });
+
+      // we haven't loaded any variant playlists here so we default to false for isLive.
+      metadata.parsedPlaylist = playlistMetadataPayload(manifest.playlists, metadata.playlistInfo.type, false);
+      this.trigger({ type: 'playlistparsecomplete', metadata });
 
       this.setupInitialPlaylist(manifest);
     });
@@ -929,4 +1005,288 @@ export default class PlaylistLoader extends EventTarget {
     this.trigger('loadedmetadata');
   }
 
+  /**
+   * Updates or deletes a preexisting pathway clone.
+   * Ensures that all playlists related to the old pathway clone are
+   * either updated or deleted.
+   *
+   * @param {Object} clone On update, the pathway clone object for the newly updated pathway clone.
+   *        On delete, the old pathway clone object to be deleted.
+   * @param {boolean} isUpdate True if the pathway is to be updated,
+   *        false if it is meant to be deleted.
+   */
+  updateOrDeleteClone(clone, isUpdate) {
+    const main = this.main;
+    const pathway = clone.ID;
+
+    let i = main.playlists.length;
+
+    // Iterate backwards through the playlist so we can remove playlists if necessary.
+    while (i--) {
+      const p = main.playlists[i];
+
+      if (p.attributes['PATHWAY-ID'] === pathway) {
+        const oldPlaylistUri = p.resolvedUri;
+        const oldPlaylistId = p.id;
+
+        // update the indexed playlist and add new playlists by ID and URI
+        if (isUpdate) {
+          const newPlaylistUri = this.createCloneURI_(p.resolvedUri, clone);
+          const newPlaylistId = createPlaylistID(pathway, newPlaylistUri);
+          const attributes = this.createCloneAttributes_(pathway, p.attributes);
+          const updatedPlaylist = this.createClonePlaylist_(p, newPlaylistId, clone, attributes);
+
+          main.playlists[i] = updatedPlaylist;
+          main.playlists[newPlaylistId] = updatedPlaylist;
+          main.playlists[newPlaylistUri] = updatedPlaylist;
+        } else {
+          // Remove the indexed playlist.
+          main.playlists.splice(i, 1);
+        }
+
+        // Remove playlists by the old ID and URI.
+        delete main.playlists[oldPlaylistId];
+        delete main.playlists[oldPlaylistUri];
+      }
+    }
+
+    this.updateOrDeleteCloneMedia(clone, isUpdate);
+  }
+
+  /**
+   * Updates or deletes media data based on the pathway clone object.
+   * Due to the complexity of the media groups and playlists, in all cases
+   * we remove all of the old media groups and playlists.
+   * On updates, we then create new media groups and playlists based on the
+   * new pathway clone object.
+   *
+   * @param {Object} clone The pathway clone object for the newly updated pathway clone.
+   * @param {boolean} isUpdate True if the pathway is to be updated,
+   *        false if it is meant to be deleted.
+   */
+  updateOrDeleteCloneMedia(clone, isUpdate) {
+    const main = this.main;
+    const id = clone.ID;
+
+    ['AUDIO', 'SUBTITLES', 'CLOSED-CAPTIONS'].forEach((mediaType) => {
+      if (!main.mediaGroups[mediaType] || !main.mediaGroups[mediaType][id]) {
+        return;
+      }
+
+      for (const groupKey in main.mediaGroups[mediaType]) {
+        // Remove all media playlists for the media group for this pathway clone.
+        if (groupKey === id) {
+          for (const labelKey in main.mediaGroups[mediaType][groupKey]) {
+            const oldMedia = main.mediaGroups[mediaType][groupKey][labelKey];
+
+            oldMedia.playlists.forEach((p, i) => {
+              const oldMediaPlaylist = main.playlists[p.id];
+              const oldPlaylistId = oldMediaPlaylist.id;
+              const oldPlaylistUri = oldMediaPlaylist.resolvedUri;
+
+              delete main.playlists[oldPlaylistId];
+              delete main.playlists[oldPlaylistUri];
+            });
+          }
+
+          // Delete the old media group.
+          delete main.mediaGroups[mediaType][groupKey];
+        }
+      }
+    });
+
+    // Create the new media groups and playlists if there is an update.
+    if (isUpdate) {
+      this.createClonedMediaGroups_(clone);
+    }
+  }
+
+  /**
+   * Given a pathway clone object, clones all necessary playlists.
+   *
+   * @param {Object} clone The pathway clone object.
+   * @param {Object} basePlaylist The original playlist to clone from.
+   */
+  addClonePathway(clone, basePlaylist = {}) {
+    const main = this.main;
+    const index = main.playlists.length;
+    const uri = this.createCloneURI_(basePlaylist.resolvedUri, clone);
+    const playlistId = createPlaylistID(clone.ID, uri);
+    const attributes = this.createCloneAttributes_(clone.ID, basePlaylist.attributes);
+
+    const playlist = this.createClonePlaylist_(basePlaylist, playlistId, clone, attributes);
+
+    main.playlists[index] = playlist;
+
+    // add playlist by ID and URI
+    main.playlists[playlistId] = playlist;
+    main.playlists[uri] = playlist;
+
+    this.createClonedMediaGroups_(clone);
+  }
+
+  /**
+   * Given a pathway clone object we create clones of all media.
+   * In this function, all necessary information and updated playlists
+   * are added to the `mediaGroup` object.
+   * Playlists are also added to the `playlists` array so the media groups
+   * will be properly linked.
+   *
+   * @param {Object} clone The pathway clone object.
+   */
+  createClonedMediaGroups_(clone) {
+    const id = clone.ID;
+    const baseID = clone['BASE-ID'];
+    const main = this.main;
+
+    ['AUDIO', 'SUBTITLES', 'CLOSED-CAPTIONS'].forEach((mediaType) => {
+      // If the media type doesn't exist, or there is already a clone, skip
+      // to the next media type.
+      if (!main.mediaGroups[mediaType] || main.mediaGroups[mediaType][id]) {
+        return;
+      }
+
+      for (const groupKey in main.mediaGroups[mediaType]) {
+        if (groupKey === baseID) {
+          // Create the group.
+          main.mediaGroups[mediaType][id] = {};
+        } else {
+          // There is no need to iterate over label keys in this case.
+          continue;
+        }
+
+        for (const labelKey in main.mediaGroups[mediaType][groupKey]) {
+          const oldMedia = main.mediaGroups[mediaType][groupKey][labelKey];
+
+          main.mediaGroups[mediaType][id][labelKey] = Object.assign({}, oldMedia);
+          const newMedia = main.mediaGroups[mediaType][id][labelKey];
+
+          // update URIs on the media
+          const newUri = this.createCloneURI_(oldMedia.resolvedUri, clone);
+
+          newMedia.resolvedUri = newUri;
+          newMedia.uri = newUri;
+
+          // Reset playlists in the new media group.
+          newMedia.playlists = [];
+
+          // Create new playlists in the newly cloned media group.
+          oldMedia.playlists.forEach((p, i) => {
+            const oldMediaPlaylist = main.playlists[p.id];
+            const group = groupID(mediaType, id, labelKey);
+            const newPlaylistID = createPlaylistID(id, group);
+
+            // Check to see if it already exists
+            if (oldMediaPlaylist && !main.playlists[newPlaylistID]) {
+              const newMediaPlaylist = this.createClonePlaylist_(oldMediaPlaylist, newPlaylistID, clone);
+
+              const newPlaylistUri = newMediaPlaylist.resolvedUri;
+
+              main.playlists[newPlaylistID] = newMediaPlaylist;
+              main.playlists[newPlaylistUri] = newMediaPlaylist;
+            }
+
+            newMedia.playlists[i] = this.createClonePlaylist_(p, newPlaylistID, clone);
+          });
+        }
+      }
+    });
+  }
+
+  /**
+   * Using the original playlist to be cloned, and the pathway clone object
+   * information, we create a new playlist.
+   *
+   * @param {Object} basePlaylist  The original playlist to be cloned from.
+   * @param {string} id The desired id of the newly cloned playlist.
+   * @param {Object} clone The pathway clone object.
+   * @param {Object} attributes An optional object to populate the `attributes` property in the playlist.
+   *
+   * @return {Object} The combined cloned playlist.
+   */
+  createClonePlaylist_(basePlaylist, id, clone, attributes) {
+    const uri = this.createCloneURI_(basePlaylist.resolvedUri, clone);
+    const newProps = {
+      resolvedUri: uri,
+      uri,
+      id
+    };
+
+    // Remove all segments from previous playlist in the clone.
+    if (basePlaylist.segments) {
+      newProps.segments = [];
+    }
+
+    if (attributes) {
+      newProps.attributes = attributes;
+    }
+
+    return merge(basePlaylist, newProps);
+  }
+
+  /**
+   * Generates an updated URI for a cloned pathway based on the original
+   * pathway's URI and the paramaters from the pathway clone object in the
+   * content steering server response.
+   *
+   * @param {string} baseUri URI to be updated in the cloned pathway.
+   * @param {Object} clone The pathway clone object.
+   *
+   * @return {string} The updated URI for the cloned pathway.
+   */
+  createCloneURI_(baseURI, clone) {
+    const uri = new URL(baseURI);
+
+    uri.hostname = clone['URI-REPLACEMENT'].HOST;
+
+    const params = clone['URI-REPLACEMENT'].PARAMS;
+
+    // Add params to the cloned URL.
+    for (const key of Object.keys(params)) {
+      uri.searchParams.set(key, params[key]);
+    }
+
+    return uri.href;
+  }
+
+  /**
+   * Helper function to create the attributes needed for the new clone.
+   * This mainly adds the necessary media attributes.
+   *
+   * @param {string} id The pathway clone object ID.
+   * @param {Object} oldAttributes The old attributes to compare to.
+   * @return {Object} The new attributes to add to the playlist.
+   */
+  createCloneAttributes_(id, oldAttributes) {
+    const attributes = { ['PATHWAY-ID']: id };
+
+    ['AUDIO', 'SUBTITLES', 'CLOSED-CAPTIONS'].forEach((mediaType) => {
+      if (oldAttributes[mediaType]) {
+        attributes[mediaType] = id;
+      }
+    });
+
+    return attributes;
+  }
+
+  /**
+   * Returns the key ID set from a playlist
+   *
+   * @param {playlist} playlist to fetch the key ID set from.
+   * @return a Set of 32 digit hex strings that represent the unique keyIds for that playlist.
+   */
+  getKeyIdSet(playlist) {
+    if (playlist.contentProtection) {
+      const keyIds = new Set();
+
+      for (const keysystem in playlist.contentProtection) {
+        const keyId = playlist.contentProtection[keysystem].attributes.keyId;
+
+        if (keyId) {
+          keyIds.add(keyId.toLowerCase());
+        }
+      }
+      return keyIds;
+    }
+  }
 }

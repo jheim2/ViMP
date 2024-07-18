@@ -58,7 +58,7 @@ class VideoPlayer
         "autoplay" => false,
         "preload" => "auto",
         "fluid" => true,
-        "playbackRates" => [0.5, 1.0, 1.25, 1.5],
+        "playbackRates" => [0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
         "plugins" => ["httpSourceSelector" => ["default" => "auto"]]
     );
     protected static int $count = 1;
@@ -199,6 +199,7 @@ class VideoPlayer
         }
 
         $options = json_encode($this->options);
+
         $videojs_script = "var player = videojs('xvmp_video_{$id}', {$options}, function () { $('#xvmp_video_{$id}').on('contextmenu', function(e) { e.preventDefault(); });});";
         $time = filter_input(INPUT_GET, ilObjViMPGUI::GET_TIME, FILTER_VALIDATE_INT);
         if ($time > 0) {
@@ -206,7 +207,7 @@ class VideoPlayer
         }
 
         if ($isABRStream) {
-            $videojs_script .= " player.qualityLevels(); player.httpSourceSelector(); ";
+            $videojs_script .= " player.httpSourceSelector(); ";
         }
 
         if ($this->video->getProperties()['source-is360video']) {
