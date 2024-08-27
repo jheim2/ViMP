@@ -87,11 +87,12 @@ class xvmpContentGUI extends xvmpGUI {
      * used for goto link
      */
 	public function playVideo() {
-	    $mid = filter_input(INPUT_GET, ilObjViMPGUI::GET_VIDEO_ID, FILTER_SANITIZE_NUMBER_INT);
-	    if ($mid) {
-	        $this->dic->ui()->mainTemplate()->addOnLoadCode('$(\'#xvmp_modal_player\').modal(\'show\');');
+        $mid = filter_input(INPUT_GET, ilObjViMPGUI::GET_VIDEO_ID, FILTER_SANITIZE_NUMBER_INT);
+        $play_video_id = xvmpMedium::find($mid)->isTranscoded() ? $mid : null;
+        if ($play_video_id) {
+            $this->dic->ui()->mainTemplate()->addOnLoadCode('$(\'#xvmp_modal_player\').modal(\'show\');');
         }
-        $this->index($mid);
+        $this->index($play_video_id);
     }
 
     /**

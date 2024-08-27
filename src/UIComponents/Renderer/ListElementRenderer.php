@@ -28,7 +28,7 @@ class ListElementRenderer extends ContentElementRenderer
     protected function buildTemplate(MediumMetadataDTO $mediumMetadataDTO) : ilTemplate
     {
         $tpl = $this->getContainerTemplate();
-        if ($mediumMetadataDTO->isAvailable()) {
+        if ($mediumMetadataDTO->isAvailable() && !$mediumMetadataDTO->isTranscoding()) {
             $tpl->setCurrentBlock('play_async');
             $tpl->setVariable('MID', $mediumMetadataDTO->getMid());
         } else {

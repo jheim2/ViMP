@@ -56,7 +56,7 @@ class PlayerInSiteRenderer
     public function render(PlayerContainerDTO $playerContainerDTO, bool $deleted) : string
     {
         $tpl = new ilTemplate(self::TEMPLATE_PATH, true, true);
-        $tpl->setVariable('VIDEO_PLAYER', $playerContainerDTO->getMediumMetadata()->isAvailable() && !$deleted ?
+        $tpl->setVariable('VIDEO_PLAYER', $playerContainerDTO->getMediumMetadata()->isAvailable() && !$deleted && !$playerContainerDTO->getMediumMetadata()->isTranscoding() ?
             $playerContainerDTO->getVideoPlayer()->getHTML()
             : $this->renderUnavailablePlayer($playerContainerDTO));
         $tpl->setVariable('TITLE', $playerContainerDTO->getMediumMetadata()->getTitle());
