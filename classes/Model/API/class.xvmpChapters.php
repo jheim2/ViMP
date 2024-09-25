@@ -54,7 +54,7 @@ class xvmpChapters extends xvmpObject {
 	/**
 	 * @var array
 	 */
-	protected array $chapters;
+	protected array $chapters = [];
 
 
 	/**

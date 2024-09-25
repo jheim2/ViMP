@@ -121,7 +121,9 @@ class VideoPlayer
         }
 
         if ($this->embed) {
-            return $this->video->getEmbedCode($this->options['width'], $this->options['height']);
+            $width = $this->options['width'] ?? 0;
+            $height = $this->options['height'] ?? 0;
+            return $this->video->getEmbedCode((int) $width, (int) $height);
         }
 
         $template = $this->pl->getTemplate('default/tpl.video.html');

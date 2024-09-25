@@ -424,7 +424,7 @@ class xvmpMedium extends xvmpObject
     /**
      * @var array
      */
-    protected ?array $properties;
+    protected ?array $properties = [];
     /**
      * @var String
      */
@@ -456,7 +456,7 @@ class xvmpMedium extends xvmpObject
     /**
      * @var String
      */
-    protected string $source;
+    protected ?string $source;
     /**
      * @var String
      */
@@ -840,7 +840,7 @@ class xvmpMedium extends xvmpObject
      */
     public function getProperties(): array
     {
-        return $this->properties;
+        return $this->properties ?? [];
     }
 
 
