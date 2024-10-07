@@ -11,7 +11,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 /**
  * Class ilObjViMPGUI
  *
- * @author  Theodor Truffer <tt@studer-raimann.ch>
+ * @author            Theodor Truffer <tt@studer-raimann.ch>
  *
  * @ilCtrl_isCalledBy ilObjViMPGUI: ilRepositoryGUI, ilObjPluginDispatchGUI, ilAdministrationGUI
  * @ilCtrl_Calls      ilObjViMPGUI: ilPermissionGUI, ilInfoScreenGUI, ilObjectCopyGUI, ilCommonActionDispatcherGUI, ilLearningProgressGUI
@@ -47,7 +47,6 @@ class ilObjViMPGUI extends ilObjectPluginGUI
      */
     protected $dic;
 
-
     /**
      * ilObjViMPGUI constructor.
      *
@@ -64,12 +63,11 @@ class ilObjViMPGUI extends ilObjectPluginGUI
         $this->pl = ilViMPPlugin::getInstance();
     }
 
-
     /**
      *
      * @throws ilCtrlException
      */
-    public function executeCommand(): void
+    public function executeCommand() : void
     {
         $next_class = $this->ctrl->getNextClass();
         $cmd = $this->ctrl->getCmd();
@@ -175,11 +173,10 @@ class ilObjViMPGUI extends ilObjectPluginGUI
 
     }
 
-
     /**
      * @param $cmd
      */
-    public function performCommand($cmd): void
+    public function performCommand($cmd) : void
     {
         switch ($cmd) {
             default:
@@ -188,22 +185,20 @@ class ilObjViMPGUI extends ilObjectPluginGUI
         }
     }
 
-
     /**
      * @return bool
      */
-    protected function supportsCloning(): bool
+    protected function supportsCloning() : bool
     {
         return false;
     }
-
 
     /**
      * @param string $a_new_type
      *
      * @return ilPropertyFormGUI
      */
-    public function initCreateForm($a_new_type): ilPropertyFormGUI
+    public function initCreateForm($a_new_type) : ilPropertyFormGUI
     {
         $this->tpl->addCss($this->pl->getAssetURL('default/xvmp_settings.css'));
 
@@ -215,30 +210,32 @@ class ilObjViMPGUI extends ilObjectPluginGUI
 
         // LAYOUT
         $input = new ilRadioGroupInputGUI($this->pl->txt(xvmpSettingsFormGUI::F_LAYOUT), xvmpSettingsFormGUI::F_LAYOUT);
-        $option = new ilRadioOption(ilUtil::img($this->pl->getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_LIST . '.png')), (string)xvmpSettings::LAYOUT_TYPE_LIST);
+        $option = new ilRadioOption(ilUtil::img($this->pl->getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_LIST . '.png')),
+            (string) xvmpSettings::LAYOUT_TYPE_LIST);
         $input->addOption($option);
-        $option = new ilRadioOption(ilUtil::img($this->pl->getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_TILES . '.png')), (string)xvmpSettings::LAYOUT_TYPE_TILES);
+        $option = new ilRadioOption(ilUtil::img($this->pl->getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_TILES . '.png')),
+            (string) xvmpSettings::LAYOUT_TYPE_TILES);
         $input->addOption($option);
-        $option = new ilRadioOption(ilUtil::img($this->pl->getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_PLAYER . '.png')), (string)xvmpSettings::LAYOUT_TYPE_PLAYER);
+        $option = new ilRadioOption(ilUtil::img($this->pl->getImagePath(xvmpSettingsFormGUI::F_LAYOUT . '_' . xvmpSettings::LAYOUT_TYPE_PLAYER . '.png')),
+            (string) xvmpSettings::LAYOUT_TYPE_PLAYER);
         $input->addOption($option);
-        $input->setValue((string)xvmpSettings::LAYOUT_TYPE_LIST);
+        $input->setValue((string) xvmpSettings::LAYOUT_TYPE_LIST);
         $form->addItem($input);
 
         return $form;
     }
 
-    function afterSave(ilObject $newObj): void
+    function afterSave(ilObject $newObj) : void
     {
         if ($_POST[xvmpSettingsFormGUI::F_ONLINE] || $_POST[xvmpSettingsFormGUI::F_LAYOUT]) {
             /** @var xvmpSettings $settings */
             $settings = xvmpSettings::find($newObj->getId());
-            $settings->setIsOnline((int)$_POST[xvmpSettingsFormGUI::F_ONLINE]);
-            $settings->setLayoutType((int)$_POST[xvmpSettingsFormGUI::F_LAYOUT]);
+            $settings->setIsOnline((int) $_POST[xvmpSettingsFormGUI::F_ONLINE]);
+            $settings->setLayoutType((int) $_POST[xvmpSettingsFormGUI::F_LAYOUT]);
             $settings->update();
         }
         parent::afterSave($newObj);
     }
-
 
     /**
      * @param bool $render_locator
@@ -248,7 +245,6 @@ class ilObjViMPGUI extends ilObjectPluginGUI
         if ($render_locator) {
             $this->setLocator();
         }
-
 
         $this->tpl->setTitleIcon(ilObjViMP::_getIcon($this->object_id));
         $this->tpl->setTitle($this->object->getTitle());
@@ -264,69 +260,77 @@ class ilObjViMPGUI extends ilObjectPluginGUI
         }
 
 //		$this->tpl->setTitleIcon(ilObjViMP::_getIcon($this->object_id));
-        $this->tpl->setPermanentLink('xvmp', (int)$_GET['ref_id']);
+        $this->tpl->setPermanentLink('xvmp', (int) $_GET['ref_id']);
     }
 
     /**
      * @return bool
      */
-    protected function setTabs(): void
+    protected function setTabs() : void
     {
-        $this->tabs_gui->addTab(self::TAB_CONTENT, $this->pl->txt(self::TAB_CONTENT), $this->ctrl->getLinkTargetByClass(xvmpContentGUI::class, xvmpContentGUI::CMD_STANDARD));
-        $this->tabs_gui->addTab(self::TAB_INFO, $this->pl->txt(self::TAB_INFO), $this->ctrl->getLinkTargetByClass(ilInfoScreenGUI::class));
+        $this->tabs_gui->addTab(self::TAB_CONTENT, $this->pl->txt(self::TAB_CONTENT),
+            $this->ctrl->getLinkTargetByClass(xvmpContentGUI::class, xvmpContentGUI::CMD_STANDARD));
+        $this->tabs_gui->addTab(self::TAB_INFO, $this->pl->txt(self::TAB_INFO),
+            $this->ctrl->getLinkTargetByClass(ilInfoScreenGUI::class));
 
         if (ilObjViMPAccess::hasWriteAccess()) {
-            $this->tabs_gui->addTab(self::TAB_VIDEOS, $this->pl->txt(self::TAB_VIDEOS), $this->ctrl->getLinkTargetByClass(xvmpSearchVideosGUI::class, xvmpSearchVideosGUI::CMD_STANDARD));
-        } else if (ilObjViMPAccess::hasUploadPermission()) {
-            $this->tabs_gui->addTab(self::TAB_VIDEOS, $this->pl->txt(self::TAB_VIDEOS), $this->ctrl->getLinkTargetByClass(xvmpOwnVideosGUI::class, xvmpOwnVideosGUI::CMD_STANDARD));
+            $this->tabs_gui->addTab(self::TAB_VIDEOS, $this->pl->txt(self::TAB_VIDEOS),
+                $this->ctrl->getLinkTargetByClass(xvmpSearchVideosGUI::class, xvmpSearchVideosGUI::CMD_STANDARD));
+        } else {
+            if (ilObjViMPAccess::hasUploadPermission()) {
+                $this->tabs_gui->addTab(self::TAB_VIDEOS, $this->pl->txt(self::TAB_VIDEOS),
+                    $this->ctrl->getLinkTargetByClass(xvmpOwnVideosGUI::class, xvmpOwnVideosGUI::CMD_STANDARD));
+            }
         }
 
         if (ilLearningProgressAccess::checkAccess($this->object->getRefId()) && xvmpSettings::find($this->obj_id)->getLPActive()) {
-            $this->tabs_gui->addTab(self::TAB_LEARNING_PROGRESS, $this->lng->txt(self::TAB_LEARNING_PROGRESS), $this->ctrl->getLinkTargetByClass(xvmpLearningProgressGUI::class, xvmpLearningProgressGUI::CMD_STANDARD));
+            $this->tabs_gui->addTab(self::TAB_LEARNING_PROGRESS, $this->lng->txt(self::TAB_LEARNING_PROGRESS),
+                $this->ctrl->getLinkTargetByClass(xvmpLearningProgressGUI::class,
+                    xvmpLearningProgressGUI::CMD_STANDARD));
 
         }
 
         if (ilObjViMPAccess::hasWriteAccess()) {
-            $this->tabs_gui->addTab(self::TAB_LOG, $this->pl->txt(self::TAB_LOG), $this->ctrl->getLinkTargetByClass(xvmpEventLogGUI::class, xvmpEventLogGUI::CMD_STANDARD));
+            $this->tabs_gui->addTab(self::TAB_LOG, $this->pl->txt(self::TAB_LOG),
+                $this->ctrl->getLinkTargetByClass(xvmpEventLogGUI::class, xvmpEventLogGUI::CMD_STANDARD));
         }
 
         if (ilObjViMPAccess::hasWriteAccess()) {
-            $this->tabs_gui->addTab(self::TAB_SETTINGS, $this->pl->txt(self::TAB_SETTINGS), $this->ctrl->getLinkTargetByClass(xvmpSettingsGUI::class, xvmpSettingsGUI::CMD_STANDARD));
+            $this->tabs_gui->addTab(self::TAB_SETTINGS, $this->pl->txt(self::TAB_SETTINGS),
+                $this->ctrl->getLinkTargetByClass(xvmpSettingsGUI::class, xvmpSettingsGUI::CMD_STANDARD));
         }
-
 
         if ($this->checkPermissionBool("edit_permission")) {
-            $this->tabs_gui->addTab("perm_settings", $this->dic->language()->txt("perm_settings"), $this->ctrl->getLinkTargetByClass(array(
-                get_class($this),
-                "ilpermissiongui",
-            ), "perm"));
+            $this->tabs_gui->addTab("perm_settings", $this->dic->language()->txt("perm_settings"),
+                $this->ctrl->getLinkTargetByClass(array(
+                    get_class($this),
+                    "ilpermissiongui",
+                ), "perm"));
         }
     }
-
 
     /**
      * @param $a_target
      */
-    public static function _goto($a_target): void
+    public static function _goto($a_target) : void
     {
         global $DIC;
         $DIC->ctrl()->setTargetScript('ilias.php');
         $id = explode("_", $a_target[0]);
 
-        $_GET['baseClass'] = ilObjPluginDispatchGUI::class;
         $DIC->ctrl()->setParameterByClass(xvmpContentGUI::class, self::GET_REF_ID, $id[0]);
 
         if (isset($id[1])) {
             if (isset($id[2])) {
                 // time
-                $DIC->ctrl()->setParameterByClass(xvmpContentGUI::class, self::GET_TIME, (int)$id[2]);
+                $DIC->ctrl()->setParameterByClass(xvmpContentGUI::class, self::GET_TIME, (int) $id[2]);
             }
-            $DIC->ctrl()->setParameterByClass(xvmpContentGUI::class, self::GET_VIDEO_ID, (int)$id[1]);
-            $DIC->ctrl()->redirectByClass([ilObjPluginDispatchGUI::class, self::class, xvmpContentGUI::class], xvmpContentGUI::CMD_PLAY_VIDEO);
+            $DIC->ctrl()->setParameterByClass(xvmpContentGUI::class, self::GET_VIDEO_ID, (int) $id[1]);
+            $DIC->ctrl()->redirectByClass([ilObjPluginDispatchGUI::class, self::class, xvmpContentGUI::class],
+                xvmpContentGUI::CMD_PLAY_VIDEO);
         }
         parent::_goto($a_target);
     }
-
 
     /**
      * called by the button to test connection inside the plugin config
@@ -360,33 +364,29 @@ class ilObjViMPGUI extends ilObjectPluginGUI
         }
     }
 
-
     /**
      * @return string
      */
-    public function getType(): string
+    public function getType() : string
     {
         return ilViMPPlugin::XVMP;
     }
 
-
     /**
      * @return string
      */
-    public function getAfterCreationCmd(): string
+    public function getAfterCreationCmd() : string
     {
         return self::CMD_SHOW_CONTENT;
     }
 
-
     /**
      * @return string
      */
-    public function getStandardCmd(): string
+    public function getStandardCmd() : string
     {
         return self::CMD_SHOW_CONTENT;
     }
-
 
     /**
      *
@@ -396,7 +396,6 @@ class ilObjViMPGUI extends ilObjectPluginGUI
         $this->ctrl->redirectByClass(xvmpContentGUI::class, xvmpContentGUI::CMD_STANDARD);
     }
 
-
     /**
      *
      */
@@ -404,7 +403,6 @@ class ilObjViMPGUI extends ilObjectPluginGUI
     {
         $this->ctrl->redirectByClass(xvmpSearchVideosGUI::class, xvmpSearchVideosGUI::CMD_STANDARD);
     }
-
 
     /**
      * ajax
@@ -426,7 +424,8 @@ class ilObjViMPGUI extends ilObjectPluginGUI
     protected function getTranscodingProgress()
     {
         try {
-            $transcodingProgress = xvmpRequest::getTranscodingProgress(filter_input(INPUT_GET, 'mid', FILTER_VALIDATE_INT), 2);
+            $transcodingProgress = xvmpRequest::getTranscodingProgress(filter_input(INPUT_GET, 'mid',
+                FILTER_VALIDATE_INT), 2);
             echo $transcodingProgress;
         } catch (xvmpException $e) {
             xvmpCurlLog::getInstance()->write($e->getMessage());
@@ -446,17 +445,16 @@ class ilObjViMPGUI extends ilObjectPluginGUI
     /**
      * async auto complete method for user filter in search table
      */
-    public function addUserAutoComplete() {
+    public function addUserAutoComplete()
+    {
         include_once './Services/User/classes/class.ilUserAutoComplete.php';
         $auto = new ilUserAutoComplete();
-        $auto->setSearchFields(array('login','firstname','lastname', 'email'));
+        $auto->setSearchFields(array('login', 'firstname', 'lastname', 'email'));
         $auto->setResultField('login');
         $auto->enableFieldSearchableCheck(false);
         $auto->setMoreLinkAvailable(true);
 
-
-        if(($_REQUEST['fetchall']))
-        {
+        if (($_REQUEST['fetchall'])) {
             $auto->setLimit(ilUserAutoComplete::MAX_ENTRIES);
         }
 
