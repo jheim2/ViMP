@@ -41,7 +41,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
         $this->dic = $DIC;
         $this->upload_service = new xvmpUploadService($DIC->filesystem(), $DIC->upload());
         $random = new ilRandom();
-        $tmp_id = md5((string)($random->int(1, 9999999) + str_replace(" ", "", microtime())));
+        $tmp_id = md5((string) ($random->int(1, 9999999) + str_replace(" ", "", microtime())));
         $this->dic->ctrl()->setParameter($parent_gui, 'tmp_id', $tmp_id);
         parent::__construct($parent_gui);
         $this->dic->ui()->mainTemplate()->addCss($this->pl->getAssetURL('default/form/video_form.css'));
@@ -116,7 +116,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
      * @throws ilWACException
      * @throws xvmpException
      */
-    protected function formatInput(string $post_var): ?string
+    protected function formatInput(string $post_var) : ?string
     {
         $value = $this->getInput($post_var);
         $tmp_id = filter_input(INPUT_GET, 'tmp_id', FILTER_SANITIZE_STRING);
@@ -158,7 +158,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
      * @param string $post_var
      * @return string|null
      */
-    protected function mapPostVarToMediumField(string $post_var): ?string
+    protected function mapPostVarToMediumField(string $post_var) : ?string
     {
         switch ($post_var) {
             case xvmpMedium::F_PUBLISHED:
@@ -173,7 +173,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
             case xvmpMedium::F_THUMBNAIL:
                 return $post_var;
             default:
-                if (in_array($post_var, array_map(function(array $field) {
+                if (in_array($post_var, array_map(function (array $field) {
                     return $field[xvmpConf::F_FORM_FIELD_ID];
                 }, xvmpConf::getConfig(xvmpConf::F_FORM_FIELDS)))) {
                     return $post_var;
@@ -325,7 +325,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
     {
         $input = new ilMultiSelectSearchInputGUI($this->lng->txt(xvmpMedium::F_CATEGORIES), xvmpMedium::F_CATEGORIES);
         $categories = xvmpCategory::getAll();
-        $options = array();
+        $options = [];
         /** @var xvmpCategory $category */
         foreach ($categories as $category) {
             $options[$category->getId()] = $category->getNameWithPath();
@@ -335,7 +335,6 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
         $input->setRequired(true);
         $this->addItem($input);
     }
-
 
     protected function addTagsInput()
     {
@@ -361,7 +360,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
             } else {
                 $input = new ilTextInputGUI($title, $field[xvmpConf::F_FORM_FIELD_ID]);
             }
-            $input->setRequired((bool)($field[xvmpConf::F_FORM_FIELD_REQUIRED] ?? false));
+            $input->setRequired((bool) ($field[xvmpConf::F_FORM_FIELD_REQUIRED] ?? false));
             $this->addItem($input);
         }
     }
@@ -389,7 +388,7 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
     {
         $media_permissions = xvmpConf::getConfig(xvmpConf::F_MEDIA_PERMISSIONS);
         if ($media_permissions) {
-            $input = $this->getMediaPermissionsInput($media_permissions);
+            $input = $this->getMediaPermissionsInput((int) $media_permissions);
             if (!empty($input->getOptions())) {
                 $this->addItem($input);
             }
@@ -402,12 +401,13 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
             xvmpMedium::F_MEDIAPERMISSIONS);
         $input->setInfo($this->pl->txt(xvmpConf::F_MEDIA_PERMISSIONS . '_info'));
         $input->setRequired(true);
-        $options = array();
+        $options = [];
+        $selectable_roles = [];
         if ($media_permissions == xvmpConf::MEDIA_PERMISSION_SELECTION) {
             $selectable_roles = xvmpConf::getConfig(xvmpConf::F_MEDIA_PERMISSIONS_SELECTION);
         }
         foreach (xvmpUserRoles::getAll() as $role) {
-            if (!$role->getField('visible') || ($selectable_roles && !in_array($role->getId(),
+            if (!$role->getField('visible') || ($selectable_roles && !in_array((string) $role->getId(),
                         $selectable_roles))) {
                 continue;
             }
@@ -451,7 +451,8 @@ abstract class xvmpVideoFormGUI extends xvmpFormGUI
      * @param $size
      * @return bool|float|int|string
      */
-    protected function getSizeInMB($size) {
+    protected function getSizeInMB($size)
+    {
         switch (substr($size, -2)) {
             case 'GB':
                 return substr($size, 0, (strlen($size) - 2)) * 1024;
